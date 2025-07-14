@@ -37,7 +37,7 @@ const ScrollToTopButton = () => {
       onClick={scrollToTop}
     >
       <div
-        className={`absolute top-[-15px] left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-[10px] border-r-[10px] border-l-transparent border-r-transparent border-b-[10px] border-b-[#FF6F35] ${
+        className={`absolute top-[-15px] left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-[10px] border-r-[10px] border-l-transparent border-r-transparent border-b-[10px] border-b-[#e83894] ${
           isVisible ? 'animate-blink' : ''
         }`}
       ></div>

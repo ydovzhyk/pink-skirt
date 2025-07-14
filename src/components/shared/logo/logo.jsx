@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import Image from 'next/image';
 
-const Logo = ({ width = 125, height = 30 }) => {
+const Logo = ({ width = 130, height = 35 }) => {
   return (
     <Link href="/" className="cursor-pointer">
       <Image

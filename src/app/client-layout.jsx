@@ -8,7 +8,7 @@ import ModalWindow from '@/components/modal-window-message/modal-window-message'
 import MediaQuery from '@/utils/media-query/media-query';
 import AuthProvider from '@/utils/auth-provider/auth-provider';
 import Header from '../components/header/header';
-// import Footer from '../components/footer/footer';
+import Footer from '../components/footer/footer';
 import ScrollToTopButton from '@/components/scroll-to-top-btn/scroll-to-top-btn';
 import SearchParamsHandler from '@/utils/search-params-handler';
 
@@ -22,19 +22,19 @@ const ClientLayout = ({ children }) => {
   }, [loadingAuth, loadingTechnical]);
 
   return (
-    <div className="reletive min-h-screen flex flex-col justify-between">
-      {loading && <LoaderSpinner />}
-      <ModalWindow />
-      <MediaQuery />
-      <AuthProvider />
+      <div className="reletive min-h-screen flex flex-col justify-between">
+        {loading && <LoaderSpinner />}
+        <ModalWindow />
+        <MediaQuery />
+        <AuthProvider />
         <Suspense fallback={<LoaderSpinner />}>
           <SearchParamsHandler />
         </Suspense>
         <Header />
         <main className="flex-1">{children}</main>
         <ScrollToTopButton />
-        {/* <Footer /> */}
-    </div>
+        <Footer />
+      </div>
   );
 };
 

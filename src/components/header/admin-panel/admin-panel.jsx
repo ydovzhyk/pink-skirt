@@ -1,6 +1,7 @@
 'use client';
 
-import { useState, useCallback } from 'react';
+import { useState } from 'react';
+import { useRouter, usePathname } from 'next/navigation';
 import Text from '@/components/shared/text/text';
 
 const sections = [
@@ -13,25 +14,30 @@ const sections = [
 
 const AdminPanel = () => {
   const [activeSection, setActiveSection] = useState('');
+  const router = useRouter();
+  const pathname = usePathname();
 
-  const handleScroll = useCallback(id => {
-    if (typeof window === 'undefined' || typeof document === 'undefined')
-      return;
+  const handleNavigate = id => {
+    if (pathname !== '/admin') {
+      // якщо ми НЕ на /admin, переходимо на нього із hash
+      router.push(`/admin#${id}`);
+    } else {
+      // якщо ми вже на /admin, прокручуємо одразу
+      const element = document.getElementById(id);
+      if (element) {
+        const yOffset = -80;
+        const y =
+          element.getBoundingClientRect().top + window.pageYOffset + yOffset;
 
-    const element = document.getElementById(id);
-    if (element) {
-      const yOffset = -80; // зміщення для хедера
-      const y =
-        element.getBoundingClientRect().top + window.pageYOffset + yOffset;
+        window.scrollTo({
+          top: y,
+          behavior: 'smooth',
+        });
 
-      window.scrollTo({
-        top: y,
-        behavior: 'smooth',
-      });
-
-      setActiveSection(id);
+        setActiveSection(id);
+      }
     }
-  }, []);
+  };
 
   return (
     <nav className="admin-panel relative w-full py-[13px] border-t border-gray-200 shadow-sm">
@@ -39,7 +45,7 @@ const AdminPanel = () => {
         {sections.map(({ id, label }) => (
           <li key={id}>
             <button
-              onClick={() => handleScroll(id)}
+              onClick={() => handleNavigate(id)}
               className="relative block py-2 no-underline outline-none hover:no-underline group"
             >
               <Text
