@@ -12,7 +12,7 @@ const sections = [
   { id: 'contacts', label: 'Contacts' },
 ];
 
-const Navigation = () => {
+const Navigation = ({ textColor = 'black' }) => {
   const [activeSection, setActiveSection] = useState('');
   const router = useRouter();
   const pathname = usePathname();
@@ -50,8 +50,7 @@ const Navigation = () => {
                 type="tiny"
                 as="p"
                 fontWeight="light"
-                className={`transition-colors duration-300 ${
-                  activeSection === id ? 'text-pink-600' : 'text-black'
+                className={`transition-colors duration-300 text-${textColor}
                 }`}
               >
                 {label}

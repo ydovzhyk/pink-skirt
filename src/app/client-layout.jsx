@@ -30,7 +30,7 @@ const ClientLayout = ({ children }) => {
         <Suspense fallback={<LoaderSpinner />}>
           <SearchParamsHandler />
         </Suspense>
-        <Header />
+      <Header />
         <main className="flex-1">{children}</main>
         <ScrollToTopButton />
         <Footer />

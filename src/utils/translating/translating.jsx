@@ -8,32 +8,32 @@ import { useLanguage } from './language-context'
 
 translate.key = process.env.NEXT_PUBLIC_TRANSLATE_API_KEY || ''
 
-export default function TranslateMe() {
-  const { updateLanguageIndex } = useLanguage()
-  const [languageIndex, setLanguageIndex] = useState(0)
+export default function TranslateMe({ textColor = 'black' }) {
+  const { updateLanguageIndex } = useLanguage();
+  const [languageIndex, setLanguageIndex] = useState(0);
 
   useEffect(() => {
     const savedIndex = localStorage.getItem('mental-health.languageIndex');
     if (Number(savedIndex) !== Number(languageIndex)) {
-      setLanguageIndex(Number(savedIndex))
-      updateLanguageIndex(Number(savedIndex))
+      setLanguageIndex(Number(savedIndex));
+      updateLanguageIndex(Number(savedIndex));
     }
-  }, [languageIndex, updateLanguageIndex])
+  }, [languageIndex, updateLanguageIndex]);
 
   const options = languagesAndCodes.languages.map((language, index) => ({
     value: index.toString(),
     label: language.lang,
-  }))
+  }));
 
   const handleChange = async selectedOption => {
-    const selectedIndex = Number(selectedOption.value)
-    setLanguageIndex(selectedIndex)
-    updateLanguageIndex(selectedIndex)
+    const selectedIndex = Number(selectedOption.value);
+    setLanguageIndex(selectedIndex);
+    updateLanguageIndex(selectedIndex);
     localStorage.setItem(
       'mental-health.languageIndex',
       selectedIndex.toString()
     );
-  }
+  };
 
   return (
     <div>
@@ -46,9 +46,10 @@ export default function TranslateMe() {
         options={options}
         width="125px"
         topPlaceholder={false}
+        textColor={textColor}
       />
     </div>
-  )
+  );
 }
 
 export async function translateMyText(text = '', languageIndex) {

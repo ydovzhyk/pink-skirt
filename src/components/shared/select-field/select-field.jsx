@@ -14,6 +14,7 @@ const SelectField = ({
   showLabelWithValue = false,
   topPlaceholder = false,
   textAlign = 'center',
+  textColor = 'black',
 }) => {
   const customStyles = {
     container: provided => ({
@@ -40,7 +41,7 @@ const SelectField = ({
       fontSize: '16px',
       fontWeight: 300,
       fontFamily: 'Urbanist',
-      color: 'black',
+      color: textColor, // <-- змінюється (білий або чорний)
       textAlign: textAlign,
     }),
     input: provided => ({
@@ -48,7 +49,7 @@ const SelectField = ({
       fontSize: '16px',
       fontWeight: 300,
       fontFamily: 'Urbanist',
-      color: 'black',
+      color: textColor, // <-- змінюється
       textAlign: textAlign,
     }),
     placeholder: provided => ({
@@ -56,7 +57,7 @@ const SelectField = ({
       fontSize: '16px',
       fontWeight: 300,
       fontFamily: 'Urbanist',
-      color: 'black',
+      color: textColor,
       textAlign: textAlign,
     }),
     option: (provided, state) => ({
@@ -64,7 +65,7 @@ const SelectField = ({
       fontSize: '16px',
       fontWeight: 300,
       fontFamily: 'Urbanist',
-      color: state.isSelected ? 'black' : 'black',
+      color: 'black',
       backgroundColor: state.isFocused ? 'var(--sectionfirst)' : 'white',
       cursor: 'pointer',
     }),
