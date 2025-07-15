@@ -21,9 +21,9 @@ const Header = () => {
     const onScroll = () => {
       const scrollY = window.scrollY;
 
-      if (scrollY > 520) {
+      if (scrollY > 580) {
         setHeaderState('colored');
-      } else if (scrollY > 10) {
+      } else if (scrollY > 85) {
         setHeaderState('transparent');
       } else {
         setHeaderState('default');

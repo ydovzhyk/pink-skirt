@@ -22,19 +22,19 @@ const ClientLayout = ({ children }) => {
   }, [loadingAuth, loadingTechnical]);
 
   return (
-      <div className="reletive min-h-screen flex flex-col justify-between">
-        {loading && <LoaderSpinner />}
-        <ModalWindow />
-        <MediaQuery />
-        <AuthProvider />
-        <Suspense fallback={<LoaderSpinner />}>
-          <SearchParamsHandler />
-        </Suspense>
+    <div className="reletive min-h-screen flex flex-col justify-between">
+      {loading && <LoaderSpinner />}
+      <ModalWindow />
+      <MediaQuery />
+      <AuthProvider />
+      <Suspense fallback={<LoaderSpinner />}>
+        <SearchParamsHandler />
+      </Suspense>
       <Header />
-        <main className="flex-1">{children}</main>
-        <ScrollToTopButton />
-        <Footer />
-      </div>
+      <main className="flex-1 mt-[85px]">{children}</main>
+      <ScrollToTopButton />
+      <Footer />
+    </div>
   );
 };
 
