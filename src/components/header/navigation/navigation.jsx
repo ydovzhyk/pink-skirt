@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
+import clsx from 'clsx';
 import Text from '@/components/shared/text/text';
 
 const sections = [
@@ -57,11 +58,13 @@ const Navigation = ({ textColor = 'black' }) => {
               </Text>
 
               <span
-                className={`
-                  absolute bottom-[5px] left-0 w-full h-[0.5px] bg-black rounded-full
-                  transition-all duration-300
-                  ${activeSection === id ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'}
-                `}
+                className={clsx(
+                  'absolute bottom-[5px] left-0 w-full h-[0.5px] rounded-full transition-all duration-300',
+                  activeSection === id
+                    ? 'opacity-100'
+                    : 'opacity-0 group-hover:opacity-100',
+                  textColor === 'white' ? 'bg-white' : 'bg-black'
+                )}
               ></span>
             </button>
           </li>

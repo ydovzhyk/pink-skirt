@@ -41,7 +41,7 @@ const SelectField = ({
       fontSize: '16px',
       fontWeight: 300,
       fontFamily: 'Urbanist',
-      color: textColor, // <-- змінюється (білий або чорний)
+      color: textColor, 
       textAlign: textAlign,
     }),
     input: provided => ({
@@ -49,7 +49,7 @@ const SelectField = ({
       fontSize: '16px',
       fontWeight: 300,
       fontFamily: 'Urbanist',
-      color: textColor, // <-- змінюється
+      color: textColor,
       textAlign: textAlign,
     }),
     placeholder: provided => ({
