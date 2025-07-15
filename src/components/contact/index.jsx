@@ -12,7 +12,7 @@ function ContactSection() {
           fontWeight="normal"
           className="text-[#e83894] uppercase rotate-90 p-2 px-5 bg-[var(--sectionfirst)]"
         >
-          CONTACT
+          CONTACTS
         </Text>
         <span className="h-36 w-[1px] bg-[#1a1443]"></span>
       </div>
