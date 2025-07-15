@@ -62,7 +62,7 @@ const Header = () => {
         </div>
       </div>
 
-      {isLoginPanel && <AdminPanel />}
+      {isLoginPanel && <AdminPanel textColor={headerState === 'transparent' ? 'white' : 'black'}/>}
     </header>
   );
 };

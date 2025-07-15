@@ -51,12 +51,11 @@ const Navigation = ({ textColor = 'black' }) => {
                 type="tiny"
                 as="p"
                 fontWeight="light"
-                className={`transition-colors duration-300 text-${textColor}
+                className={`text-${textColor}
                 }`}
               >
                 {label}
               </Text>
-
               <span
                 className={clsx(
                   'absolute bottom-[5px] left-0 w-full h-[0.5px] rounded-full transition-all duration-300',
