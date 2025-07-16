@@ -33,9 +33,10 @@ async function sendTelegramMessage(token, chat_id, message) {
 }
 
 // HTML email template
-const generateEmailTemplate = (name, email, userMessage) => `
+const generateEmailTemplate = (name, email, userMessage, origin) => `
   <div style="font-family: Arial, sans-serif; color: #333; padding: 20px; background-color: #f4f4f4;">
     <div style="max-width: 600px; margin: auto; background-color: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); text-align: center;">
+      <img src="${origin}/images/logo_pink.png" alt="Logo" style="max-width: 150px; margin-bottom: 20px;" />
       <h2 style="color: #e83894;">New Message Received</h2>
       <p style="text-align: left;"><strong>Name:</strong> ${name}</p>
       <p style="text-align: left;"><strong>Email:</strong> ${email}</p>
@@ -50,14 +51,14 @@ const generateEmailTemplate = (name, email, userMessage) => `
 
 // Helper function to send an email via Nodemailer
 async function sendEmail(payload, message) {
-  const { name, email, message: userMessage} = payload
+  const { name, email, message: userMessage, origin} = payload
 
   const mailOptions = {
     from: 'Portfolio',
     to: process.env.EMAIL_ADDRESS,
     subject: `New Message From ${name}`,
     text: message,
-    html: generateEmailTemplate(name, email, userMessage),
+    html: generateEmailTemplate(name, email, userMessage, origin),
     replyTo: email,
   }
 
