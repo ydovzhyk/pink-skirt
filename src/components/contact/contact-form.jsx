@@ -78,7 +78,7 @@ function ContactForm() {
               </Text>
             </label>
             <input
-              className="bg-white w-full rounded-md border border-gray-400 outline-none ring-0 focus:border-[var(--accent)] focus:ring-[var(--accent)] transition-all duration-300 px-3 py-2 text-[var(--text-title)]"
+              className="bg-white w-full rounded-md border-2 border-gray-300 outline-none ring-0 focus:border-[var(--accent)] focus:ring-[var(--accent)] transition-all duration-300 px-3 py-2 text-[var(--text-title)]"
               type="text"
               maxLength="100"
               required={true}
@@ -102,7 +102,7 @@ function ContactForm() {
               </Text>
             </label>
             <input
-              className="bg-white w-full rounded-md border border-gray-400 outline-none ring-0 focus:border-[var(--accent)] focus:ring-[var(--accent)] transition-all duration-300 px-3 py-2 text-[var(--text-title)]"
+              className="bg-white w-full rounded-md border-2 border-gray-300 outline-none ring-0 focus:border-[var(--accent)] focus:ring-[var(--accent)] transition-all duration-300 px-3 py-2 text-[var(--text-title)]"
               type="email"
               maxLength="100"
               required
@@ -141,7 +141,7 @@ function ContactForm() {
               </Text>
             </label>
             <textarea
-              className="bg-white w-full rounded-md border border-gray-400 outline-none ring-0 focus:border-[var(--accent)] focus:ring-[var(--accent)] transition-all duration-300 px-3 py-2 text-[var(--text-title)]"
+              className="bg-white w-full rounded-md border-2 border-gray-300 outline-none ring-0 focus:border-[var(--accent)] focus:ring-[var(--accent)] transition-all duration-300 px-3 py-2 text-[var(--text-title)]"
               maxLength="500"
               name="message"
               required={true}

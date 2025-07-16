@@ -15,7 +15,7 @@ import PartnersSlider from '../partners-slider';
 
 const Footer = () => {
   return (
-    <footer className="bg-[var(--sectionfirst)] flex flex-col gap-12 py-12 border-t border-gray-200 shadow-sm">
+    <footer id='footer' className="bg-[var(--sectionfirst)] flex flex-col gap-12 py-12 border-t border-gray-200 shadow-sm">
       <PartnersSlider />
       <div className="container w-[80%] flex flex-row justify-between">
         <div>

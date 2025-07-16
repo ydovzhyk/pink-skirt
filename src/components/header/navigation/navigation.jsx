@@ -1,7 +1,6 @@
 'use client';
 
-import { useState } from 'react';
-import { useRouter, usePathname } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 import clsx from 'clsx';
 import Text from '@/components/shared/text/text';
 
@@ -13,9 +12,7 @@ const sections = [
   { id: 'contacts', label: 'Contacts' },
 ];
 
-const Navigation = ({ textColor = 'black' }) => {
-  const [activeSection, setActiveSection] = useState('');
-  const router = useRouter();
+const Navigation = ({ textColor = 'black', activeSection }) => {
   const pathname = usePathname();
 
   const handleNavigate = id => {
@@ -24,7 +21,7 @@ const Navigation = ({ textColor = 'black' }) => {
     } else {
       const element = document.getElementById(id);
       if (element) {
-        const yOffset = -80;
+        const yOffset = -100;
         const y =
           element.getBoundingClientRect().top + window.pageYOffset + yOffset;
 
@@ -32,8 +29,6 @@ const Navigation = ({ textColor = 'black' }) => {
           top: y,
           behavior: 'smooth',
         });
-
-        setActiveSection(id);
       }
     }
   };
@@ -41,33 +36,34 @@ const Navigation = ({ textColor = 'black' }) => {
   return (
     <nav className="relative w-full py-[13px]">
       <ul className="flex flex-row items-center justify-center gap-[20px] w-full">
-        {sections.map(({ id, label }) => (
-          <li key={id}>
-            <button
-              onClick={() => handleNavigate(id)}
-              className="relative block py-2 no-underline outline-none hover:no-underline group"
-            >
-              <Text
-                type="tiny"
-                as="p"
-                fontWeight="light"
-                className={`text-${textColor}
-                }`}
+        {sections.map(({ id, label }) => {
+          const isActive = activeSection === id;
+          return (
+            <li key={id}>
+              <button
+                onClick={() => handleNavigate(id)}
+                className="relative block py-2 no-underline outline-none hover:no-underline group"
               >
-                {label}
-              </Text>
-              <span
-                className={clsx(
-                  'absolute bottom-[5px] left-0 w-full h-[0.5px] rounded-full transition-all duration-300',
-                  activeSection === id
-                    ? 'opacity-100'
-                    : 'opacity-0 group-hover:opacity-100',
-                  textColor === 'white' ? 'bg-white' : 'bg-black'
-                )}
-              ></span>
-            </button>
-          </li>
-        ))}
+                <Text
+                  type="tiny"
+                  as="p"
+                  fontWeight="light"
+                  className={`text-${textColor}`}
+                >
+                  {label}
+                </Text>
+                <span
+                  className={clsx(
+                    'absolute bottom-[5px] left-0 w-full h-[0.5px] rounded-full transition-all duration-300',
+                    isActive
+                      ? 'bg-[#e83894] opacity-100'
+                      : 'bg-black opacity-0 group-hover:opacity-100'
+                  )}
+                ></span>
+              </button>
+            </li>
+          );
+        })}
       </ul>
     </nav>
   );

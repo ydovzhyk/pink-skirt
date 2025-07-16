@@ -3,6 +3,8 @@ import { useEffect, useState, Suspense } from 'react';
 import { useSelector } from 'react-redux';
 import { getLoadingAuth } from '@/redux/auth/auth-selectors';
 import { getLoadingTechnical } from '@/redux/technical/technical-selectors';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import LoaderSpinner from '@/components/loader/loader';
 import ModalWindow from '@/components/modal-window-message/modal-window-message';
 import MediaQuery from '@/utils/media-query/media-query';
@@ -24,6 +26,7 @@ const ClientLayout = ({ children }) => {
   return (
     <div className="reletive min-h-screen flex flex-col justify-between">
       {loading && <LoaderSpinner />}
+      <ToastContainer />
       <ModalWindow />
       <MediaQuery />
       <AuthProvider />
