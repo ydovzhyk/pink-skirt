@@ -144,7 +144,7 @@ const Footer = () => {
           </ul>
         </div>
       </div>
-      <div className="container w-full flex flex-col items-center justify-center my-[-25px]">
+      <div className="container w-full flex flex-col items-center justify-center my-[-35px]">
         <Logo width={561} height={153} />
       </div>
       <div className="container w-full flex flex-col items-center justify-center">
