@@ -11,10 +11,12 @@ import {
 import { GoMail } from 'react-icons/go';
 import { HiOutlinePhone } from 'react-icons/hi';
 import { IoLogoInstagram } from 'react-icons/io5';
+import PartnersSlider from '../partners-slider';
 
 const Footer = () => {
   return (
-    <footer className="bg-[var(--sectionfirst)] flex flex-col gap-4 py-12 border-t border-gray-200 shadow-sm">
+    <footer className="bg-[var(--sectionfirst)] flex flex-col gap-12 py-12 border-t border-gray-200 shadow-sm">
+      <PartnersSlider />
       <div className="container w-[80%] flex flex-row justify-between">
         <div>
           <Text
@@ -142,7 +144,7 @@ const Footer = () => {
           </ul>
         </div>
       </div>
-      <div className="container w-full flex flex-col items-center justify-center">
+      <div className="container w-full flex flex-col items-center justify-center my-[-25px]">
         <Logo width={561} height={153} />
       </div>
       <div className="container w-full flex flex-col items-center justify-center">

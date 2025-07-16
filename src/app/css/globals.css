@@ -103,6 +103,20 @@
   transition: all 0.75s ease;
 }
 
+/* Custom scrollbar styles */
+@keyframes scroll {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-scroll {
+  animation: scroll 70s linear infinite;
+}
+
 ::-webkit-scrollbar {
   width: 8px;
 }

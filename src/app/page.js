@@ -1,5 +1,5 @@
 import ContactSection from '@/components/contact/';
-import VideoBanner from '@/components/hero';
+import VideoBanner from '@/components/hero/index';
 
 export default function Home() {
   return (
