@@ -40,7 +40,7 @@ const PartnersSlider = () => {
         {partners.map((partner, index) => (
           <div
             key={`duplicate-${index}`}
-            className="min-w-[130px] md:min-w-[150px] lg:min-w-[210px] mx-[15px] flex items-center justify-center"
+            className="min-w-[130px] md:min-w-[150px] lg:min-w-[190px] mx-[15px] flex items-center justify-center"
           >
             <Image
               src={partner}
