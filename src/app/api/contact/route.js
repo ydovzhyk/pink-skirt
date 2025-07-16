@@ -52,6 +52,7 @@ const generateEmailTemplate = (name, email, userMessage, origin) => `
 // Helper function to send an email via Nodemailer
 async function sendEmail(payload, message) {
   const { name, email, message: userMessage, origin } = payload
+  console.log('Origin:', origin)
 
   const mailOptions = {
     from: 'Portfolio',
