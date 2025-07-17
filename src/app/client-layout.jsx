@@ -34,7 +34,9 @@ const ClientLayout = ({ children }) => {
         <SearchParamsHandler />
       </Suspense>
       <Header />
-      <main className="flex-1 mt-[85px]">{children}</main>
+      <main className="flex-1 mt-[85px]">
+        {children}
+      </main>
       <ScrollToTopButton />
       <Footer />
     </div>

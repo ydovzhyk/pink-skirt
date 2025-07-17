@@ -8,37 +8,28 @@ const MediaQuery = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    const mobileQuery = window.matchMedia('(max-width: 425px)');
+    const mobileQuery = window.matchMedia('(max-width: 639px)');
     const tabletQuery = window.matchMedia(
-      '(min-width: 426px) and (max-width: 1279px)'
+      '(min-width: 640px) and (max-width: 1279px)'
     );
     const desktopQuery = window.matchMedia('(min-width: 1280px)');
 
-    const mobileListener = e => {
-      if (e.matches) dispatch(setScreenType('isMobile'));
-    };
-    const tabletListener = e => {
-      if (e.matches) dispatch(setScreenType('isTablet'));
-    };
-    const desktopListener = e => {
-      if (e.matches) dispatch(setScreenType('isDesktop'));
+    const handleChange = () => {
+      if (mobileQuery.matches) dispatch(setScreenType('isMobile'));
+      else if (tabletQuery.matches) dispatch(setScreenType('isTablet'));
+      else if (desktopQuery.matches) dispatch(setScreenType('isDesktop'));
     };
 
-    // Додаємо слухачі
-    mobileQuery.addEventListener('change', mobileListener);
-    tabletQuery.addEventListener('change', tabletListener);
-    desktopQuery.addEventListener('change', desktopListener);
+    handleChange();
 
-    // Виконуємо один раз при завантаженні
-    if (mobileQuery.matches) dispatch(setScreenType('isMobile'));
-    if (tabletQuery.matches) dispatch(setScreenType('isTablet'));
-    if (desktopQuery.matches) dispatch(setScreenType('isDesktop'));
+    mobileQuery.addEventListener('change', handleChange);
+    tabletQuery.addEventListener('change', handleChange);
+    desktopQuery.addEventListener('change', handleChange);
 
-    // Прибираємо слухачі при демонтажі
     return () => {
-      mobileQuery.removeEventListener('change', mobileListener);
-      tabletQuery.removeEventListener('change', tabletListener);
-      desktopQuery.removeEventListener('change', desktopListener);
+      mobileQuery.removeEventListener('change', handleChange);
+      tabletQuery.removeEventListener('change', handleChange);
+      desktopQuery.removeEventListener('change', handleChange);
     };
   }, [dispatch]);
 

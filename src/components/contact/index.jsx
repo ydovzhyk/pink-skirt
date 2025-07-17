@@ -4,7 +4,7 @@ import Text from '../shared/text/text';
 
 function ContactSection() {
   return (
-    <section id='contacts' className="my-12 lg:my-16 relative mt-24 text-white">
+    <section id="contacts" className="container my-12 lg:my-16 relative">
       <div className="hidden lg:flex flex-col items-center absolute top-24 -right-8">
         <Text
           type="regular"

@@ -19,28 +19,20 @@ const Header = () => {
 
   useEffect(() => {
     if (pathname !== '/') return;
-
     const onScroll = () => {
-      if (activeSection === 'bottom-banner') {
+      const scrollY = window.scrollY;
+      if (scrollY > 580) {
+        setHeaderState('colored');
+      } else if (scrollY > 85) {
         setHeaderState('transparent');
       } else {
-        const scrollY = window.scrollY;
-        if (scrollY > 580) {
-          setHeaderState('colored');
-        } else if (scrollY > 85) {
-          setHeaderState('transparent');
-        } else {
-          setHeaderState('colored');
-        }
+        setHeaderState('colored');
       }
     };
 
     window.addEventListener('scroll', onScroll);
-    onScroll();
-
     return () => window.removeEventListener('scroll', onScroll);
-  }, [pathname, activeSection]);
-
+  }, [pathname]);
 
   return (
     <header
@@ -84,17 +76,25 @@ export default Header;
 
   // useEffect(() => {
   //   if (pathname !== '/') return;
+
   //   const onScroll = () => {
-  //     const scrollY = window.scrollY;
-  //     if (scrollY > 580) {
-  //       setHeaderState('colored');
-  //     } else if (scrollY > 85) {
+  //     if (activeSection === 'bottom-banner') {
   //       setHeaderState('transparent');
   //     } else {
-  //       setHeaderState('colored');
+  //       const scrollY = window.scrollY;
+  //       if (scrollY > 580) {
+  //         setHeaderState('colored');
+  //       } else if (scrollY > 85) {
+  //         setHeaderState('transparent');
+  //       } else {
+  //         setHeaderState('colored');
+  //       }
   //     }
   //   };
 
   //   window.addEventListener('scroll', onScroll);
+  //   onScroll();
+
   //   return () => window.removeEventListener('scroll', onScroll);
-  // }, [pathname]);
+  // }, [pathname, activeSection]);
+

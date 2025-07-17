@@ -14,12 +14,12 @@ export default function ActiveSectionObserver({ setActiveSection }) {
         });
       },
       {
-        rootMargin: '0px 0px -60% 0px',
+        rootMargin: '-40% 0px -40% 0px',
         threshold: 0.1,
       }
     );
 
-    const sections = document.querySelectorAll('section[id], header, footer');
+    const sections = document.querySelectorAll('section[id], div[id], header, footer');
     sections.forEach((section) => observer.observe(section))
 
     return () => {
