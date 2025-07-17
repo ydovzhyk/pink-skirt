@@ -78,7 +78,7 @@ function AboutMe() {
               lineHeight="normal"
               className="text-[var(--text-title)]"
             >
-              Some things can’t be forced—style is one of them. It moves with
+              Some things can’t be forced - style is one of them. It moves with
               you, breathes with you, and becomes part of your story. Inspired
               by slow mornings, sunlit streets, and the beauty of simplicity,
               our collections are designed for feeling, not just wearing.
