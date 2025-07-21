@@ -1,6 +1,6 @@
-import type { NextConfig } from 'next';
-
-const nextConfig: NextConfig = {
+// ✅ next.config.js
+/** @type {import('next').NextConfig} */
+const nextConfig = {
   webpack(config) {
     config.module.rules.push({
       test: /\.svg$/,
@@ -13,11 +13,15 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       {
         protocol: 'https',
-        hostname: 'robohash.org',
+        hostname: 'storage.googleapis.com',
       },
       {
         protocol: 'https',
-        hostname: 'storage.googleapis.com',
+        hostname: 'pink-skirt-inna.firebasestorage.app',
+      },
+      {
+        protocol: 'https',
+        hostname: 'robohash.org',
       },
       {
         protocol: 'https',
@@ -27,5 +31,4 @@ const nextConfig: NextConfig = {
   },
 };
 
-export default nextConfig;
-
+module.exports = nextConfig;

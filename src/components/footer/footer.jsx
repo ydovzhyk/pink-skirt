@@ -1,21 +1,21 @@
 'use client';
 
-import Link from 'next/link';
-import FooterNavigation from './footer-navigation/footer-navigation';
 import Text from '@/components/shared/text/text';
-import Logo from '../shared/logo/logo';
-import {
-  FaTelegramPlane,
-  FaWhatsapp,
-} from 'react-icons/fa';
+import Link from 'next/link';
+import { FaTelegramPlane, FaWhatsapp } from 'react-icons/fa';
 import { GoMail } from 'react-icons/go';
 import { HiOutlinePhone } from 'react-icons/hi';
 import { IoLogoInstagram } from 'react-icons/io5';
 import PartnersSlider from '../partners-slider';
+import Logo from '../shared/logo/logo';
+import FooterNavigation from './footer-navigation/footer-navigation';
 
 const Footer = () => {
   return (
-    <footer id='footer' className="bg-[var(--sectionfirst)] flex flex-col gap-12 py-12 border-t border-gray-200 shadow-sm">
+    <footer
+      id="footer"
+      className="bg-[var(--section-first)] flex flex-col gap-12 py-12 border-t border-gray-200 shadow-sm"
+    >
       <PartnersSlider />
       <div className="container w-[80%] flex flex-row justify-between">
         <div>

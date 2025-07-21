@@ -19,7 +19,7 @@ const AuthProvider = () => {
     const processData = async () => {
       localStorage.setItem('pink-skirt', 'true');
       dispatch(updateIsLoginPanel(true));
-      router.replace('/'); // ← ось тут
+      router.replace('/');
     };
 
     const handleAction = async () => {

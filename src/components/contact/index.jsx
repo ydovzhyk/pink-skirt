@@ -1,6 +1,6 @@
 // @flow strict
-import ContactForm from './contact-form';
 import Text from '../shared/text/text';
+import ContactForm from './contact-form';
 
 function ContactSection() {
   return (
@@ -10,11 +10,13 @@ function ContactSection() {
           type="regular"
           as="span"
           fontWeight="normal"
-          className="text-[#e83894] uppercase rotate-90 p-2 px-5 bg-[var(--sectionfirst)]"
+          className="text-[#e83894] uppercase rotate-90 p-2 px-5 bg-[var(--section-first)]"
         >
           CONTACTS
         </Text>
-        <span className="h-36 w-[1px] bg-[#1a1443]"></span>
+        <span
+          className="h-36 w-[1px] bg-[#1a1443]"
+        ></span>
       </div>
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 items-center">
         <ContactForm />
@@ -43,6 +45,6 @@ function ContactSection() {
       </div>
     </section>
   );
-};
+}
 
 export default ContactSection;

@@ -41,6 +41,7 @@ const auth = createSlice({
     },
     updateIsLoginPanel: (store, action) => {
       store.isLoginPanel = action.payload;
+      store.isLogin = action.payload;
     }
   },
 

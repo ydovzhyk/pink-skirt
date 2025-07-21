@@ -10,28 +10,32 @@
 
 @font-face {
   font-family: 'Urbanist';
-  src: url('../../../public/fonts/Urbanist/Urbanist-VariableFont_wght.ttf') format('truetype');
+  src: url('../../../public/fonts/Urbanist/Urbanist-VariableFont_wght.ttf')
+    format('truetype');
   font-weight: 100 900;
   font-style: normal;
 }
 
 @font-face {
   font-family: 'Urbanist';
-  src: url('../../../public/fonts/Urbanist/Urbanist-Italic-VariableFont_wght.ttf') format('truetype');
+  src: url('../../../public/fonts/Urbanist/Urbanist-Italic-VariableFont_wght.ttf')
+    format('truetype');
   font-weight: 100 900;
   font-style: italic;
 }
 
 @font-face {
   font-family: 'Fraunces';
-  src: url('../../../public/fonts/Fraunces/Fraunces-Italic-VariableFont_SOFT,WONK,opsz,wght.ttf') format('truetype');
+  src: url('../../../public/fonts/Fraunces/Fraunces-Italic-VariableFont_SOFT,WONK,opsz,wght.ttf')
+    format('truetype');
   font-weight: 100 900;
   font-style: normal;
 }
 
 @font-face {
   font-family: 'Fraunces';
-  src: url('../../../public/fonts/Fraunces/Fraunces-VariableFont_SOFT,WONK,opsz,wght.ttf') format('truetype');
+  src: url('../../../public/fonts/Fraunces/Fraunces-VariableFont_SOFT,WONK,opsz,wght.ttf')
+    format('truetype');
   font-weight: 100 900;
   font-style: italic;
 }
@@ -83,7 +87,7 @@
 }
 
 .btn-shine::before {
-  content: "";
+  content: '';
   position: absolute;
   top: 0;
   left: -75%;
@@ -134,9 +138,10 @@
 :root {
   --accent: #e83894;
   --accent-transparent: rgba(232, 56, 148, 0.7);
-  --accent-border: #9CA3AF;
-  --sectionfirst: #F8F1F1;
-  --sectionsecond: #E8ECE5;
+  --accent-border: #9ca3af;
+  --section-first: #f8f1f1;
+  --section-second: #e8ece5;
+  --section-third: #f7f7e8;
   --text-title: #444444;
   --link: #00f;
   --background: #ffffff;

@@ -1,6 +1,9 @@
 'use client';
 
+import { useSelector } from 'react-redux';
 import { usePathname } from 'next/navigation';
+import { useRouter } from 'next/navigation';
+import {getIsLoginPanel} from '../../../redux/auth/auth-selectors';
 import clsx from 'clsx';
 import Text from '@/components/shared/text/text';
 
@@ -10,10 +13,13 @@ const sections = [
   { id: 'finished-goods', label: 'Finished goods' },
   { id: 'about', label: 'About me' },
   { id: 'contacts', label: 'Contacts' },
+  { id: 'stories', label: 'Stories' },
 ];
 
 const Navigation = ({ textColor = 'black', activeSection }) => {
   const pathname = usePathname();
+  const router = useRouter();
+  const isLoginPanel = useSelector(getIsLoginPanel);
 
   const handleNavigate = id => {
     if (pathname !== '/') {
@@ -21,7 +27,7 @@ const Navigation = ({ textColor = 'black', activeSection }) => {
     } else {
       const element = document.getElementById(id);
       if (element) {
-        const yOffset = -100;
+        const yOffset = isLoginPanel ? -165 : -85;
         const y =
           element.getBoundingClientRect().top + window.pageYOffset + yOffset;
 

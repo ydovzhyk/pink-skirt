@@ -11,6 +11,7 @@ import {
 } from 'redux-persist';
 import authReducer from './auth/auth-slice';
 import technicalReducer from './technical/technical-slice';
+import storiesReducer from './stories/stories-slice';
 import { setupInterceptors } from '../api/auth';
 import logger from 'redux-logger';
 
@@ -40,6 +41,7 @@ export const store = configureStore({
   reducer: {
     auth: finalAuthReducer,
     technical: technicalReducer,
+    stories: storiesReducer,
   },
   middleware: getDefaultMiddleware => {
     const middlewares = getDefaultMiddleware({
@@ -52,7 +54,7 @@ export const store = configureStore({
       typeof window !== 'undefined' &&
       process.env.NODE_ENV === 'development'
     ) {
-      middlewares.push(logger);
+      // middlewares.push(logger);
     }
 
     return middlewares;

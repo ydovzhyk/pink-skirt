@@ -41,7 +41,7 @@ const SelectField = ({
       fontSize: '16px',
       fontWeight: 300,
       fontFamily: 'Urbanist',
-      color: textColor, 
+      color: textColor,
       textAlign: textAlign,
     }),
     input: provided => ({
@@ -66,7 +66,7 @@ const SelectField = ({
       fontWeight: 300,
       fontFamily: 'Urbanist',
       color: 'black',
-      backgroundColor: state.isFocused ? 'var(--sectionfirst)' : 'white',
+      backgroundColor: state.isFocused ? 'var(--section-first)' : 'white',
       cursor: 'pointer',
     }),
   };
@@ -120,4 +120,4 @@ const SelectField = ({
   );
 };
 
-export default SelectField
+export default SelectField;

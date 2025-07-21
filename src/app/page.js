@@ -1,6 +1,7 @@
 import ContactSection from '@/components/contact/';
 import VideoBanner from '@/components/video-banner/index';
 import AboutMe from '../components/about-me';
+import MyStories from '../components/my-stories';
 
 export default function Home() {
   return (
@@ -9,6 +10,7 @@ export default function Home() {
       <div className="w-full first-letter:flex flex-col items-center justify-center min-h-screen">
         <AboutMe />
         <ContactSection />
+        <MyStories />
       </div>
       <VideoBanner type="bottom" id="bottom-banner" />
     </div>

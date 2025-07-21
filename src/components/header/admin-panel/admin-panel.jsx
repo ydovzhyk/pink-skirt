@@ -11,6 +11,7 @@ const sections = [
   { id: 'finished-goods', label: 'Finished goods' },
   { id: 'about', label: 'About us' },
   { id: 'contacts', label: 'Contacts' },
+  { id: 'stories', label: 'Stories' },
 ];
 
 const AdminPanel = ({ textColor = 'black' }) => {

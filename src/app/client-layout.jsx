@@ -3,6 +3,8 @@ import { useEffect, useState, Suspense } from 'react';
 import { useSelector } from 'react-redux';
 import { getLoadingAuth } from '@/redux/auth/auth-selectors';
 import { getLoadingTechnical } from '@/redux/technical/technical-selectors';
+import { getLoadingStories } from '../redux/stories/stories-selectors';
+import {getIsLoginPanel} from '@/redux/auth/auth-selectors';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import LoaderSpinner from '@/components/loader/loader';
@@ -17,11 +19,13 @@ import SearchParamsHandler from '@/utils/search-params-handler';
 const ClientLayout = ({ children }) => {
   const loadingAuth = useSelector(getLoadingAuth);
   const loadingTechnical = useSelector(getLoadingTechnical);
+  const loadingStories = useSelector(getLoadingStories);
   const [loading, setLoading] = useState(false);
+  const isLoginPanel = useSelector(getIsLoginPanel);
 
   useEffect(() => {
-    setLoading(loadingAuth || loadingTechnical);
-  }, [loadingAuth, loadingTechnical]);
+    setLoading(loadingAuth || loadingTechnical || loadingStories);
+  }, [loadingAuth, loadingTechnical, loadingStories]);
 
   return (
     <div className="reletive min-h-screen flex flex-col justify-between">
@@ -34,7 +38,7 @@ const ClientLayout = ({ children }) => {
         <SearchParamsHandler />
       </Suspense>
       <Header />
-      <main className="flex-1 mt-[85px]">
+      <main className={`flex-1 ${isLoginPanel ? 'mt-[145px]' : 'mt-[85px]'}`}>
         {children}
       </main>
       <ScrollToTopButton />

@@ -1,7 +1,7 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
 import Text from '@/components/shared/text/text';
+import { useEffect, useRef, useState } from 'react';
 function AboutMe() {
   const images = [
     '/images/about-slider/01.webp',
@@ -15,7 +15,7 @@ function AboutMe() {
 
   const imageHeight = 480;
   const visibleHeight = 500;
-  const totalScroll = (images.length - 1) * (imageHeight);
+  const totalScroll = (images.length - 1) * imageHeight;
 
   useEffect(() => {
     const handleScroll = () => {
@@ -38,24 +38,30 @@ function AboutMe() {
     <div id="about-me">
       <section
         ref={scrollRef}
-        className="py-12 lg:py-16 flex flex-col gap:12 lg:gap-16 items-center bg-[var(--sectionsecond)]"
+        className="py-12 lg:py-16 flex flex-col gap:12 lg:gap-16 items-center bg-[var(--section-second)]"
         style={{
           height: `${totalScroll + visibleHeight}px`,
         }}
       >
         <div className="flex items-center">
-          <span className="w-24 h-[1px] bg-[#1a1443]"></span>
-          <span className="bg-[var(--sectionfirst)] w-fit p-2 px-5 rounded-md">
+          <span
+            className="w-24 bg-[#1a1443]"
+            style={{ height: '0.5px' }}
+          ></span>
+          <span className="bg-[var(--section-first)] w-fit p-2 px-5 rounded-md border border-[#c9cec6]">
             <Text
               type="regular"
               as="span"
               fontWeight="normal"
-              className="text-[#e83894] uppercase rotate-90 p-2 px-5 bg-[var(--sectionfirst)]"
+              className="text-[#e83894] uppercase rotate-90 p-1 px-5 bg-[var(--section-first)]"
             >
               ABOUT ME
             </Text>
           </span>
-          <span className="w-24 h-[1px] bg-[#1a1443]"></span>
+          <span
+            className="w-24 bg-[#1a1443]"
+            style={{ height: '0.5px' }}
+          ></span>
         </div>
 
         <div
@@ -69,7 +75,19 @@ function AboutMe() {
               fontWeight="normal"
               className="text-black mb-5"
             >
-              My story
+              My Insight
+            </Text>
+            <Text
+              type="normal"
+              as="p"
+              fontWeight="light"
+              lineHeight="normal"
+              className="text-[var(--text-title)] mb-5"
+            >
+              Some things can’t be taught or forced — style is one of them. It’s
+              not just what you wear; it’s how you feel, how you move, how you
+              connect with the moment. Style flows with you, breathes through
+              you, and quietly becomes part of your inner world
             </Text>
             <Text
               type="normal"
@@ -78,10 +96,10 @@ function AboutMe() {
               lineHeight="normal"
               className="text-[var(--text-title)]"
             >
-              Some things can’t be forced - style is one of them. It moves with
-              you, breathes with you, and becomes part of your story. Inspired
-              by slow mornings, sunlit streets, and the beauty of simplicity,
-              our collections are designed for feeling, not just wearing.
+              Inspired by slow mornings, sunlit streets, deep thoughts, and the
+              quiet confidence of simplicity, our collections are designed not
+              to impress — but to resonate. To wrap you in ease. To remind you
+              of who you are when you’re most at peace.
             </Text>
           </div>
 
@@ -118,5 +136,3 @@ function AboutMe() {
   );
 }
 export default AboutMe;
-
-
