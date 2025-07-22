@@ -4,10 +4,11 @@ import {
   axiosGetStories,
   axiosEditStory,
   axiosDeleteStory,
+  axiosGetStory,
 } from '../../api/stories';
 
 export const createStory = createAsyncThunk(
-  '/stories/create',
+  '/api/create-story',
   async (userData, { rejectWithValue }) => {
     try {
       const data = await axiosCreateStory(userData);
@@ -20,10 +21,23 @@ export const createStory = createAsyncThunk(
 );
 
 export const getStories = createAsyncThunk(
-  '/stories',
+  '/api/get-stories',
   async (userData, { rejectWithValue }) => {
     try {
       const data = await axiosGetStories(userData);
+      return data;
+    } catch (error) {
+      const { data, status } = error.response;
+      return rejectWithValue({ data, status });
+    }
+  }
+);
+
+export const getStory = createAsyncThunk(
+  '/api/get-story',
+  async (userData, { rejectWithValue }) => {
+    try {
+      const data = await axiosGetStory(userData);
       return data;
     } catch (error) {
       const { data, status } = error.response;

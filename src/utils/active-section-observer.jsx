@@ -1,6 +1,6 @@
-'use client'
+'use client';
 
-import { useEffect } from 'react'
+import { useEffect } from 'react';
 
 export default function ActiveSectionObserver({ setActiveSection }) {
   useEffect(() => {
@@ -19,13 +19,32 @@ export default function ActiveSectionObserver({ setActiveSection }) {
       }
     );
 
-    const sections = document.querySelectorAll('section[id], div[id], header, footer');
-    sections.forEach((section) => observer.observe(section))
+    const observeSections = () => {
+      const sections = document.querySelectorAll(
+        'section[id], div[id], header, footer'
+      );
+      sections.forEach(section => observer.observe(section));
+    };
+
+    // 1. Спробуємо зразу
+    observeSections();
+
+    // 2. Якщо частина контенту довантажується — слухаємо зміни DOM
+    const mutationObserver = new MutationObserver(() => {
+      observeSections();
+    });
+
+    mutationObserver.observe(document.body, {
+      childList: true,
+      subtree: true,
+    });
 
     return () => {
-      sections.forEach((section) => observer.unobserve(section))
-    }
-  }, [setActiveSection])
+      observer.disconnect();
+      mutationObserver.disconnect();
+    };
+  }, [setActiveSection]);
 
-  return null
-};
+  return null;
+}
+

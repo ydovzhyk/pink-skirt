@@ -18,7 +18,11 @@ const Header = () => {
   const pathname = usePathname();
 
   useEffect(() => {
-    if (pathname !== '/') return;
+    if (pathname !== '/') {
+      setHeaderState('colored');
+      return;
+    }
+
     const onScroll = () => {
       const scrollY = window.scrollY;
       if (scrollY > 580) {
@@ -33,6 +37,8 @@ const Header = () => {
     window.addEventListener('scroll', onScroll);
     return () => window.removeEventListener('scroll', onScroll);
   }, [pathname]);
+
+  console.log('Active section:', activeSection);
 
   return (
     <header

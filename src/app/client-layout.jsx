@@ -38,7 +38,7 @@ const ClientLayout = ({ children }) => {
         <SearchParamsHandler />
       </Suspense>
       <Header />
-      <main className={`flex-1 ${isLoginPanel ? 'mt-[145px]' : 'mt-[85px]'}`}>
+      <main className={`flex-1 ${isLoginPanel ? 'mt-[149px]' : 'mt-[85px]'}`}>
         {children}
       </main>
       <ScrollToTopButton />

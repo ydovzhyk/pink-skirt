@@ -1,3 +1,4 @@
+import { useRouter } from 'next/navigation';
 import Text from '../../shared/text/text';
 
 const StoryCard = ({
@@ -6,9 +7,20 @@ const StoryCard = ({
   date,
   content,
   mainImageUrl,
-  setModalStory,
-  story,
 }) => {
+  const router = useRouter();
+
+  const formattedTitle = title
+    .trim()
+    .toLowerCase()
+    .replace(/\s+/g, '-')
+    .replace(/[^a-z0-9-]/g, '')
+    .replace(/-+/g, '-');
+
+  const handleNavigate = () => {
+    router.push(`/story/${formattedTitle}/${id}`);
+  };
+
   return (
     <div className="relative flex flex-col sm:flex-row sm:items-center">
       <div
@@ -40,8 +52,8 @@ const StoryCard = ({
           </Text>
         </div>
         <button
-          className="text-black border-b border-black w-fit"
-          onClick={() => setModalStory(story)}
+          className="text-black border-b border-gray-400 hover:border-black w-fit transition-colors duration-200"
+          onClick={handleNavigate}
         >
           <Text
             type="extra-small"

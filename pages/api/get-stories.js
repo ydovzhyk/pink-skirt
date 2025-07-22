@@ -30,6 +30,7 @@ export default async function handler(req, res) {
       limit,
       totalPages,
       stories: paginatedStories,
+      allStories,
     });
   } catch (error) {
     console.error('❌ Error fetching stories:', error);

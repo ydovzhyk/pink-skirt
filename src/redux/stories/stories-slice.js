@@ -4,7 +4,9 @@ import {
   getStories,
   deleteStory,
   editStory,
+  getStory,
 } from './stories-operations';
+import { all } from 'axios';
 
 const initialState = {
   modalWindowStatus: false,
@@ -12,6 +14,8 @@ const initialState = {
   message: null,
   loading: false,
   stories: [],
+  allStories: [],
+  currentStory: null,
   editStory: null,
   totalPages: 0,
   currentPage: 1,
@@ -26,6 +30,12 @@ const stories = createSlice({
     },
     setCurrentPage: (store, action) => {
       store.currentPage = action.payload;
+    },
+    setCurrentStory: (store, action) => {
+      store.currentStory = action.payload;
+    },
+    clearCurrentStory: (store) => {
+      store.currentStory = null;
     },
     clearStoriesError: store => {
       store.error = null;
@@ -95,9 +105,30 @@ const stories = createSlice({
       .addCase(getStories.fulfilled, (store, { payload }) => {
         store.loading = false;
         store.stories = payload.stories;
+        store.allStories = payload.allStories;
         store.totalPages = payload.totalPages;
       })
       .addCase(getStories.rejected, (store, { payload }) => {
+        store.loading = false;
+        if (payload && payload.data && payload.data.message) {
+          store.error = payload.data.message;
+        } else if (payload && payload.message) {
+          store.error = payload.message;
+        } else {
+          store.error = 'Oops, something went wrong, try again';
+        }
+        store.modalWindowStatus = true;
+      })
+      // * GET STORY
+      .addCase(getStory.pending, store => {
+        store.loading = true;
+        store.error = null;
+      })
+      .addCase(getStory.fulfilled, (store, { payload }) => {
+        store.loading = false;
+        store.currentStory = payload;
+      })
+      .addCase(getStory.rejected, (store, { payload }) => {
         store.loading = false;
         if (payload && payload.data && payload.data.message) {
           store.error = payload.data.message;
@@ -137,6 +168,8 @@ export default stories.reducer;
 export const {
   setModalWindowStatus,
   setCurrentPage,
+  setCurrentStory,
+  clearCurrentStory,
   clearStoriesError,
   clearStoriesMessage,
   saveEditStory,

@@ -31,7 +31,7 @@ function MyStories() {
   return (
     <div className="bg-[var(--section-third)] border border-transparent">
       <section
-        id="contacts"
+        id="stories"
         className={`container mt-12 lg:mt-16 ${
           totalPages > 1 ? 'mb-[64px]' : 'lg:mb-[104px]'
         }`}

@@ -27,7 +27,7 @@ const Navigation = ({ textColor = 'black', activeSection }) => {
     } else {
       const element = document.getElementById(id);
       if (element) {
-        const yOffset = isLoginPanel ? -165 : -85;
+        const yOffset = isLoginPanel ? -170 : -85;
         const y =
           element.getBoundingClientRect().top + window.pageYOffset + yOffset;
 

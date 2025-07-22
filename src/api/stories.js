@@ -13,12 +13,19 @@ export const axiosGetStories = async (userData) => {
   return data;
 };
 
+export const axiosGetStory = async userData => {
+  const { data } = await axios.get(`${origin}/api/get-story`, {
+    params: { id: userData.id },
+  });
+  return data;
+};
+
 export const axiosEditStory = async userData => {
-  const { data } = await instance.post(`${origin}/story-edit`, userData);
+  const { data } = await axios.post(`${origin}/api/edit-story`, userData);
   return data;
 };
 
 export const axiosDeleteStory = async userData => {
-  const { data } = await instance.delete(`${origin}/delete-story`, userData);
+  const { data } = await axios.delete(`${origin}/delete-story`, userData);
   return data;
 };
