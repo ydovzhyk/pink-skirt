@@ -20,8 +20,6 @@ function MyStories() {
 
   useEffect(() => {
     dispatch(getStories({ page: currentPage, limit: 2 }));
-
-    // window.scrollTo({ top: 0, behavior: 'smooth' });
   }, [dispatch, currentPage]);
 
   if (stories.length === 0) {
@@ -55,7 +53,7 @@ function MyStories() {
 
         <div className="grid gap-10 md:grid-cols-2">
           {stories.map(story => (
-            <StoryCard key={story.id} {...story} />
+            <StoryCard key={story.id} {...story} story={story} />
           ))}
         </div>
 

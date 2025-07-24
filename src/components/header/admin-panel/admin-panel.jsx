@@ -1,31 +1,38 @@
 'use client';
 
-import { useState } from 'react';
-import { useRouter, usePathname } from 'next/navigation';
+import { useSelector } from 'react-redux';
+import { usePathname, useRouter } from 'next/navigation';
+import { getIsLoginPanel } from '@/redux/auth/auth-selectors';
 import clsx from 'clsx';
 import Text from '@/components/shared/text/text';
 
-const sections = [
-  { id: 'models', label: 'Models' },
-  { id: 'cloths', label: 'Cloths' },
-  { id: 'finished-goods', label: 'Finished goods' },
-  { id: 'about', label: 'About us' },
-  { id: 'contacts', label: 'Contacts' },
-  { id: 'stories', label: 'Stories' },
-];
-
-const AdminPanel = ({ textColor = 'black' }) => {
-  const [activeSection, setActiveSection] = useState('');
-  const router = useRouter();
+const AdminPanel = ({ textColor = 'black', activeSection }) => {
   const pathname = usePathname();
+  const router = useRouter();
+  const isLoginPanel = useSelector(getIsLoginPanel);
+
+  const sections = [
+    { id: 'models', label: 'Models', offset: -85, offsetLogin: -190 },
+    { id: 'cloths', label: 'Cloths', offset: -85, offsetLogin: -190 },
+    {
+      id: 'finished-goods',
+      label: 'Finished goods',
+      offset: -85,
+      offsetLogin: -190,
+    },
+    { id: 'stories', label: 'Stories', offset: -135, offsetLogin: -190 },
+  ];
 
   const handleNavigate = id => {
+    const section = sections.find(sec => sec.id === id);
+    const yOffset = isLoginPanel ? section?.offsetLogin : section?.offset;
+
+
     if (pathname !== '/admin') {
       router.push(`/admin#${id}`);
     } else {
       const element = document.getElementById(id);
-      if (element) {
-        const yOffset = -80;
+      if (element && yOffset !== undefined) {
         const y =
           element.getBoundingClientRect().top + window.pageYOffset + yOffset;
 
@@ -33,42 +40,41 @@ const AdminPanel = ({ textColor = 'black' }) => {
           top: y,
           behavior: 'smooth',
         });
-
-        setActiveSection(id);
       }
     }
   };
 
   return (
-    <nav className="admin-panel relative w-full py-[13px] border-t border-gray-200 shadow-sm">
+    <nav className="relative w-full py-[13px]">
       <ul className="flex flex-row items-center justify-center gap-[20px] w-full">
-        {sections.map(({ id, label }) => (
-          <li key={id}>
-            <button
-              onClick={() => handleNavigate(id)}
-              className="relative block py-2 no-underline outline-none hover:no-underline group"
-            >
-              <Text
-                type="tiny"
-                as="p"
-                fontWeight="light"
-                className={`text-${textColor}
-                }`}
+        {sections.map(({ id, label }) => {
+          const isActive = pathname === '/admin' && activeSection === id;
+          return (
+            <li key={id}>
+              <button
+                onClick={() => handleNavigate(id)}
+                className="relative block py-2 no-underline outline-none hover:no-underline group"
               >
-                {label}
-              </Text>
-              <span
-                className={clsx(
-                  'absolute bottom-[5px] left-0 w-full h-[0.5px] rounded-full transition-all duration-300',
-                  activeSection === id
-                  ? 'opacity-100'
-                  : 'opacity-0 group-hover:opacity-100',
-                  textColor === 'white' ? 'bg-white' : 'bg-black'
-                )}
-              ></span>
-            </button>
-          </li>
-        ))}
+                <Text
+                  type="tiny"
+                  as="p"
+                  fontWeight="light"
+                  className={`text-${textColor}`}
+                >
+                  {label}
+                </Text>
+                <span
+                  className={clsx(
+                    'absolute bottom-[5px] left-0 w-full h-[0.5px] rounded-full transition-all duration-300',
+                    isActive
+                      ? 'bg-[#e83894] opacity-100'
+                      : 'bg-[#e83894] opacity-0 group-hover:opacity-100'
+                  )}
+                ></span>
+              </button>
+            </li>
+          );
+        })}
       </ul>
     </nav>
   );

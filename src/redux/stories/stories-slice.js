@@ -6,7 +6,6 @@ import {
   editStory,
   getStory,
 } from './stories-operations';
-import { all } from 'axios';
 
 const initialState = {
   modalWindowStatus: false,
@@ -34,20 +33,20 @@ const stories = createSlice({
     setCurrentStory: (store, action) => {
       store.currentStory = action.payload;
     },
-    clearCurrentStory: (store) => {
+    clearCurrentStory: store => {
       store.currentStory = null;
+    },
+    setEditStory: (store, action) => {
+      store.editStory = action.payload;
+    },
+    clearEditStory: store => {
+      store.editStory = null;
     },
     clearStoriesError: store => {
       store.error = null;
     },
     clearStoriesMessage: store => {
       store.message = null;
-    },
-    saveEditStory: (store, action) => {
-      store.editStory = action.payload;
-    },
-    clearEditStory: (store) => {
-      store.editStory = null;
     },
   },
   extraReducers: builder => {
@@ -172,6 +171,6 @@ export const {
   clearCurrentStory,
   clearStoriesError,
   clearStoriesMessage,
-  saveEditStory,
+  setEditStory,
   clearEditStory,
 } = stories.actions;

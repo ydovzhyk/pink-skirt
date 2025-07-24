@@ -1,8 +1,11 @@
-import { useState } from 'react';
-import { useSelector } from 'react-redux';
+'use client';
+// @flow strict
+import { useState, useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import { useRouter } from 'next/navigation';
-import Text from '../../shared/text/text';
 import { getAllStories } from '@/redux/stories/stories-selectors';
+import { getStories } from '@/redux/stories/stories-operations';
+import Text from '../../shared/text/text';
 
 const StoryDetail = ({
   id,
@@ -15,20 +18,28 @@ const StoryDetail = ({
   const [activeImage, setActiveImage] = useState(mainImageUrl);
   const allStories = useSelector(getAllStories);
   const router = useRouter();
+  const dispatch = useDispatch();
 
   const currentIndex = allStories.findIndex(story => story.id === id);
   const hasPrevious = currentIndex > 0;
   const hasNext = currentIndex < allStories.length - 1;
 
+  useEffect(() => {
+    if (allStories.length === 0) {
+      dispatch(getStories({ page: 1, limit: 2 }));
+    }
+    return;
+  }, [dispatch, allStories.length]);
+
   const handleNavigate = (title, id) => {
-      const formattedTitle = title
-        .trim()
-        .toLowerCase()
-        .replace(/\s+/g, '-')
-        .replace(/[^a-z0-9-]/g, '')
-        .replace(/-+/g, '-');
-      router.push(`/story/${formattedTitle}/${id}`);
-    };
+    const formattedTitle = title
+      .trim()
+      .toLowerCase()
+      .replace(/\s+/g, '-')
+      .replace(/[^a-z0-9-]/g, '')
+      .replace(/-+/g, '-');
+    router.push(`/story/${formattedTitle}/${id}`);
+  };
 
   const handlePreviousPost = () => {
     const currentIndex = allStories.findIndex(story => story.id === id);
@@ -88,9 +99,9 @@ const StoryDetail = ({
                       <div
                         key={i}
                         onClick={() => setActiveImage(img)}
-                        className={`min-w-[140px] h-[90px] flex-shrink-0 bg-cover bg-center cursor-pointer rounded border ${
+                        className={`min-w-[140px] h-[90px] flex-shrink-0 bg-cover bg-center cursor-pointer rounded-md ${
                           activeImage === img
-                            ? 'border-black'
+                            ? 'border-[var(--accent)] border-2'
                             : 'border-transparent'
                         }`}
                         style={{ backgroundImage: `url(${img})` }}
@@ -103,7 +114,7 @@ const StoryDetail = ({
           </div>
           <div className="flex flex-col justify-center items-start">
             <Text
-              type="normal"
+              type="small"
               as="p"
               fontWeight="light"
               lineHeight="normal"
@@ -120,7 +131,7 @@ const StoryDetail = ({
           disabled={!hasPrevious}
           className={`text-black border-b w-fit transition-colors duration-200 ${
             hasPrevious
-              ? 'border-gray-400 hover:border-black'
+              ? 'border-gray-400 hover:border-[var(--accent)]'
               : 'border-gray-300 opacity-50 cursor-not-allowed'
           }`}
         >
@@ -133,13 +144,12 @@ const StoryDetail = ({
             Previous post
           </Text>
         </button>
-
         <button
           onClick={handleNextPost}
           disabled={!hasNext}
           className={`text-black border-b w-fit transition-colors duration-200 ${
             hasNext
-              ? 'border-gray-400 hover:border-black'
+              ? 'border-gray-400 hover:border-[var(--accent)]'
               : 'border-gray-300 opacity-50 cursor-not-allowed'
           }`}
         >

@@ -25,7 +25,9 @@ export const axiosEditStory = async userData => {
   return data;
 };
 
-export const axiosDeleteStory = async userData => {
-  const { data } = await axios.delete(`${origin}/delete-story`, userData);
+export const axiosDeleteStory = async id => {
+  const { data } = await axios.delete(`${origin}/api/delete-story`, {
+    data: { id },
+  });
   return data;
 };

@@ -35,10 +35,14 @@ function AboutMe() {
   }, [totalScroll]);
 
   return (
-    <div id="about-me">
-      <section
+    <section className="relative bg-[var(--section-second)] border border-transparent">
+      <div
+        id="about-me"
+        className="absolute -top-[0px] h-[1px] w-full"
+      />
+      <div
         ref={scrollRef}
-        className="py-12 lg:py-16 flex flex-col gap:12 lg:gap-16 items-center bg-[var(--section-second)]"
+        className="my-12 lg:my-16 flex flex-col gap-12 lg:gap-16 items-center"
         style={{
           height: `${totalScroll + visibleHeight}px`,
         }}
@@ -65,9 +69,8 @@ function AboutMe() {
         </div>
 
         <div
-          id="about"
-          className="container sticky top-[110px] lg:h-[490px] flex flex-row justify-between gap-8 lg:gap-16"
-        >
+          id="about-me-content"
+          className="container sticky top-[110px] lg:h-[490px] flex flex-row justify-between gap-8 lg:gap-16">
           <div className="flex flex-col justify-center items-start w-[40%]">
             <Text
               type="normal"
@@ -78,7 +81,7 @@ function AboutMe() {
               My Insight
             </Text>
             <Text
-              type="normal"
+              type="small"
               as="p"
               fontWeight="light"
               lineHeight="normal"
@@ -90,7 +93,7 @@ function AboutMe() {
               you, and quietly becomes part of your inner world
             </Text>
             <Text
-              type="normal"
+              type="small"
               as="p"
               fontWeight="light"
               lineHeight="normal"
@@ -131,8 +134,12 @@ function AboutMe() {
             </div>
           </div>
         </div>
-      </section>
-    </div>
+      </div>
+      <div
+        data-section="about-me"
+        className="absolute bottom-0 h-[1px] w-full pointer-events-none"
+      />
+    </section>
   );
 }
 export default AboutMe;

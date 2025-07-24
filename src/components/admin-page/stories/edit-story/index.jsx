@@ -1,116 +1,293 @@
 'use client';
 
+import { useRef, useState, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { useForm } from 'react-hook-form';
-import { useState } from 'react';
 import Text from '@/components/shared/text/text';
 import { toast } from 'react-toastify';
-import axios from 'axios';
+import { editStory, getStories } from '@/redux/stories/stories-operations';
+import { getEditStory } from '@/redux/stories/stories-selectors';
+import { clearEditStory } from '@/redux/stories/stories-slice';
 
-const AddStory = () => {
+const MAX_IMAGES = 6;
+const MAX_IMAGE_SIZE = 500 * 1024;
+
+const EditStory = () => {
   const { register, handleSubmit, reset } = useForm();
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState('');
+  const mainImageRef = useRef(null);
+  const imagesRef = useRef(null);
+  const dispatch = useDispatch();
+  const editStoryData = useSelector(getEditStory);
+
+  useEffect(() => {
+    if (editStoryData) {
+      reset({
+        title: editStoryData.title || '',
+        content: editStoryData.content || '',
+        date: editStoryData.date || new Date().toISOString().split('T')[0],
+      });
+    }
+  }, [editStoryData, reset]);
 
   const onSubmit = async data => {
     const formData = new FormData();
+    formData.append('folderName', 'stories');
 
-    // Обмеження розміру
-    const validateFile = file => {
-      if (!file) return true;
-      return file.size <= 500 * 1024; // 500 KB
-    };
+    const mainImageFile = mainImageRef.current?.files?.[0];
+    const additionalImages = Array.from(imagesRef.current?.files || []);
 
-    if (!validateFile(data.mainImage[0])) {
-      toast.error('Main image must be under 500 KB!');
+    const allFiles = [...additionalImages];
+    if (mainImageFile) allFiles.push(mainImageFile);
+    const oversized = allFiles.some(file => file.size > MAX_IMAGE_SIZE);
+    if (oversized) {
+      setError('Each image must be smaller than 500KB');
       return;
     }
 
-    for (const file of data.additionalImages || []) {
-      if (!validateFile(file)) {
-        toast.error('Each additional image must be under 500 KB!');
-        return;
-      }
-    }
-
-    formData.append('title', data.title);
-    formData.append('content', data.content);
-    formData.append('date', new Date().toISOString());
-
-    formData.append('mainImage', data.mainImage[0]);
-
-    Array.from(data.additionalImages || []).forEach((file, index) => {
-      formData.append('additionalImages', file);
-    });
+    additionalImages.forEach(file => formData.append('images', file));
+    if (mainImageFile) formData.append('images', mainImageFile);
+    if (mainImageFile?.name)
+      formData.append('mainFileName', mainImageFile.name);
 
     try {
       setIsLoading(true);
-      const origin =
-        typeof window !== 'undefined' ? window.location.origin : '';
+      setError('');
 
-      await axios.post(`${origin}/api/stories`, formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
+      const imageUploadRes = await fetch('/api/upload-story-images', {
+        method: 'POST',
+        body: formData,
       });
 
-      toast.success('Story created!');
+      const imageUploadData = await imageUploadRes.json();
+      if (!imageUploadRes.ok) throw new Error(imageUploadData.error);
+
+      const storyData = {
+        id: editStoryData.id,
+        title: data.title ? data.title : editStoryData.title,
+        content: data.content ? data.content : editStoryData.content,
+        date: data.date,
+        mainImageUrl: imageUploadData.mainImageUrl ? imageUploadData.mainImageUrl : editStoryData.mainImageUrl,
+        additionalImageUrls: imageUploadData.additionalImageUrls?.length > 0 ? imageUploadData.additionalImageUrls : editStoryData.additionalImageUrls,
+      };
+
+      const result = await dispatch(editStory(storyData));
+      if (editStory.fulfilled.match(result)) {
+        toast.success('Story successfully edited!');
+      } else {
+        toast.error(result.payload || 'Story editing failed.');
+      }
+      dispatch(getStories({ page: 1, limit: 2 }));
       reset();
+      dispatch(clearEditStory());
+      if (mainImageRef.current) mainImageRef.current.value = '';
+      if (imagesRef.current) imagesRef.current.value = '';
     } catch (err) {
-      toast.error('Error creating story!');
+      console.error(err);
+      toast.error('Something went wrong!');
     } finally {
       setIsLoading(false);
     }
   };
 
   return (
-    <section className="container my-12 lg:my-16">
-      <div className="max-w-xl w-full mx-auto border border-gray-300 p-6 rounded-md">
+    <section id="edit-story" className="container my-12 lg:my-16">
+      <div className="w-full rounded-md border border-[#464c6a] p-3 lg:p-5">
         <Text
-          as="p"
           type="normal"
+          as="p"
           fontWeight="normal"
-          className="mb-5 text-black"
+          className="text-black mb-5"
         >
-          Add New Story
+          Edit Story
         </Text>
-        <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
-          <input
-            {...register('title', { required: true })}
-            placeholder="Title"
-            className="input"
-          />
-          <textarea
-            {...register('content', { required: true })}
-            placeholder="Content"
-            rows="5"
-            className="input"
-          />
-          <label className="text-sm text-black">Main Image (max 500KB)</label>
-          <input
-            {...register('mainImage', { required: true })}
-            type="file"
-            accept="image/*"
-          />
-          <label className="text-sm text-black">
-            Additional Images (up to 5, max 500KB each)
-          </label>
-          <input
-            {...register('additionalImages')}
-            type="file"
-            multiple
-            accept="image/*"
-          />
 
-          <button
-            type="submit"
-            disabled={isLoading}
-            className="bg-pink-600 hover:bg-pink-700 transition text-white py-2 px-4 rounded"
-          >
-            {isLoading ? 'Creating...' : 'Create Story'}
-          </button>
+        <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
+          {/* Title */}
+          <div className="flex flex-col gap-2">
+            <label>
+              <Text
+                type="tiny"
+                as="p"
+                fontWeight="light"
+                className="text-[var(--text-title)]"
+              >
+                Title:
+              </Text>
+            </label>
+            <input
+              {...register('title', { required: true })}
+              className="bg-white w-full rounded-md border-2 border-gray-300 outline-none focus:border-[var(--accent)] focus:ring-[var(--accent)] px-3 py-2 text-[var(--text-title)]"
+              type="text"
+              maxLength="100"
+              required
+            />
+          </div>
+
+          {/* Content */}
+          <div className="flex flex-col gap-2">
+            <label>
+              <Text
+                type="tiny"
+                as="p"
+                fontWeight="light"
+                className="text-[var(--text-title)]"
+              >
+                Content:
+              </Text>
+            </label>
+            <textarea
+              {...register('content', { required: true })}
+              className="bg-white w-full rounded-md border-2 border-gray-300 outline-none focus:border-[var(--accent)] focus:ring-[var(--accent)] px-3 py-2 text-[var(--text-title)]"
+              rows="4"
+              maxLength="1000"
+              required
+            />
+          </div>
+
+          {/* Date */}
+          <div className="flex flex-col gap-2">
+            <label>
+              <Text
+                type="tiny"
+                as="p"
+                fontWeight="light"
+                className="text-[var(--text-title)]"
+              >
+                Date:
+              </Text>
+            </label>
+            <input
+              {...register('date', { required: true })}
+              className="bg-white w-full rounded-md border-2 border-gray-300 outline-none focus:border-[var(--accent)] focus:ring-[var(--accent)] px-3 py-2 text-[var(--text-title)]"
+              type="date"
+              defaultValue={new Date().toISOString().split('T')[0]}
+              required
+            />
+          </div>
+
+          {/* Upload Main Image */}
+          <div className="flex flex-col gap-2">
+            <Text
+              type="tiny"
+              as="p"
+              fontWeight="light"
+              className="text-[var(--text-title)]"
+            >
+              Upload Main Image (≤ 500KB):
+            </Text>
+
+            <div className="group">
+              <label
+                htmlFor="mainImage-edit"
+                className="w-fit flex items-center gap-1 group-hover:gap-3 px-3 md:px-8 py-3 md:py-4 rounded-md border-gray-400 tracking-wider transition-all duration-300 ease-out bg-transparent group-hover:bg-[#F8F1F1] group-hover:border-[#F8F1F1] group-hover:shadow-md cursor-pointer btn-shine uppercase"
+                style={{ borderWidth: '0.5px' }}
+              >
+                <Text
+                  type="tiny"
+                  as="span"
+                  fontWeight="light"
+                  className="text-[var(--text-title)]"
+                >
+                  Choose Image
+                </Text>
+              </label>
+
+              <input
+                id="mainImage-edit"
+                ref={mainImageRef}
+                type="file"
+                accept="image/*"
+                className="hidden"
+                onChange={e => {
+                  const file = e.target.files?.[0];
+                  if (file && file.size > MAX_IMAGE_SIZE) {
+                    e.target.value = '';
+                    toast.error('Image size must be 500KB or less.');
+                  }
+                }}
+              />
+            </div>
+          </div>
+
+          {/* Upload Additional Images */}
+          <div className="flex flex-col gap-2">
+            <Text
+              type="tiny"
+              as="p"
+              fontWeight="light"
+              className="text-[var(--text-title)]"
+            >
+              Upload Additional Images (Max {MAX_IMAGES}, ≤ 500KB each):
+            </Text>
+
+            <div className="group">
+              <label
+                htmlFor="images-edit"
+                className="w-fit flex items-center gap-1 group-hover:gap-3 px-3 md:px-8 py-3 md:py-4 rounded-md border-gray-400 tracking-wider transition-all duration-300 ease-out bg-transparent group-hover:bg-[#F8F1F1] group-hover:border-[#F8F1F1] group-hover:shadow-md cursor-pointer btn-shine uppercase"
+                style={{ borderWidth: '0.5px' }}
+              >
+                <Text
+                  type="tiny"
+                  as="span"
+                  fontWeight="light"
+                  className="text-[var(--text-title)]"
+                >
+                  Choose Images
+                </Text>
+              </label>
+
+              <input
+                id="images-edit"
+                ref={imagesRef}
+                type="file"
+                accept="image/*"
+                multiple
+                className="hidden"
+                onChange={e => {
+                  const files = e.target.files;
+                  if (files.length > MAX_IMAGES) {
+                    e.target.value = '';
+                    toast.error(`You can upload up to ${MAX_IMAGES} images.`);
+                    return;
+                  }
+                  const oversize = Array.from(files).some(
+                    file => file.size > MAX_IMAGE_SIZE
+                  );
+                  if (oversize) {
+                    e.target.value = '';
+                    toast.error('Each image must be 500KB or less.');
+                  }
+                }}
+              />
+            </div>
+
+            {error && <p className="text-red-500 text-sm">{error}</p>}
+          </div>
+
+          {/* Submit */}
+          <div className="flex justify-center mt-4">
+            <button type="submit" className="group" disabled={isLoading}>
+              <div
+                style={{ borderWidth: '0.5px' }}
+                className="w-fit flex items-center justify-center gap-1 group-hover:gap-3 px-6 py-3 md:px-8 md:py-4 rounded-md border-gray-400 transition-all duration-300 ease-out bg-transparent group-hover:bg-[#F8F1F1] group-hover:border-[#F8F1F1] group-hover:shadow-md btn-shine uppercase"
+              >
+                <Text
+                  type="tiny"
+                  as="span"
+                  fontWeight="light"
+                  className="text-[var(--text-title)]"
+                >
+                  {isLoading ? 'Submitting...' : 'Submit Story'}
+                </Text>
+              </div>
+            </button>
+          </div>
         </form>
       </div>
     </section>
   );
 };
 
-export default AddStory;
+export default EditStory;

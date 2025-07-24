@@ -38,8 +38,6 @@ const Header = () => {
     return () => window.removeEventListener('scroll', onScroll);
   }, [pathname]);
 
-  console.log('Active section:', activeSection);
-
   return (
     <header
       id="header"
@@ -73,33 +71,10 @@ const Header = () => {
       {isLoginPanel && (
         <AdminPanel
           textColor={headerState === 'transparent' ? 'white' : 'black'}
+          activeSection={activeSection}
         />
       )}
     </header>
   );
 };
 export default Header;
-
-// useEffect(() => {
-//   if (pathname !== '/') return;
-
-//   const onScroll = () => {
-//     if (activeSection === 'bottom-banner') {
-//       setHeaderState('transparent');
-//     } else {
-//       const scrollY = window.scrollY;
-//       if (scrollY > 580) {
-//         setHeaderState('colored');
-//       } else if (scrollY > 85) {
-//         setHeaderState('transparent');
-//       } else {
-//         setHeaderState('colored');
-//       }
-//     }
-//   };
-
-//   window.addEventListener('scroll', onScroll);
-//   onScroll();
-
-//   return () => window.removeEventListener('scroll', onScroll);
-// }, [pathname, activeSection]);

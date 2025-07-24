@@ -1,14 +1,18 @@
-import { useRouter } from 'next/navigation';
+'use client';
+// @flow strict
+import { useRouter, usePathname } from 'next/navigation';
+import { useDispatch } from 'react-redux';
+import { setEditStory } from '@/redux/stories/stories-slice';
+import { deleteStory, getStories } from '@/redux/stories/stories-operations';
+import { toast } from 'react-toastify';
 import Text from '../../shared/text/text';
 
-const StoryCard = ({
-  id,
-  title,
-  date,
-  content,
-  mainImageUrl,
-}) => {
+const StoryCard = ({ id, title, date, content, mainImageUrl, story }) => {
   const router = useRouter();
+  const dispatch = useDispatch();
+
+  const pathname = usePathname();
+  const isAdmin = pathname.startsWith('/admin');
 
   const formattedTitle = title
     .trim()
@@ -19,6 +23,26 @@ const StoryCard = ({
 
   const handleNavigate = () => {
     router.push(`/story/${formattedTitle}/${id}`);
+  };
+
+  const handleEdit = () => {
+    dispatch(setEditStory(story));
+    setTimeout(() => {
+      const editSection = document.getElementById('edit-story');
+      if (editSection) {
+        editSection.scrollIntoView({ behavior: 'smooth' });
+      }
+    }, 0);
+  };
+
+  const handleDelete = async () => {
+    const result = await dispatch(deleteStory(id));
+    dispatch(getStories({ page: 1, limit: 2 }));
+    if (deleteStory.fulfilled.match(result)) {
+      toast.success('Story successfully deleted!');
+    } else {
+      toast.error(result.payload || 'Story deletion failed.');
+    }
   };
 
   return (
@@ -48,11 +72,11 @@ const StoryCard = ({
             lineHeight="snug"
             className="text-black whitespace-pre-line"
           >
-            {content.slice(0, 240)}...
+            {String(content.slice(0, 240)) + '...'}
           </Text>
         </div>
         <button
-          className="text-black border-b border-gray-400 hover:border-black w-fit transition-colors duration-200"
+          className="border-b border-gray-400 hover:border-[var(--accent)] w-fit transition-colors duration-200"
           onClick={handleNavigate}
         >
           <Text
@@ -64,6 +88,36 @@ const StoryCard = ({
             Read more
           </Text>
         </button>
+        {isAdmin && (
+          <div className="absolute top-[-55px] left-0 w-full flex flex-row gap-[80px] items-center justify-center mt-4 rounded-md bg-white shadow-lg p-2">
+            <button
+              className="border-b border-green-600 hover:border-black w-fit transition-colors duration-200"
+              onClick={handleEdit}
+            >
+              <Text
+                type="extra-small"
+                as="p"
+                fontWeight="light"
+                className="text-green-900"
+              >
+                Edit
+              </Text>
+            </button>
+            <button
+              className="border-b border-red-600 hover:border-black w-fit transition-colors duration-200"
+              onClick={handleDelete}
+            >
+              <Text
+                type="extra-small"
+                as="p"
+                fontWeight="light"
+                className="text-red-600"
+              >
+                Delete
+              </Text>
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );

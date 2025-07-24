@@ -9,12 +9,14 @@ export default function ActiveSectionObserver({ setActiveSection }) {
         entries.forEach(entry => {
           if (entry.isIntersecting) {
             const id = entry.target.id;
-            setActiveSection(id);
+            // Якщо це about-me-content — повертаємо about-me
+            const normalizedId = id === 'about-me-content' ? 'about-me' : id;
+            setActiveSection(normalizedId);
           }
         });
       },
       {
-        rootMargin: '-40% 0px -40% 0px',
+        rootMargin: '-60% 0px -30% 0px',
         threshold: 0.1,
       }
     );

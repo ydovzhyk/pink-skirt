@@ -29,6 +29,10 @@ function DetailStoryPage() {
     dispatch(getStory({ id }));
   }, [dispatch, id, storyName, router]);
 
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'auto' });
+  }, []);
+
   if (!story) {
     return null;
   } else {

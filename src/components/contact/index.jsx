@@ -22,7 +22,7 @@ function ContactSection() {
         <ContactForm />
         <div className="lg:w-3/4 ">
           <Text
-            type="normal"
+            type="small"
             as="p"
             fontWeight="light"
             lineHeight="normal"
@@ -31,7 +31,7 @@ function ContactSection() {
             Have questions or dream of creating something one-of-a-kind?
           </Text>
           <Text
-            type="normal"
+            type="small"
             as="p"
             fontWeight="light"
             lineHeight="normal"
