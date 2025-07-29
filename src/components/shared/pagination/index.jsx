@@ -1,17 +1,30 @@
 'use client';
 
 import { useDispatch, useSelector } from 'react-redux';
-import { setCurrentPage } from '@/redux/stories/stories-slice';
-import { getCurrentPage } from '@/redux/stories/stories-selectors';
+import { setCurrentPageStories } from '@/redux/stories/stories-slice';
+import { getCurrentPageStories } from '@/redux/stories/stories-selectors';
+import { setCurrentPageReadyGoods } from '@/redux/ready-goods/ready-goods-slice';
+import { getCurrentPageReadyGoods } from '@/redux/ready-goods/ready-goods-selectors';
 import Text from '../text/text';
 
-const Pagination = ({ totalPages }) => {
+const Pagination = ({ totalPages, type }) => {
+  console.log('Pagination type:', type);
+  console.log('Total pages:', totalPages);
   const dispatch = useDispatch();
-  const currentPage = useSelector(getCurrentPage);
+  const currentPageStories = useSelector(getCurrentPageStories);
+  const currentPageReadyGoods = useSelector(getCurrentPageReadyGoods);
+
+  const currentPage =
+    type === 'ready-goods' ? currentPageReadyGoods : currentPageStories;
 
   const handleChange = page => {
     if (page >= 1 && page <= totalPages) {
-      dispatch(setCurrentPage(page));
+      if (type === 'ready-goods') {
+        dispatch(setCurrentPageReadyGoods(page));
+      } else {
+        console.log('Setting current page for stories:', page);
+        dispatch(setCurrentPageStories(page));
+      }
     }
   };
 

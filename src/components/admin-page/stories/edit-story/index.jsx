@@ -4,16 +4,21 @@ import { useRef, useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useForm } from 'react-hook-form';
 import Text from '@/components/shared/text/text';
+import InputField from '@/components/shared/input-field';
+import TextareaField from '@/components/shared/textarea-field';
+import FileUpload from '@/components/shared/file-upload';
 import { toast } from 'react-toastify';
 import { editStory, getStories } from '@/redux/stories/stories-operations';
 import { getEditStory } from '@/redux/stories/stories-selectors';
 import { clearEditStory } from '@/redux/stories/stories-slice';
+import { getCurrentPage } from '@/redux/stories/stories-selectors';
 
 const MAX_IMAGES = 6;
 const MAX_IMAGE_SIZE = 500 * 1024;
 
 const EditStory = () => {
   const { register, handleSubmit, reset } = useForm();
+  const currentPage = useSelector(getCurrentPage);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const mainImageRef = useRef(null);
@@ -55,7 +60,7 @@ const EditStory = () => {
       setIsLoading(true);
       setError('');
 
-      const imageUploadRes = await fetch('/api/upload-story-images', {
+      const imageUploadRes = await fetch('/api/upload-images', {
         method: 'POST',
         body: formData,
       });
@@ -65,27 +70,32 @@ const EditStory = () => {
 
       const storyData = {
         id: editStoryData.id,
-        title: data.title ? data.title : editStoryData.title,
-        content: data.content ? data.content : editStoryData.content,
+        title: data.title || editStoryData.title,
+        content: data.content || editStoryData.content,
         date: data.date,
-        mainImageUrl: imageUploadData.mainImageUrl ? imageUploadData.mainImageUrl : editStoryData.mainImageUrl,
-        additionalImageUrls: imageUploadData.additionalImageUrls?.length > 0 ? imageUploadData.additionalImageUrls : editStoryData.additionalImageUrls,
+        mainImageUrl:
+          imageUploadData.mainImageUrl || editStoryData.mainImageUrl,
+        additionalImageUrls:
+          imageUploadData.additionalImageUrls?.length > 0
+            ? imageUploadData.additionalImageUrls
+            : editStoryData.additionalImageUrls,
       };
 
-      const result = await dispatch(editStory(storyData));
-      if (editStory.fulfilled.match(result)) {
-        toast.success('Story successfully edited!');
-      } else {
-        toast.error(result.payload || 'Story editing failed.');
-      }
-      dispatch(getStories({ page: 1, limit: 2 }));
-      reset();
+      await dispatch(editStory(storyData)).unwrap();
+      await dispatch(getStories({ page: currentPage, limit: 2 })).unwrap();
+
+      setTimeout(() => {
+        const el = document.getElementById('stories');
+        if (el) el.scrollIntoView({ behavior: 'smooth' });
+      }, 100);
+      
       dispatch(clearEditStory());
-      if (mainImageRef.current) mainImageRef.current.value = '';
-      if (imagesRef.current) imagesRef.current.value = '';
+      reset();
+      mainImageRef.current.value = '';
+      imagesRef.current.value = '';
     } catch (err) {
       console.error(err);
-      toast.error('Something went wrong!');
+      toast.error('Failed to submit item.');
     } finally {
       setIsLoading(false);
     }
@@ -104,169 +114,43 @@ const EditStory = () => {
         </Text>
 
         <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
-          {/* Title */}
-          <div className="flex flex-col gap-2">
-            <label>
-              <Text
-                type="tiny"
-                as="p"
-                fontWeight="light"
-                className="text-[var(--text-title)]"
-              >
-                Title:
-              </Text>
-            </label>
-            <input
-              {...register('title', { required: true })}
-              className="bg-white w-full rounded-md border-2 border-gray-300 outline-none focus:border-[var(--accent)] focus:ring-[var(--accent)] px-3 py-2 text-[var(--text-title)]"
-              type="text"
-              maxLength="100"
-              required
-            />
-          </div>
+          <InputField
+            label="Title:"
+            name="title"
+            register={register}
+            required
+          />
+          <TextareaField
+            label="Content:"
+            name="content"
+            register={register}
+            required
+          />
+          <InputField
+            label="Date:"
+            name="date"
+            register={register}
+            type="date"
+            defaultValue={new Date().toISOString().split('T')[0]}
+            required
+          />
 
-          {/* Content */}
-          <div className="flex flex-col gap-2">
-            <label>
-              <Text
-                type="tiny"
-                as="p"
-                fontWeight="light"
-                className="text-[var(--text-title)]"
-              >
-                Content:
-              </Text>
-            </label>
-            <textarea
-              {...register('content', { required: true })}
-              className="bg-white w-full rounded-md border-2 border-gray-300 outline-none focus:border-[var(--accent)] focus:ring-[var(--accent)] px-3 py-2 text-[var(--text-title)]"
-              rows="4"
-              maxLength="1000"
-              required
-            />
-          </div>
+          <FileUpload
+            label="Upload Main Image (≤ 500KB):"
+            id="mainImage-edit"
+            inputRef={mainImageRef}
+            single={true}
+          />
 
-          {/* Date */}
-          <div className="flex flex-col gap-2">
-            <label>
-              <Text
-                type="tiny"
-                as="p"
-                fontWeight="light"
-                className="text-[var(--text-title)]"
-              >
-                Date:
-              </Text>
-            </label>
-            <input
-              {...register('date', { required: true })}
-              className="bg-white w-full rounded-md border-2 border-gray-300 outline-none focus:border-[var(--accent)] focus:ring-[var(--accent)] px-3 py-2 text-[var(--text-title)]"
-              type="date"
-              defaultValue={new Date().toISOString().split('T')[0]}
-              required
-            />
-          </div>
+          <FileUpload
+            label={`Upload Additional Images (Max ${MAX_IMAGES}, ≤ 500KB each):`}
+            id="images-edit"
+            inputRef={imagesRef}
+            max={MAX_IMAGES}
+          />
 
-          {/* Upload Main Image */}
-          <div className="flex flex-col gap-2">
-            <Text
-              type="tiny"
-              as="p"
-              fontWeight="light"
-              className="text-[var(--text-title)]"
-            >
-              Upload Main Image (≤ 500KB):
-            </Text>
+          {error && <p className="text-red-500 text-sm">{error}</p>}
 
-            <div className="group">
-              <label
-                htmlFor="mainImage-edit"
-                className="w-fit flex items-center gap-1 group-hover:gap-3 px-3 md:px-8 py-3 md:py-4 rounded-md border-gray-400 tracking-wider transition-all duration-300 ease-out bg-transparent group-hover:bg-[#F8F1F1] group-hover:border-[#F8F1F1] group-hover:shadow-md cursor-pointer btn-shine uppercase"
-                style={{ borderWidth: '0.5px' }}
-              >
-                <Text
-                  type="tiny"
-                  as="span"
-                  fontWeight="light"
-                  className="text-[var(--text-title)]"
-                >
-                  Choose Image
-                </Text>
-              </label>
-
-              <input
-                id="mainImage-edit"
-                ref={mainImageRef}
-                type="file"
-                accept="image/*"
-                className="hidden"
-                onChange={e => {
-                  const file = e.target.files?.[0];
-                  if (file && file.size > MAX_IMAGE_SIZE) {
-                    e.target.value = '';
-                    toast.error('Image size must be 500KB or less.');
-                  }
-                }}
-              />
-            </div>
-          </div>
-
-          {/* Upload Additional Images */}
-          <div className="flex flex-col gap-2">
-            <Text
-              type="tiny"
-              as="p"
-              fontWeight="light"
-              className="text-[var(--text-title)]"
-            >
-              Upload Additional Images (Max {MAX_IMAGES}, ≤ 500KB each):
-            </Text>
-
-            <div className="group">
-              <label
-                htmlFor="images-edit"
-                className="w-fit flex items-center gap-1 group-hover:gap-3 px-3 md:px-8 py-3 md:py-4 rounded-md border-gray-400 tracking-wider transition-all duration-300 ease-out bg-transparent group-hover:bg-[#F8F1F1] group-hover:border-[#F8F1F1] group-hover:shadow-md cursor-pointer btn-shine uppercase"
-                style={{ borderWidth: '0.5px' }}
-              >
-                <Text
-                  type="tiny"
-                  as="span"
-                  fontWeight="light"
-                  className="text-[var(--text-title)]"
-                >
-                  Choose Images
-                </Text>
-              </label>
-
-              <input
-                id="images-edit"
-                ref={imagesRef}
-                type="file"
-                accept="image/*"
-                multiple
-                className="hidden"
-                onChange={e => {
-                  const files = e.target.files;
-                  if (files.length > MAX_IMAGES) {
-                    e.target.value = '';
-                    toast.error(`You can upload up to ${MAX_IMAGES} images.`);
-                    return;
-                  }
-                  const oversize = Array.from(files).some(
-                    file => file.size > MAX_IMAGE_SIZE
-                  );
-                  if (oversize) {
-                    e.target.value = '';
-                    toast.error('Each image must be 500KB or less.');
-                  }
-                }}
-              />
-            </div>
-
-            {error && <p className="text-red-500 text-sm">{error}</p>}
-          </div>
-
-          {/* Submit */}
           <div className="flex justify-center mt-4">
             <button type="submit" className="group" disabled={isLoading}>
               <div

@@ -1,15 +1,16 @@
 'use client';
 // @flow strict
 import { useRouter, usePathname } from 'next/navigation';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { setEditStory } from '@/redux/stories/stories-slice';
 import { deleteStory, getStories } from '@/redux/stories/stories-operations';
-import { toast } from 'react-toastify';
 import Text from '../../shared/text/text';
+import { getCurrentPageStories } from '@/redux/stories/stories-selectors';
 
 const StoryCard = ({ id, title, date, content, mainImageUrl, story }) => {
   const router = useRouter();
   const dispatch = useDispatch();
+  const currentPage = useSelector(getCurrentPageStories);
 
   const pathname = usePathname();
   const isAdmin = pathname.startsWith('/admin');
@@ -35,14 +36,9 @@ const StoryCard = ({ id, title, date, content, mainImageUrl, story }) => {
     }, 0);
   };
 
-  const handleDelete = async () => {
-    const result = await dispatch(deleteStory(id));
-    dispatch(getStories({ page: 1, limit: 2 }));
-    if (deleteStory.fulfilled.match(result)) {
-      toast.success('Story successfully deleted!');
-    } else {
-      toast.error(result.payload || 'Story deletion failed.');
-    }
+  const handleDelete = () => {
+    dispatch(deleteStory(id));
+    dispatch(getStories({ page: currentPage, limit: 2 }));
   };
 
   return (

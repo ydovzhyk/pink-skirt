@@ -10,6 +10,7 @@ const Text = ({
   children,
   className,
   noTranslate = false,
+  textShadow = false,
 }) => {
   const typeClasses = {
     title: 'text-xl sm:text-2xl md:text-3xl lg:text-4xl',
@@ -54,7 +55,12 @@ const Text = ({
         fontWeightClasses[fontWeight],
         className
       )}
-      style={{ lineHeight: lineHeightValues[lineHeight] }}
+      style={{
+        lineHeight: lineHeightValues[lineHeight],
+        ...(textShadow && {
+          textShadow: '2px 1px 1px rgba(0, 0, 0, 0.9)',
+        }),
+      }}
     >
       {typeof children === 'string' || typeof children === 'number' ? (
         noTranslate ? (

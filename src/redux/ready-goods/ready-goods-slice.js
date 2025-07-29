@@ -1,68 +1,69 @@
 import { createSlice } from '@reduxjs/toolkit';
 import {
-  createStory,
-  getStories,
-  deleteStory,
-  editStory,
-  getStory,
-} from './stories-operations';
+  createReadyGood,
+  getReadyGoods,
+  deleteReadyGood,
+  editReadyGood,
+  getReadyGood,
+} from './ready-goods-operations';
 
 const initialState = {
   modalWindowStatus: false,
   error: null,
   message: null,
   loading: false,
-  stories: [],
-  allStories: [],
-  currentStory: null,
-  editStory: null,
-  totalPagesStories: 0,
-  currentPageStories: 1,
+  readyGoods: [],
+  allReadyGoods: [],
+  newestReadyGoods: [],
+  currentReadyGood: null,
+  editReadyGood: null,
+  totalPagesReadyGoods: 0,
+  currentPageReadyGoods: 1,
 };
 
-const stories = createSlice({
-  name: 'stories',
+const readyGoods = createSlice({
+  name: 'readyGoods',
   initialState,
   reducers: {
     setModalWindowStatus: (store, action) => {
       store.modalWindowStatus = action.payload;
     },
-    setCurrentPageStories: (store, action) => {
-      store.currentPageStories = action.payload;
+    setCurrentPageReadyGoods: (store, action) => {
+      store.currentPageReadyGoods = action.payload;
     },
-    setCurrentStory: (store, action) => {
-      store.currentStory = action.payload;
+    setCurrentReadyGood: (store, action) => {
+      store.currentReadyGood = action.payload;
     },
-    clearCurrentStory: store => {
-      store.currentStory = null;
+    clearCurrentReadyGood: store => {
+      store.currentReadyGood = null;
     },
-    setEditStory: (store, action) => {
-      store.editStory = action.payload;
+    setEditReadyGood: (store, action) => {
+      store.editReadyGood = action.payload;
     },
-    clearEditStory: store => {
-      store.editStory = null;
+    clearEditReadyGood: store => {
+      store.editReadyGood = null;
     },
-    clearStoriesError: store => {
+    clearReadyGoodsError: store => {
       store.error = null;
     },
-    clearStoriesMessage: store => {
+    clearReadyGoodsMessage: store => {
       store.message = null;
     },
   },
   extraReducers: builder => {
     builder
-      // * CREATE STORY
-      .addCase(createStory.pending, store => {
+      // * CREATE Ready Good
+      .addCase(createReadyGood.pending, store => {
         store.loading = true;
         store.error = null;
         store.message = null;
       })
-      .addCase(createStory.fulfilled, (store, { payload }) => {
+      .addCase(createReadyGood.fulfilled, (store, { payload }) => {
         store.loading = false;
         store.message = payload.message;
         store.modalWindowStatus = true;
       })
-      .addCase(createStory.rejected, (store, { payload }) => {
+      .addCase(createReadyGood.rejected, (store, { payload }) => {
         store.loading = false;
         if (payload && payload.data && payload.data.message) {
           store.error = payload.data.message;
@@ -73,19 +74,19 @@ const stories = createSlice({
         }
         store.modalWindowStatus = true;
       })
-      // * EDIT STORY
-      .addCase(editStory.pending, store => {
+      // * EDIT Ready Good
+      .addCase(editReadyGood.pending, store => {
         store.loading = true;
         store.error = null;
         store.message = null;
       })
-      .addCase(editStory.fulfilled, (store, { payload }) => {
+      .addCase(editReadyGood.fulfilled, (store, { payload }) => {
         store.loading = false;
         store.message = payload.message;
         store.modalWindowStatus = true;
-        store.editStory = null;
+        store.editReadyGood = null;
       })
-      .addCase(editStory.rejected, (store, { payload }) => {
+      .addCase(editReadyGood.rejected, (store, { payload }) => {
         store.loading = false;
         if (payload && payload.data && payload.data.message) {
           store.error = payload.data.message;
@@ -96,18 +97,19 @@ const stories = createSlice({
         }
         store.modalWindowStatus = true;
       })
-      // * GET STORIES
-      .addCase(getStories.pending, store => {
+      // * GET Ready Goods
+      .addCase(getReadyGoods.pending, store => {
         store.loading = true;
         store.error = null;
       })
-      .addCase(getStories.fulfilled, (store, { payload }) => {
+      .addCase(getReadyGoods.fulfilled, (store, { payload }) => {
         store.loading = false;
-        store.stories = payload.stories;
-        store.allStories = payload.allStories;
-        store.totalPagesStories = payload.totalPages;
+        store.readyGoods = payload.goods;
+        store.allReadyGoods = payload.allGoods;
+        store.totalPagesReadyGoods = payload.totalPages;
+        store.newestReadyGoods = payload.newestReadyGoods;
       })
-      .addCase(getStories.rejected, (store, { payload }) => {
+      .addCase(getReadyGoods.rejected, (store, { payload }) => {
         store.loading = false;
         if (payload && payload.data && payload.data.message) {
           store.error = payload.data.message;
@@ -118,16 +120,16 @@ const stories = createSlice({
         }
         store.modalWindowStatus = true;
       })
-      // * GET STORY
-      .addCase(getStory.pending, store => {
+      // * GET Ready Good
+      .addCase(getReadyGood.pending, store => {
         store.loading = true;
         store.error = null;
       })
-      .addCase(getStory.fulfilled, (store, { payload }) => {
+      .addCase(getReadyGood.fulfilled, (store, { payload }) => {
         store.loading = false;
-        store.currentStory = payload;
+        store.currentReadyGood = payload;
       })
-      .addCase(getStory.rejected, (store, { payload }) => {
+      .addCase(getReadyGood.rejected, (store, { payload }) => {
         store.loading = false;
         if (payload && payload.data && payload.data.message) {
           store.error = payload.data.message;
@@ -138,18 +140,18 @@ const stories = createSlice({
         }
         store.modalWindowStatus = true;
       })
-      // * DELETE STORY
-      .addCase(deleteStory.pending, store => {
+      // * DELETE Ready Good
+      .addCase(deleteReadyGood.pending, store => {
         store.loading = true;
         store.error = null;
         store.message = null;
       })
-      .addCase(deleteStory.fulfilled, (store, { payload }) => {
+      .addCase(deleteReadyGood.fulfilled, (store, { payload }) => {
         store.loading = false;
         store.message = payload.message;
         store.modalWindowStatus = true;
       })
-      .addCase(deleteStory.rejected, (store, { payload }) => {
+      .addCase(deleteReadyGood.rejected, (store, { payload }) => {
         store.loading = false;
         if (payload && payload.data && payload.data.message) {
           store.error = payload.data.message;
@@ -163,14 +165,14 @@ const stories = createSlice({
   },
 });
 
-export default stories.reducer;
+export default readyGoods.reducer;
 export const {
   setModalWindowStatus,
-  setCurrentPageStories,
-  setCurrentStory,
-  clearCurrentStory,
-  clearStoriesError,
-  clearStoriesMessage,
-  setEditStory,
-  clearEditStory,
-} = stories.actions;
+  setCurrentPageReadyGoods,
+  setCurrentReadyGood,
+  clearCurrentReadyGood,
+  clearReadyGoodsError,
+  clearReadyGoodsMessage,
+  setEditReadyGood,
+  clearEditReadyGood,
+} = readyGoods.actions;

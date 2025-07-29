@@ -1,7 +1,7 @@
 export const getStoriesList = ({ stories }) => stories.stories;
 export const getAllStories = ({ stories }) => stories.allStories;
-export const getTotalPages = ({ stories }) => stories.totalPages;
-export const getCurrentPage = ({ stories }) => stories.currentPage;
+export const getTotalPagesStories = ({ stories }) => stories.totalPagesStories;
+export const getCurrentPageStories = ({ stories }) => stories.currentPageStories;
 export const getModalWindowStatus = ({ stories }) =>
   stories.modalWindowStatus;
 export const getStoriesError = ({ stories }) => stories.error;

@@ -1,13 +1,14 @@
 'use client';
-// @flow strict
-import { useEffect } from 'react';
+
+import { useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { getStories } from '@/redux/stories/stories-operations';
 import {
   getStoriesList,
-  getTotalPages,
-  getCurrentPage,
+  getTotalPagesStories,
+  getCurrentPageStories,
 } from '@/redux/stories/stories-selectors';
+import { getAllStories } from '@/redux/stories/stories-selectors';
 import Text from '../shared/text/text';
 import StoryCard from './story-card/index';
 import Pagination from '../shared/pagination/index';
@@ -15,12 +16,17 @@ import Pagination from '../shared/pagination/index';
 function MyStories() {
   const dispatch = useDispatch();
   const stories = useSelector(getStoriesList);
-  const totalPages = useSelector(getTotalPages);
-  const currentPage = useSelector(getCurrentPage);
+  const allStories = useSelector(getAllStories);
+  const totalPages = useSelector(getTotalPagesStories);
+  const currentPage = useSelector(getCurrentPageStories);
+  const storiesRef = useRef(null);
 
   useEffect(() => {
     dispatch(getStories({ page: currentPage, limit: 2 }));
   }, [dispatch, currentPage]);
+
+  useEffect(() => {
+  }, [allStories]);
 
   if (stories.length === 0) {
     return null;
@@ -29,6 +35,7 @@ function MyStories() {
   return (
     <div className="bg-[var(--section-third)] border border-transparent">
       <section
+        ref={storiesRef}
         id="stories"
         className={`container mt-12 lg:mt-16 ${
           totalPages > 1 ? 'mb-[64px]' : 'lg:mb-[104px]'
@@ -57,9 +64,9 @@ function MyStories() {
           ))}
         </div>
 
-        {totalPages > 0 && (
+        {totalPages > 1 && (
           <div className="mt-[70px] flex justify-center">
-            <Pagination totalPages={totalPages} />
+            <Pagination totalPages={totalPages} type="stories" />
           </div>
         )}
       </section>
