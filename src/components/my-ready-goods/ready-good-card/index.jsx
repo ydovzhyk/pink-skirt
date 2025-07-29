@@ -9,7 +9,6 @@ import Text from '@/components/shared/text/text';
 const ReadyGoodCard = ({
   id,
   title,
-  description,
   mainImageUrl,
   additionalImageUrls = [],
 }) => {
@@ -50,7 +49,7 @@ const ReadyGoodCard = ({
 
   return (
     <div
-      className="w-full cursor-pointer group shadow-lg"
+      className="relative w-full cursor-pointer group shadow-lg"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       onClick={handleNavigate}
@@ -85,7 +84,7 @@ const ReadyGoodCard = ({
       </div>
 
       {isAdmin && (
-        <div className="absolute top-[-55px] left-0 w-full flex flex-row gap-[80px] items-center justify-center mt-4 rounded-md bg-white shadow-lg p-2">
+        <div className="absolute top-[-15px] left-0 w-full flex flex-row gap-[80px] items-center justify-center mt-4 rounded-md bg-white shadow-lg p-2">
           <button
             className="border-b border-green-600 hover:border-black w-fit transition-colors duration-200"
             onClick={handleEdit}

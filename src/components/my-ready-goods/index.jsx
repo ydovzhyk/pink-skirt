@@ -29,7 +29,6 @@ function MyReadyGoods() {
 
   useEffect(() => {
     dispatch(getReadyGoods({ page: currentPage, limit: 6 }));
-    console.log('Fetching ready goods for page:', currentPage);
   }, [dispatch, currentPage]);
 
   if (readyGoods.length === 0) {
@@ -37,7 +36,6 @@ function MyReadyGoods() {
   }
 
   const firstRow = readyGoods.slice(0, 4);
-  console.log('First row:', firstRow);
   const secondRowLeft = readyGoods[4];
   const secondRowRight = readyGoods[5];
 

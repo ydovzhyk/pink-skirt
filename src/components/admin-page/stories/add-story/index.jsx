@@ -9,7 +9,7 @@ import TextareaField from '@/components/shared/textarea-field';
 import FileUpload from '@/components/shared/file-upload';
 import { toast } from 'react-toastify';
 import { createStory, getStories } from '@/redux/stories/stories-operations';
-import { getCurrentPage } from '@/redux/stories/stories-selectors';
+import { getCurrentPageStories } from '@/redux/stories/stories-selectors';
 
 const MAX_IMAGES = 6;
 const MAX_IMAGE_SIZE = 500 * 1024;
@@ -18,7 +18,7 @@ const generateStoryId = () => crypto.randomUUID();
 
 const AddStory = () => {
   const { register, handleSubmit, reset } = useForm();
-  const currentPage = useSelector(getCurrentPage);
+  const currentPage = useSelector(getCurrentPageStories);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const mainImageRef = useRef(null);

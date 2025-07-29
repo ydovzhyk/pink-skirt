@@ -28,7 +28,6 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  console.log('Received upload request:', req.method, req.url);
   try {
     const [fields, files] = await parseForm(req);
     const folderName = fields.folderName?.[0] || '';

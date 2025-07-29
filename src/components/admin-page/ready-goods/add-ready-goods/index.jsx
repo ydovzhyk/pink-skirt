@@ -11,9 +11,9 @@ import SelectField from '@/components/shared/select-field/select-field';
 import { toast } from 'react-toastify';
 import {
   createReadyGood,
-  // getReadyGoods,
+  getReadyGoods,
 } from '@/redux/ready-goods/ready-goods-operations';
-// import { getCurrentPage } from '@/redux/ready-goods/ready-goods-selectors';
+import { getCurrentPageReadyGoods } from '@/redux/ready-goods/ready-goods-selectors';
 
 const MAX_IMAGES = 6;
 const MAX_IMAGE_SIZE = 500 * 1024;
@@ -117,7 +117,7 @@ const AddReadyGoods = () => {
   const { register, handleSubmit, reset } = useForm();
   const [isLoading, setIsLoading] = useState(false);
   const [selectedClothingType, setSelectedClothingType] = useState(null);
-  // const currentPage = useSelector(getCurrentPage);
+  const currentPage = useSelector(getCurrentPageReadyGoods);
   const [error, setError] = useState('');
   const mainImageRef = useRef(null);
   const imagesRef = useRef(null);
@@ -180,7 +180,7 @@ const AddReadyGoods = () => {
       };
 
       await dispatch(createReadyGood(itemData)).unwrap();
-      //await dispatch(getReadyGoods({ page: currentPage, limit: 2 })).unwrap();
+      await dispatch(getReadyGoods({ page: currentPage, limit: 6 })).unwrap();
 
       setTimeout(() => {
         const el = document.getElementById('ready-goods');
@@ -203,7 +203,7 @@ const AddReadyGoods = () => {
   };
 
   return (
-    <section id="create-ready-goods" className="container my-12 lg:my-16">
+    <section id="create-ready-goods" className="container">
       <div className="w-full rounded-md border border-[#464c6a] p-3 lg:p-5">
         <Text
           type="normal"

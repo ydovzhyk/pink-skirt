@@ -11,14 +11,14 @@ import { toast } from 'react-toastify';
 import { editStory, getStories } from '@/redux/stories/stories-operations';
 import { getEditStory } from '@/redux/stories/stories-selectors';
 import { clearEditStory } from '@/redux/stories/stories-slice';
-import { getCurrentPage } from '@/redux/stories/stories-selectors';
+import { getCurrentPageStories } from '@/redux/stories/stories-selectors';
 
 const MAX_IMAGES = 6;
 const MAX_IMAGE_SIZE = 500 * 1024;
 
 const EditStory = () => {
   const { register, handleSubmit, reset } = useForm();
-  const currentPage = useSelector(getCurrentPage);
+  const currentPage = useSelector(getCurrentPageStories);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const mainImageRef = useRef(null);
@@ -88,7 +88,7 @@ const EditStory = () => {
         const el = document.getElementById('stories');
         if (el) el.scrollIntoView({ behavior: 'smooth' });
       }, 100);
-      
+
       dispatch(clearEditStory());
       reset();
       mainImageRef.current.value = '';

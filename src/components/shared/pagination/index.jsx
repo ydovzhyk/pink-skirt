@@ -8,8 +8,6 @@ import { getCurrentPageReadyGoods } from '@/redux/ready-goods/ready-goods-select
 import Text from '../text/text';
 
 const Pagination = ({ totalPages, type }) => {
-  console.log('Pagination type:', type);
-  console.log('Total pages:', totalPages);
   const dispatch = useDispatch();
   const currentPageStories = useSelector(getCurrentPageStories);
   const currentPageReadyGoods = useSelector(getCurrentPageReadyGoods);
@@ -22,7 +20,6 @@ const Pagination = ({ totalPages, type }) => {
       if (type === 'ready-goods') {
         dispatch(setCurrentPageReadyGoods(page));
       } else {
-        console.log('Setting current page for stories:', page);
         dispatch(setCurrentPageStories(page));
       }
     }

@@ -7,8 +7,6 @@ export default async function handler(req, res) {
 
   const { id } = req.query;
 
-  console.log('Fetching story with ID:', id);
-
   if (!id) {
     return res.status(400).json({ error: 'Story ID is required' });
   }

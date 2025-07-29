@@ -22,6 +22,8 @@ const NewestReadyGoodCard = ({
   const pathname = usePathname();
   const isAdmin = pathname.startsWith('/admin');
 
+  console.log('NewestReadyGoodCard - isAdmin:', isAdmin);
+
   const formattedTitle = title
     .trim()
     .toLowerCase()
@@ -50,7 +52,7 @@ const NewestReadyGoodCard = ({
 
   return (
     <div
-      className="w-full h-full cursor-pointer group shadow-lg"
+      className="relative w-full h-full cursor-pointer group shadow-lg"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
@@ -66,7 +68,7 @@ const NewestReadyGoodCard = ({
       )}
 
       <div
-        className="w-full h-full overflow-hidden rounded-md border border-gray-300 bg-center bg-cover transition-all duration-300 p-[20px]"
+        className="relative w-full h-full overflow-hidden rounded-md border border-gray-300 bg-center bg-cover transition-all duration-300 p-[20px]"
         style={{
           backgroundImage: `url(${isHovered ? hoverImage : mainImageUrl})`,
         }}
@@ -111,6 +113,36 @@ const NewestReadyGoodCard = ({
           </div>
         </div>
       </div>
+      {isAdmin && (
+        <div className="absolute top-[-15px] left-0 w-full flex flex-row gap-[80px] items-center justify-center mt-4 rounded-md bg-white shadow-lg p-2">
+          <button
+            className="border-b border-green-600 hover:border-black w-fit transition-colors duration-200"
+            onClick={handleEdit}
+          >
+            <Text
+              type="extra-small"
+              as="p"
+              fontWeight="light"
+              className="text-green-900"
+            >
+              Edit
+            </Text>
+          </button>
+          <button
+            className="border-b border-red-600 hover:border-black w-fit transition-colors duration-200"
+            onClick={handleDelete}
+          >
+            <Text
+              type="extra-small"
+              as="p"
+              fontWeight="light"
+              className="text-red-600"
+            >
+              Delete
+            </Text>
+          </button>
+        </div>
+      )}
     </div>
   );
 };
