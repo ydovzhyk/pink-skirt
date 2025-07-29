@@ -6,6 +6,7 @@ const initialState = {
   loading: false,
   modalWindowStatus: false,
   screenType: 'isDesctop',
+  activeSection: null,
   link: '/?action=authorize&password=0503562938',
 };
 
@@ -13,6 +14,9 @@ const technical = createSlice({
   name: 'technical',
   initialState,
   reducers: {
+    setActiveSection: (store, action) => {
+      store.activeSection = action.payload;
+    },
     setMessage: (store, action) => {
       store.message = action.payload;
     },
@@ -42,6 +46,7 @@ export default technical.reducer;
 export const {
   clearTechnicalError,
   clearTechnicalMessage,
+  setActiveSection,
   setTechnicalError,
   setMessage,
   setModalWindowStatus,

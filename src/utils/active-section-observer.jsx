@@ -3,6 +3,7 @@
 import { useEffect } from 'react';
 
 export default function ActiveSectionObserver({ setActiveSection }) {
+
   useEffect(() => {
     const observer = new IntersectionObserver(
       entries => {
@@ -49,4 +50,3 @@ export default function ActiveSectionObserver({ setActiveSection }) {
 
   return null;
 }
-

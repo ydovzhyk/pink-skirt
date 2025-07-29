@@ -54,7 +54,6 @@ const ReadyGoodCard = ({
       onMouseLeave={() => setIsHovered(false)}
       onClick={handleNavigate}
     >
-      {/* 🔥 Прелоад hover-зображення (приховане) */}
       {hoverImage && hoverImage !== mainImageUrl && (
         <img
           src={hoverImage}

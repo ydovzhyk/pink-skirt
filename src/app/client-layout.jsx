@@ -1,11 +1,13 @@
 'use client';
 import { useEffect, useState, Suspense } from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { getLoadingAuth } from '@/redux/auth/auth-selectors';
 import { getLoadingTechnical } from '@/redux/technical/technical-selectors';
 import { getLoadingStories } from '../redux/stories/stories-selectors';
 import {getIsLoginPanel} from '@/redux/auth/auth-selectors';
 import { ToastContainer } from 'react-toastify';
+import { setActiveSection } from '@/redux/technical/technical-slice';
+import ActiveSectionObserver from '@/utils/active-section-observer';
 import 'react-toastify/dist/ReactToastify.css';
 import LoaderSpinner from '@/components/loader/loader';
 import ModalWindow from '@/components/modal-window-message/modal-window-message';
@@ -17,6 +19,7 @@ import ScrollToTopButton from '@/components/scroll-to-top-btn/scroll-to-top-btn'
 import SearchParamsHandler from '@/utils/search-params-handler';
 
 const ClientLayout = ({ children }) => {
+  const dispatch = useDispatch();
   const loadingAuth = useSelector(getLoadingAuth);
   const loadingTechnical = useSelector(getLoadingTechnical);
   const loadingStories = useSelector(getLoadingStories);
@@ -34,6 +37,9 @@ const ClientLayout = ({ children }) => {
       <ModalWindow />
       <MediaQuery />
       <AuthProvider />
+      <ActiveSectionObserver
+        setActiveSection={section => dispatch(setActiveSection(section))}
+      />
       <Suspense fallback={<LoaderSpinner />}>
         <SearchParamsHandler />
       </Suspense>

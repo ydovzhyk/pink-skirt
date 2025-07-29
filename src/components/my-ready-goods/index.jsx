@@ -8,6 +8,7 @@ import {
   getTotalPagesReadyGoods,
   getCurrentPageReadyGoods,
   getNewestReadyGoods,
+  getAllReadyGoods,
 } from '@/redux/ready-goods/ready-goods-selectors';
 import Text from '../shared/text/text';
 import ReadyGoodCard from './ready-good-card';
@@ -17,6 +18,7 @@ import NewestReadyGoodCard from './newest-card';
 function MyReadyGoods() {
   const dispatch = useDispatch();
   const readyGoods = useSelector(getReadyGoodsList);
+  const allReadyGoods = useSelector(getAllReadyGoods);
   const newestReadyGoods = useSelector(getNewestReadyGoods);
   const totalPages = useSelector(getTotalPagesReadyGoods);
   const currentPage = useSelector(getCurrentPageReadyGoods);
@@ -31,7 +33,9 @@ function MyReadyGoods() {
     dispatch(getReadyGoods({ page: currentPage, limit: 6 }));
   }, [dispatch, currentPage]);
 
-  if (readyGoods.length === 0) {
+  useEffect(() => {}, [allReadyGoods]);
+
+  if (allReadyGoods.length === 0) {
     return null;
   }
 
@@ -48,7 +52,6 @@ function MyReadyGoods() {
           totalPages > 1 ? 'lg:mb-[104px]' : 'lg:mb-[64px]'
         }`}
       >
-        {/* Заголовок */}
         <div className="flex items-center justify-start relative my-12 lg:my-16">
           <div className="bg-[var(--section-first)] absolute left-0 w-fit px-5 py-3 rounded-md border border-[#dcdcc4]">
             <Text
@@ -65,35 +68,26 @@ function MyReadyGoods() {
             style={{ height: '0.5px' }}
           ></span>
         </div>
-
-        {/* Грід */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {/* First row — 4 карточки */}
           {firstRow.map(item => (
             <div key={item.id}>
               <ReadyGoodCard {...item} story={item} />
             </div>
           ))}
-
-          {/* Second row */}
           <div>
             {secondRowLeft && (
               <ReadyGoodCard {...secondRowLeft} story={secondRowLeft} />
             )}
           </div>
-
           <div className="col-span-2 h-full">
             {newestGood && <NewestReadyGoodCard {...newestGood} />}
           </div>
-
           <div>
             {secondRowRight && (
               <ReadyGoodCard {...secondRowRight} story={secondRowRight} />
             )}
           </div>
         </div>
-
-        {/* Пагінація */}
         {totalPages > 1 && (
           <div className="mt-[70px] mb-[-40px] flex justify-center">
             <Pagination totalPages={totalPages} type="ready-goods" />

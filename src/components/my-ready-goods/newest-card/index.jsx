@@ -56,7 +56,6 @@ const NewestReadyGoodCard = ({
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      {/* 🔥 Прелоад hover-зображення */}
       {hoverImage && hoverImage !== mainImageUrl && (
         <img
           src={hoverImage}

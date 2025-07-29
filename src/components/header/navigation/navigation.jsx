@@ -4,26 +4,35 @@ import { useSelector } from 'react-redux';
 import { usePathname, useRouter } from 'next/navigation';
 import { getIsLoginPanel } from '@/redux/auth/auth-selectors';
 import { getAllStories } from '@/redux/stories/stories-selectors';
+import { getAllReadyGoods } from '@/redux/ready-goods/ready-goods-selectors';
+import { getActiveSection } from '@/redux/technical/technical-selectors';
 import clsx from 'clsx';
 import Text from '@/components/shared/text/text';
 
-const Navigation = ({ textColor = 'black', activeSection }) => {
+const Navigation = ({ textColor = 'black' }) => {
   const pathname = usePathname();
   const router = useRouter();
   const isLoginPanel = useSelector(getIsLoginPanel);
+  const activeSection = useSelector(getActiveSection);
   const stories = useSelector(getAllStories);
+  const readyGoods = useSelector(getAllReadyGoods);
 
   const hasStories = stories.length > 0;
+  const hasReadyGoods = readyGoods.length > 0;
 
   const sections = [
     { id: 'models', label: 'Models', offset: -85, offsetLogin: -190 },
     { id: 'cloths', label: 'Cloths', offset: -85, offsetLogin: -190 },
-    {
-      id: 'finished-goods',
-      label: 'Finished goods',
-      offset: -85,
-      offsetLogin: -190,
-    },
+    ...(hasReadyGoods
+      ? [
+          {
+            id: 'ready-goods',
+            label: 'Ready goods',
+            offset: -85,
+            offsetLogin: -190,
+          },
+        ]
+      : []),
     { id: 'about-me', label: 'About me', offset: -70, offsetLogin: -145 },
     { id: 'contacts', label: 'Contacts', offset: -130, offsetLogin: -190 },
     ...(hasStories

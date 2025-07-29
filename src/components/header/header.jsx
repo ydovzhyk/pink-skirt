@@ -1,7 +1,6 @@
 'use client';
 
 import { getIsLoginPanel } from '@/redux/auth/auth-selectors';
-import ActiveSectionObserver from '@/utils/active-section-observer';
 import TranslateMe from '@/utils/translating/translating';
 import clsx from 'clsx';
 import { usePathname } from 'next/navigation';
@@ -13,7 +12,6 @@ import Navigation from './navigation/navigation';
 
 const Header = () => {
   const [headerState, setHeaderState] = useState('colored');
-  const [activeSection, setActiveSection] = useState('');
   const isLoginPanel = useSelector(getIsLoginPanel);
   const pathname = usePathname();
 
@@ -48,12 +46,10 @@ const Header = () => {
           'bg-[var(--section-first)] border-gray-300 backdrop-blur-md'
       )}
     >
-      <ActiveSectionObserver setActiveSection={setActiveSection} />
       <div className="container mx-auto py-3 flex items-center justify-between relative">
         <div>
           <Navigation
             textColor={headerState === 'transparent' ? 'white' : 'black'}
-            activeSection={activeSection}
           />
         </div>
 
@@ -71,7 +67,6 @@ const Header = () => {
       {isLoginPanel && (
         <AdminPanel
           textColor={headerState === 'transparent' ? 'white' : 'black'}
-          activeSection={activeSection}
         />
       )}
     </header>

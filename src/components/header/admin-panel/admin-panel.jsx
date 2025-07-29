@@ -3,20 +3,22 @@
 import { useSelector } from 'react-redux';
 import { usePathname, useRouter } from 'next/navigation';
 import { getIsLoginPanel } from '@/redux/auth/auth-selectors';
+import { getActiveSection } from '@/redux/technical/technical-selectors';
 import clsx from 'clsx';
 import Text from '@/components/shared/text/text';
 
-const AdminPanel = ({ textColor = 'black', activeSection }) => {
+const AdminPanel = ({ textColor = 'black' }) => {
   const pathname = usePathname();
   const router = useRouter();
   const isLoginPanel = useSelector(getIsLoginPanel);
+  const activeSection = useSelector(getActiveSection);
 
   const sections = [
     { id: 'models', label: 'Models', offset: -85, offsetLogin: -190 },
     { id: 'cloths', label: 'Cloths', offset: -85, offsetLogin: -190 },
     {
-      id: 'finished-goods',
-      label: 'Finished goods',
+      id: 'ready-goods',
+      label: 'Ready goods',
       offset: -85,
       offsetLogin: -190,
     },
