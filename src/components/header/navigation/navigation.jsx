@@ -60,7 +60,6 @@ const Navigation = ({ textColor = 'black' }) => {
     }
   };
 
-
   return (
     <nav className="relative w-full py-[13px]">
       <ul className="flex flex-row items-center justify-center gap-[20px] w-full">

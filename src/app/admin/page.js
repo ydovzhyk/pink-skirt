@@ -29,7 +29,7 @@ function AdminPage() {
   return (
     <div className="">
       <Suspense fallback={<LoaderSpinner />}>
-        {/* <MyStories /> */}
+        {/* MyStories */}
         <div id="admin-stories" className="flex flex-col gap-6">
           <MyStories />
           <div className="container">
@@ -39,7 +39,7 @@ function AdminPage() {
             </div>
           </div>
         </div>
-        {/* <MyReadyGoods /> */}
+        {/* MyReadyGoods */}
         <div id="admin-ready-goods" className="flex flex-col">
           <MyReadyGoods />
           <div className="container">

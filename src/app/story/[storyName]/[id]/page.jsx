@@ -38,7 +38,7 @@ function DetailStoryPage() {
   } else {
     return (
       <div className="w-full">
-        <div className="container border border-dark">
+        <div className="container border border-transparent">
           <Suspense fallback={<LoaderSpinner />}>
             <StoryDetail {...story} />
           </Suspense>

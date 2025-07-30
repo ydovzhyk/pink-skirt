@@ -3,38 +3,49 @@
 import { useEffect } from 'react';
 
 export default function ActiveSectionObserver({ setActiveSection }) {
-
   useEffect(() => {
-    const observer = new IntersectionObserver(
+    const sectionObserver = new IntersectionObserver(
       entries => {
         entries.forEach(entry => {
           if (entry.isIntersecting) {
             const id = entry.target.id;
-            // Якщо це about-me-content — повертаємо about-me
             const normalizedId = id === 'about-me-content' ? 'about-me' : id;
             setActiveSection(normalizedId);
           }
         });
       },
       {
-        rootMargin: '-60% 0px -30% 0px',
-        threshold: 0.1,
+        threshold: 0.2, // видно хоча б 20% секції
       }
     );
 
-    const observeSections = () => {
-      const sections = document.querySelectorAll(
-        'section[id], div[id], header, footer'
-      );
-      sections.forEach(section => observer.observe(section));
+    const headingObserver = new IntersectionObserver(
+      entries => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            const id = entry.target.id;
+            const normalizedId = id === 'about-me-content' ? 'about-me' : id;
+            setActiveSection(normalizedId);
+          }
+        });
+      },
+      {
+        threshold: 0.57, // більшість заголовку видно
+      }
+    );
+
+    const observeElements = () => {
+      const sections = document.querySelectorAll('section[id], div[id]');
+      const headings = document.querySelectorAll('section[id] h2, div[id] h2');
+
+      sections.forEach(section => sectionObserver.observe(section));
+      headings.forEach(heading => headingObserver.observe(heading));
     };
 
-    // 1. Спробуємо зразу
-    observeSections();
+    observeElements();
 
-    // 2. Якщо частина контенту довантажується — слухаємо зміни DOM
     const mutationObserver = new MutationObserver(() => {
-      observeSections();
+      observeElements();
     });
 
     mutationObserver.observe(document.body, {
@@ -43,10 +54,12 @@ export default function ActiveSectionObserver({ setActiveSection }) {
     });
 
     return () => {
-      observer.disconnect();
+      sectionObserver.disconnect();
+      headingObserver.disconnect();
       mutationObserver.disconnect();
     };
   }, [setActiveSection]);
 
   return null;
 }
+
