@@ -22,7 +22,7 @@ export const getSections = (
           {
             id: 'ready-goods',
             label: 'Ready goods',
-            offset: -85,
+            offset: -130,
             offsetLogin: -190,
           },
         ]
