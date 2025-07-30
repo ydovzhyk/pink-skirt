@@ -5,12 +5,15 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useRouter, usePathname } from 'next/navigation';
 import { getCurrentPageReadyGoods } from '@/redux/ready-goods/ready-goods-selectors';
 import Text from '@/components/shared/text/text';
+import { setEditReadyGood } from '@/redux/ready-goods/ready-goods-slice';
+import { deleteReadyGood, getReadyGoods } from '@/redux/ready-goods/ready-goods-operations';
 
 const ReadyGoodCard = ({
   id,
   title,
   mainImageUrl,
   additionalImageUrls = [],
+  readyGood,
 }) => {
   const [isHovered, setIsHovered] = useState(false);
   const hoverImage = additionalImageUrls?.[0] || mainImageUrl;
@@ -33,18 +36,18 @@ const ReadyGoodCard = ({
   };
 
   const handleEdit = () => {
-    dispatch(setEditStory(story));
+    dispatch(setEditReadyGood(readyGood));
     setTimeout(() => {
-      const editSection = document.getElementById('edit-story');
+      const editSection = document.getElementById('edit-ready-good');
       if (editSection) {
         editSection.scrollIntoView({ behavior: 'smooth' });
       }
     }, 0);
   };
 
-  const handleDelete = () => {
-    dispatch(deleteStory(id));
-    dispatch(getStories({ page: currentPage, limit: 2 }));
+  const handleDelete = async () => {
+    await dispatch(deleteReadyGood(id)).unwrap();
+    await dispatch(getReadyGoods({ page: currentPage, limit: 6 })).unwrap();
   };
 
   return (
@@ -86,7 +89,10 @@ const ReadyGoodCard = ({
         <div className="absolute top-[-15px] left-0 w-full flex flex-row gap-[80px] items-center justify-center mt-4 rounded-md bg-white shadow-lg p-2">
           <button
             className="border-b border-green-600 hover:border-black w-fit transition-colors duration-200"
-            onClick={handleEdit}
+            onClick={e => {
+              e.stopPropagation();
+              handleEdit();
+            }}
           >
             <Text
               type="extra-small"
@@ -99,7 +105,10 @@ const ReadyGoodCard = ({
           </button>
           <button
             className="border-b border-red-600 hover:border-black w-fit transition-colors duration-200"
-            onClick={handleDelete}
+            onClick={e => {
+              e.stopPropagation();
+              handleDelete();
+            }}
           >
             <Text
               type="extra-small"

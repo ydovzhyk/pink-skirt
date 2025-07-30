@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useState, Suspense } from 'react';
+import { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { getLoadingAuth } from '@/redux/auth/auth-selectors';
 import { getLoadingTechnical } from '@/redux/technical/technical-selectors';
@@ -16,7 +16,7 @@ import AuthProvider from '@/utils/auth-provider/auth-provider';
 import Header from '../components/header/header';
 import Footer from '../components/footer/footer';
 import ScrollToTopButton from '@/components/scroll-to-top-btn/scroll-to-top-btn';
-import SearchParamsHandler from '@/utils/search-params-handler';
+import ScrollToHashSection from '@/utils/scroll-to-hash-section';
 
 const ClientLayout = ({ children }) => {
   const dispatch = useDispatch();
@@ -37,12 +37,10 @@ const ClientLayout = ({ children }) => {
       <ModalWindow />
       <MediaQuery />
       <AuthProvider />
+      <ScrollToHashSection />
       <ActiveSectionObserver
         setActiveSection={section => dispatch(setActiveSection(section))}
       />
-      <Suspense fallback={<LoaderSpinner />}>
-        <SearchParamsHandler />
-      </Suspense>
       <Header />
       <main className={`flex-1 ${isLoginPanel ? 'mt-[148px]' : 'mt-[85px]'}`}>
         {children}

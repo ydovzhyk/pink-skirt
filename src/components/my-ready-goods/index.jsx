@@ -33,7 +33,8 @@ function MyReadyGoods() {
     dispatch(getReadyGoods({ page: currentPage, limit: 6 }));
   }, [dispatch, currentPage]);
 
-  useEffect(() => {}, [allReadyGoods]);
+  useEffect(() => {
+  }, [readyGoods]);
 
   if (allReadyGoods.length === 0) {
     return null;
@@ -53,7 +54,7 @@ function MyReadyGoods() {
         }`}
       >
         <div className="flex items-center justify-start relative my-12 lg:my-16">
-          <div className="bg-[var(--section-first)] absolute left-0 w-fit px-5 py-3 rounded-md border border-[#dcdcc4]">
+          <div className="bg-[var(--section-first)] absolute left-0 w-fit px-5 py-3 rounded-md border border-white">
             <Text
               type="regular"
               as="span"
@@ -71,20 +72,20 @@ function MyReadyGoods() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {firstRow.map(item => (
             <div key={item.id}>
-              <ReadyGoodCard {...item} story={item} />
+              <ReadyGoodCard {...item} readyGood={item} />
             </div>
           ))}
           <div>
             {secondRowLeft && (
-              <ReadyGoodCard {...secondRowLeft} story={secondRowLeft} />
+              <ReadyGoodCard {...secondRowLeft} readyGood={secondRowLeft} />
             )}
           </div>
           <div className="col-span-2 h-full">
-            {newestGood && <NewestReadyGoodCard {...newestGood} />}
+            {newestGood && <NewestReadyGoodCard {...newestGood} readyGood={newestGood} />}
           </div>
           <div>
             {secondRowRight && (
-              <ReadyGoodCard {...secondRowRight} story={secondRowRight} />
+              <ReadyGoodCard {...secondRowRight} readyGood={secondRowRight} />
             )}
           </div>
         </div>

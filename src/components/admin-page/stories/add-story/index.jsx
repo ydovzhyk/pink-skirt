@@ -89,7 +89,7 @@ const AddStory = () => {
 
   return (
     <section id="create-story" className="container my-12 lg:my-16">
-      <div className="w-full rounded-md border border-[#464c6a] p-3 lg:p-5">
+      <div className="w-full rounded-md border border-[#464c6a] p-3 lg:p-5 bg-white">
         <Text
           type="normal"
           as="p"

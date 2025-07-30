@@ -25,10 +25,9 @@ function MyStories() {
     dispatch(getStories({ page: currentPage, limit: 2 }));
   }, [dispatch, currentPage]);
 
-  useEffect(() => {
-  }, [allStories]);
+  useEffect(() => {}, [stories]);
 
-  if (stories.length === 0) {
+  if (allStories.length === 0) {
     return null;
   }
 

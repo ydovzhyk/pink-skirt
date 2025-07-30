@@ -6,6 +6,7 @@ import { getIsLoginPanel } from '@/redux/auth/auth-selectors';
 import { getActiveSection } from '@/redux/technical/technical-selectors';
 import clsx from 'clsx';
 import Text from '@/components/shared/text/text';
+import { getSections } from '../navigation/navigation';
 
 const AdminPanel = ({ textColor = 'black' }) => {
   const pathname = usePathname();
@@ -13,27 +14,18 @@ const AdminPanel = ({ textColor = 'black' }) => {
   const isLoginPanel = useSelector(getIsLoginPanel);
   const activeSection = useSelector(getActiveSection);
 
-  const sections = [
-    { id: 'models', label: 'Models', offset: -85, offsetLogin: -190 },
-    { id: 'cloths', label: 'Cloths', offset: -85, offsetLogin: -190 },
-    {
-      id: 'ready-goods',
-      label: 'Ready goods',
-      offset: -85,
-      offsetLogin: -190,
-    },
-    { id: 'stories', label: 'Stories', offset: -135, offsetLogin: -190 },
-  ];
+  const editableSectionIds = ['models', 'cloths', 'ready-goods', 'stories'];
+  const sections = getSections(true, true, editableSectionIds);
 
   const handleNavigate = id => {
     const section = sections.find(sec => sec.id === id);
     const yOffset = isLoginPanel ? section?.offsetLogin : section?.offset;
 
+    router.push(`/admin/#${id}`);
 
-    if (pathname !== '/admin') {
-      router.push(`/admin#${id}`);
-    } else {
+    setTimeout(() => {
       const element = document.getElementById(id);
+
       if (element && yOffset !== undefined) {
         const y =
           element.getBoundingClientRect().top + window.pageYOffset + yOffset;
@@ -43,7 +35,7 @@ const AdminPanel = ({ textColor = 'black' }) => {
           behavior: 'smooth',
         });
       }
-    }
+    }, 50);
   };
 
   return (

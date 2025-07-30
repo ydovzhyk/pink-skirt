@@ -36,9 +36,9 @@ const StoryCard = ({ id, title, date, content, mainImageUrl, story }) => {
     }, 0);
   };
 
-  const handleDelete = () => {
-    dispatch(deleteStory(id));
-    dispatch(getStories({ page: currentPage, limit: 2 }));
+  const handleDelete = async () => {
+    await dispatch(deleteStory(id)).unwrap();
+    await dispatch(getStories({ page: currentPage, limit: 2 })).unwrap();
   };
 
   return (

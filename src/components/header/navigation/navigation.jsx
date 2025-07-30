@@ -9,18 +9,12 @@ import { getActiveSection } from '@/redux/technical/technical-selectors';
 import clsx from 'clsx';
 import Text from '@/components/shared/text/text';
 
-const Navigation = ({ textColor = 'black' }) => {
-  const pathname = usePathname();
-  const router = useRouter();
-  const isLoginPanel = useSelector(getIsLoginPanel);
-  const activeSection = useSelector(getActiveSection);
-  const stories = useSelector(getAllStories);
-  const readyGoods = useSelector(getAllReadyGoods);
-
-  const hasStories = stories.length > 0;
-  const hasReadyGoods = readyGoods.length > 0;
-
-  const sections = [
+export const getSections = (
+  hasReadyGoods = true,
+  hasStories = true,
+  allowedIds = null
+) => {
+  let sections = [
     { id: 'models', label: 'Models', offset: -85, offsetLogin: -190 },
     { id: 'cloths', label: 'Cloths', offset: -85, offsetLogin: -190 },
     ...(hasReadyGoods
@@ -36,18 +30,47 @@ const Navigation = ({ textColor = 'black' }) => {
     { id: 'about-me', label: 'About me', offset: -70, offsetLogin: -145 },
     { id: 'contacts', label: 'Contacts', offset: -130, offsetLogin: -190 },
     ...(hasStories
-      ? [{ id: 'stories', label: 'Stories', offset: -135, offsetLogin: -190 }]
+      ? [
+          {
+            id: 'stories',
+            label: 'Stories',
+            offset: -135,
+            offsetLogin: -190,
+          },
+        ]
       : []),
   ];
+
+  if (allowedIds) {
+    sections = sections.filter(section => allowedIds.includes(section.id));
+  }
+
+  return sections;
+};
+
+
+const Navigation = ({ textColor = 'black' }) => {
+  const pathname = usePathname();
+  const router = useRouter();
+  const isLoginPanel = useSelector(getIsLoginPanel);
+  const activeSection = useSelector(getActiveSection);
+  const stories = useSelector(getAllStories);
+  const readyGoods = useSelector(getAllReadyGoods);
+
+  const hasStories = stories.length > 0;
+  const hasReadyGoods = readyGoods.length > 0;
+
+  const sections = getSections(hasReadyGoods, hasStories);
 
   const handleNavigate = id => {
     const section = sections.find(sec => sec.id === id);
     const yOffset = isLoginPanel ? section?.offsetLogin : section?.offset;
 
-    if (pathname !== '/') {
-      router.push(`/#${id}`);
-    } else {
+    router.push(`/#${id}`);
+
+    setTimeout(() => {
       const element = document.getElementById(id);
+
       if (element && yOffset !== undefined) {
         const y =
           element.getBoundingClientRect().top + window.pageYOffset + yOffset;
@@ -57,8 +80,9 @@ const Navigation = ({ textColor = 'black' }) => {
           behavior: 'smooth',
         });
       }
-    }
+    }, 50);
   };
+
 
   return (
     <nav className="relative w-full py-[13px]">
