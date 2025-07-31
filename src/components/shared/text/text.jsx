@@ -10,9 +10,10 @@ const Text = ({
   children,
   className,
   noTranslate = false,
-  textShadow = false,
+  textShadow = null, // 'black' | 'white' | null
 }) => {
   const typeClasses = {
+    xxl: 'text-3xl sm:text-3xl md:text-4xl lg:text-5xl',
     title: 'text-xl sm:text-2xl md:text-3xl lg:text-4xl',
     normal: 'text-base sm:text-lg md:text-xl lg:text-2xl',
     regular: 'text-sm sm:text-base md:text-lg lg:text-xl',
@@ -57,8 +58,11 @@ const Text = ({
       )}
       style={{
         lineHeight: lineHeightValues[lineHeight],
-        ...(textShadow && {
-          textShadow: '2px 1px 1px rgba(0, 0, 0, 0.9)',
+        ...(textShadow === 'black' && {
+          textShadow: '2px 1px 1px rgba(0, 0, 0, 0.5)',
+        }),
+        ...(textShadow === 'white' && {
+          textShadow: '2px 1px 2px rgba(255, 255, 255, 0.8)',
         }),
       }}
     >

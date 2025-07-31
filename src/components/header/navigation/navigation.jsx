@@ -15,8 +15,6 @@ export const getSections = (
   allowedIds = null
 ) => {
   let sections = [
-    { id: 'models', label: 'Models', offset: -85, offsetLogin: -190 },
-    { id: 'cloths', label: 'Cloths', offset: -85, offsetLogin: -190 },
     ...(hasReadyGoods
       ? [
           {
@@ -27,6 +25,8 @@ export const getSections = (
           },
         ]
       : []),
+    { id: 'fabric', label: 'Fabric', offset: -85, offsetLogin: -190 },
+    { id: 'models', label: 'Models', offset: -85, offsetLogin: -190 },
     { id: 'about-me', label: 'About me', offset: -70, offsetLogin: -145 },
     { id: 'contacts', label: 'Contacts', offset: -130, offsetLogin: -190 },
     ...(hasStories

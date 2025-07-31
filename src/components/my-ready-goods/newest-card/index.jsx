@@ -83,7 +83,7 @@ const NewestReadyGoodCard = ({
               as="h3"
               fontWeight="normal"
               className="text-[#FAFCFF] text-center"
-              textShadow={true}
+              textShadow="black"
             >
               New in Collection
             </Text>
@@ -93,7 +93,7 @@ const NewestReadyGoodCard = ({
               as="p"
               fontWeight="light"
               className="text-[#FAFCFF] text-left"
-              textShadow={true}
+              textShadow="black"
             >
               {title}
             </Text>
