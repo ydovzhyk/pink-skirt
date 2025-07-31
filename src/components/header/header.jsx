@@ -53,7 +53,7 @@ const Header = () => {
           />
         </div>
 
-        <div className="absolute left-1/2 -translate-x-1/2">
+        <div className="absolute left-1/2 -translate-x-1/2 mt-[-20px]">
           <Logo width={264} height={72} />
         </div>
 

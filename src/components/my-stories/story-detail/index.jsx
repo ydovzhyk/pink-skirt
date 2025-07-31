@@ -1,5 +1,5 @@
 'use client';
-// @flow strict
+
 import { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useRouter } from 'next/navigation';
@@ -28,7 +28,6 @@ const StoryDetail = ({
     if (allStories.length === 0) {
       dispatch(getStories({ page: 1, limit: 2 }));
     }
-    return;
   }, [dispatch, allStories.length]);
 
   const handleNavigate = (title, id) => {
@@ -42,7 +41,6 @@ const StoryDetail = ({
   };
 
   const handlePreviousPost = () => {
-    const currentIndex = allStories.findIndex(story => story.id === id);
     const previousStory = allStories[currentIndex - 1];
     if (previousStory) {
       handleNavigate(previousStory.title, previousStory.id);
@@ -50,7 +48,6 @@ const StoryDetail = ({
   };
 
   const handleNextPost = () => {
-    const currentIndex = allStories.findIndex(story => story.id === id);
     const nextStory = allStories[currentIndex + 1];
     if (nextStory) {
       handleNavigate(nextStory.title, nextStory.id);
@@ -68,7 +65,7 @@ const StoryDetail = ({
             type="normal"
             as="p"
             fontWeight="normal"
-            className={'text-black mb-5'}
+            className="text-black mb-5"
           >
             {title}
           </Text>
@@ -77,12 +74,13 @@ const StoryDetail = ({
           </Text>
         </div>
       </div>
+
       <div>
         <div className="grid gap-10 md:grid-cols-2">
-          <div>
-            {/* Основне фото */}
+          {/* Фото та слайдер у спільному контейнері */}
+          <div className="w-full max-w-[600px] mx-auto">
             {activeImage && (
-              <div className="w-full max-w-[600px] aspect-[4/3] mx-auto">
+              <div className="aspect-[4/3] w-full">
                 <div
                   className="w-full h-full bg-cover bg-center rounded-md"
                   style={{ backgroundImage: `url(${activeImage})` }}
@@ -90,28 +88,27 @@ const StoryDetail = ({
               </div>
             )}
 
-            {/* Слайдер додаткових фото */}
             {additionalImageUrls.length > 0 && (
-              <div className="w-full mt-4 overflow-x-auto">
-                <div className="mx-auto w-full">
-                  <div className="flex gap-2 justify-start overflow-x-auto scroll-smooth pb-2">
-                    {[mainImageUrl, ...additionalImageUrls].map((img, i) => (
-                      <div
-                        key={i}
-                        onClick={() => setActiveImage(img)}
-                        className={`min-w-[140px] h-[90px] flex-shrink-0 bg-cover bg-center cursor-pointer rounded-md ${
-                          activeImage === img
-                            ? 'border-[var(--accent)] border-2'
-                            : 'border-transparent'
-                        }`}
-                        style={{ backgroundImage: `url(${img})` }}
-                      />
-                    ))}
-                  </div>
+              <div className="mt-4 overflow-x-auto">
+                <div className="flex gap-2 justify-start overflow-x-auto scroll-smooth thin-scrollbar pb-2">
+                  {[mainImageUrl, ...additionalImageUrls].map((img, i) => (
+                    <div
+                      key={i}
+                      onClick={() => setActiveImage(img)}
+                      className={`min-w-[140px] h-[90px] flex-shrink-0 bg-cover bg-center cursor-pointer rounded-md ${
+                        activeImage === img
+                          ? 'border-[var(--accent)] border-2'
+                          : 'border-transparent'
+                      }`}
+                      style={{ backgroundImage: `url(${img})` }}
+                    />
+                  ))}
                 </div>
               </div>
             )}
           </div>
+
+          {/* Текстовий контент */}
           <div className="flex flex-col justify-center items-start">
             <Text
               type="small"
@@ -125,6 +122,8 @@ const StoryDetail = ({
           </div>
         </div>
       </div>
+
+      {/* Навігація між постами */}
       <div className="flex justify-between items-center">
         <button
           onClick={handlePreviousPost}
