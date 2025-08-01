@@ -22,10 +22,10 @@ const modelItems = [
     id: 'model-2',
     title: 'Velvet Garden',
     media: [
-      '/images/model/art.space.pavlova-0004.mp4',
       '/images/model/art.space.pavlova-0005.jpg',
       '/images/model/art.space.pavlova-0006.jpg',
       '/images/model/art.space.pavlova-0007.jpg',
+      '/images/model/art.space.pavlova-0004.mp4',
     ],
     description:
       'Soft velvet combined with floral elegance for a graceful, timeless look',
