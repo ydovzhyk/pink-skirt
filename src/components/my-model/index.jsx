@@ -111,9 +111,7 @@ function MyModel() {
               Models
             </Text>
           </span>
-          <span
-            className="w-24 border-t border-gray-400"
-          />
+          <span className="w-24 border-t border-gray-400" />
         </div>
 
         {/* Слайдер */}
@@ -136,7 +134,7 @@ function MyModel() {
           </button>
 
           {/* Картки */}
-          <div className="flex gap-4 justify-center w-full max-w-[1200px] px-10">
+          <div className="flex gap-6 justify-center w-full max-w-[1200px] px-10">
             {visibleItems.map(item => (
               <div key={item.id} className="flex-1 min-w-0">
                 <ModelCard model={item} />
