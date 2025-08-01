@@ -44,7 +44,7 @@ const ScrollToTopButton = () => {
       <Image
         src={arrowUpIcon}
         alt="Scroll to top"
-        className="w-[60px] h-[60px] rounded-full"
+        className="w-[50px] h-[50px] rounded-full"
       />
     </button>
   );

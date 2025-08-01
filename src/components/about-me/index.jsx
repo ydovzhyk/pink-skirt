@@ -36,10 +36,7 @@ function AboutMe() {
 
   return (
     <section className="relative bg-[var(--section-second)] border border-transparent">
-      <div
-        id="about-me"
-        className="absolute -top-[0px] h-[1px] w-full"
-      />
+      <div id="about-me" className="absolute -top-[0px] h-[1px] w-full" />
       <div
         ref={scrollRef}
         className="my-12 lg:my-16 flex flex-col gap-12 lg:gap-16 items-center"
@@ -48,11 +45,8 @@ function AboutMe() {
         }}
       >
         <div className="flex items-center">
-          <span
-            className="w-24 bg-[#1a1443]"
-            style={{ height: '0.5px' }}
-          ></span>
-          <span className="bg-[var(--section-first)] w-fit p-2 px-5 rounded-md border border-[#c9cec6]">
+          <span className="w-24 border-t border-gray-400"></span>
+          <span className="bg-[var(--section-first)] w-fit p-2 px-5 rounded-md border border-gray-300">
             <Text
               type="regular"
               as="span"
@@ -63,14 +57,14 @@ function AboutMe() {
             </Text>
           </span>
           <span
-            className="w-24 bg-[#1a1443]"
-            style={{ height: '0.5px' }}
+            className="w-24 border-t border-gray-400"
           ></span>
         </div>
 
         <div
           id="about-me-content"
-          className="container sticky top-[110px] lg:h-[490px] flex flex-row justify-between gap-8 lg:gap-16">
+          className="container sticky top-[110px] lg:h-[490px] flex flex-row justify-between gap-8 lg:gap-16"
+        >
           <div className="flex flex-col justify-center items-start w-[40%]">
             <Text
               type="normal"

@@ -67,7 +67,7 @@ const ImageBanner = () => {
           >
             <div
               style={{ borderWidth: '0.5px' }}
-              className="flex items-center gap-1 group-hover:gap-3 px-3 md:px-8 py-3 md:py-4 rounded-md bg-white border-gray-400 tracking-wider transition-all duration-300 ease-out bg-transparent group-hover:bg-[#F8F1F1] group-hover:border-[#F8F1F1] group-hover:shadow-md w-full btn-shine uppercase"
+              className="flex items-center gap-1 group-hover:gap-3 px-3 md:px-8 py-3 md:py-4 rounded-md bg-white border-gray-300 tracking-wider transition-all duration-300 ease-out bg-transparent group-hover:bg-[#F8F1F1] group-hover:border-[#F8F1F1] group-hover:shadow-md w-full btn-shine uppercase"
             >
               <Text
                 type="tiny"

@@ -48,25 +48,24 @@ function MyReadyGoods() {
     <div className="bg-white border border-transparent">
       <section
         ref={readyGoodsRef}
-        id="ready-goods"
+        id="collection"
         className={`container mt-12 lg:mt-16 ${
           totalPages > 1 ? 'lg:mb-[104px]' : 'lg:mb-[64px]'
         }`}
       >
         <div className="flex items-center justify-start relative my-12 lg:my-16">
-          <div className="bg-[var(--section-first)] absolute left-0 w-fit px-5 py-3 rounded-md border border-white">
+          <div className="bg-[var(--section-first)] absolute left-0 w-fit p-2 px-5 rounded-md border border-white">
             <Text
               type="regular"
               as="span"
               fontWeight="normal"
               className="text-[#e83894] uppercase rotate-90 p-2 px-5 bg-[var(--section-first)]"
             >
-              Ready Goods
+              Collection
             </Text>
           </div>
           <span
-            className="w-full bg-[#1a1443]"
-            style={{ height: '0.5px' }}
+            className="w-full border-t border-gray-400"
           ></span>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -81,7 +80,9 @@ function MyReadyGoods() {
             )}
           </div>
           <div className="col-span-2 h-full">
-            {newestGood && <NewestReadyGoodCard {...newestGood} readyGood={newestGood} />}
+            {newestGood && (
+              <NewestReadyGoodCard {...newestGood} readyGood={newestGood} />
+            )}
           </div>
           <div>
             {secondRowRight && (

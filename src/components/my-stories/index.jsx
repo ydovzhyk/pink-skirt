@@ -41,19 +41,18 @@ function MyStories() {
         }`}
       >
         <div className="flex items-center justify-start relative my-12 lg:my-16">
-          <div className="bg-[var(--section-first)] absolute left-0 w-fit px-5 py-3 rounded-md border border-[#dcdcc4]">
+          <div className="bg-[var(--section-first)] absolute left-0 w-fit p-2 px-5 rounded-md border border-gray-300">
             <Text
               type="regular"
               as="span"
               fontWeight="normal"
-              className="text-[#e83894] uppercase rotate-90 p-2 px-5 bg-[var(--section-first)]"
+              className="text-[#e83894] uppercase rotate-90 p-1 px-5 bg-[var(--section-first)]"
             >
               My Stories
             </Text>
           </div>
           <span
-            className="w-full bg-[#1a1443]"
-            style={{ height: '0.5px' }}
+            className="w-full border-t border-gray-400"
           ></span>
         </div>
 

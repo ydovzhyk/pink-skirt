@@ -10,12 +10,12 @@ function ContactSection() {
           type="regular"
           as="span"
           fontWeight="normal"
-          className="text-[#e83894] uppercase rotate-90 p-2 px-5 bg-[var(--section-first)]"
+          className="text-[#e83894] uppercase rotate-90 p-2 px-5 bg-[var(--section-first)] border border-gray-300 rounded-md"
         >
           CONTACTS
         </Text>
         <span
-          className="h-36 w-[1px] bg-[#1a1443]"
+          className="h-36 w-[1px] bg-gray-400"
         ></span>
       </div>
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 items-center">

@@ -4,6 +4,7 @@ import AboutMe from '../components/about-me';
 import MyStories from '../components/my-stories';
 import MyReadyGoods from '../components/my-ready-goods';
 import ImageBanner from '../components/shared/image-banner';
+import MyModel from '../components/my-model';
 
 export default function Home() {
   return (
@@ -11,9 +12,8 @@ export default function Home() {
       <VideoBanner type="top" id="top-banner" />
       <div className="w-full first-letter:flex flex-col items-center justify-center min-h-screen">
         <MyReadyGoods />
-      </div>
-      <ImageBanner />
-      <div className="w-full first-letter:flex flex-col items-center justify-center min-h-screen">
+        <MyModel />
+        <ImageBanner />
         <AboutMe />
         <ContactSection />
         <MyStories />
