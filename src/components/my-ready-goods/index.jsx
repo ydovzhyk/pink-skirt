@@ -45,28 +45,28 @@ function MyReadyGoods() {
   const secondRowRight = readyGoods[5];
 
   return (
-    <div className="bg-white border border-transparent">
-      <section
-        ref={readyGoodsRef}
-        id="collection"
+    <section
+      ref={readyGoodsRef}
+      id="collection"
+      className="bg-white border border-transparent"
+    >
+      <div
         className={`container mt-12 lg:mt-16 ${
           totalPages > 1 ? 'lg:mb-[104px]' : 'lg:mb-[64px]'
         }`}
       >
         <div className="flex items-center justify-start relative my-12 lg:my-16">
-          <div className="bg-[var(--section-first)] absolute left-0 w-fit p-2 px-5 rounded-md border border-white">
+          <div className="bg-[var(--section-first)] absolute left-0 w-fit p-2 px-5 rounded-md border border-gray-300">
             <Text
               type="regular"
               as="span"
               fontWeight="normal"
-              className="text-[#e83894] uppercase rotate-90 p-2 px-5 bg-[var(--section-first)]"
+              className="text-[#e83894] uppercase bg-[var(--section-first)]"
             >
               Collection
             </Text>
           </div>
-          <span
-            className="w-full border-t border-gray-400"
-          ></span>
+          <span className="w-full border-t border-gray-400"></span>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {firstRow.map(item => (
@@ -95,8 +95,8 @@ function MyReadyGoods() {
             <Pagination totalPages={totalPages} type="ready-goods" />
           </div>
         )}
-      </section>
-    </div>
+      </div>
+    </section>
   );
 }
 

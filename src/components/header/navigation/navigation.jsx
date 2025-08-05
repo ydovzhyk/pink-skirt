@@ -5,6 +5,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import { getIsLoginPanel } from '@/redux/auth/auth-selectors';
 import { getAllStories } from '@/redux/stories/stories-selectors';
 import { getAllReadyGoods } from '@/redux/ready-goods/ready-goods-selectors';
+import { getModelsList } from '@/redux/models/models-selectors';
 import { getActiveSection } from '@/redux/technical/technical-selectors';
 import clsx from 'clsx';
 import Text from '@/components/shared/text/text';
@@ -12,6 +13,7 @@ import Text from '@/components/shared/text/text';
 export const getSections = (
   hasReadyGoods = true,
   hasStories = true,
+  hasModels = true,
   allowedIds = null
 ) => {
   let sections = [
@@ -20,22 +22,26 @@ export const getSections = (
           {
             id: 'collection',
             label: 'Collection',
-            offset: -130,
-            offsetLogin: -190,
+            offset: -84,
+            offsetLogin: -144,
           },
         ]
       : []),
-    { id: 'models', label: 'Models', offset: -85, offsetLogin: -190 },
+    ...(hasModels
+      ? [
+          { id: 'models', label: 'Models', offset: -85, offsetLogin: -145 },
+        ]
+      : []),
     { id: 'fabric', label: 'Fabric', offset: -85, offsetLogin: -190 },
-    { id: 'about-me', label: 'About me', offset: -70, offsetLogin: -145 },
+    { id: 'about-me', label: 'About me', offset: -85, offsetLogin: -145 },
     { id: 'contacts', label: 'Contacts', offset: -130, offsetLogin: -190 },
     ...(hasStories
       ? [
           {
             id: 'stories',
             label: 'Stories',
-            offset: -135,
-            offsetLogin: -190,
+            offset: -150,
+            offsetLogin: -210,
           },
         ]
       : []),
@@ -56,11 +62,13 @@ const Navigation = ({ textColor = 'black' }) => {
   const activeSection = useSelector(getActiveSection);
   const stories = useSelector(getAllStories);
   const readyGoods = useSelector(getAllReadyGoods);
+  const modelItems = useSelector(getModelsList);
 
   const hasStories = stories.length > 0;
   const hasReadyGoods = readyGoods.length > 0;
+  const hasModels = modelItems.length > 0;
 
-  const sections = getSections(hasReadyGoods, hasStories);
+  const sections = getSections(hasReadyGoods, hasStories, hasModels);
 
   const handleNavigate = id => {
     const section = sections.find(sec => sec.id === id);

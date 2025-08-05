@@ -9,11 +9,13 @@ import {
 import { toast } from 'react-toastify';
 
 export const createReadyGood = createAsyncThunk(
-  '/api/create-ready-good',
+  '/api/ready-goods/create-ready-good',
   async (userData, { rejectWithValue }) => {
     try {
       const data = await axiosCreateReadyGood(userData);
-      if(data) {toast.success('Ready good successfully created!');}
+      if (data) {
+        toast.success('Ready good successfully created!');
+      }
       return data;
     } catch (error) {
       toast.error('Failed to create ready good.');
@@ -24,7 +26,7 @@ export const createReadyGood = createAsyncThunk(
 );
 
 export const getReadyGoods = createAsyncThunk(
-  '/api/get-ready-goods',
+  '/api/ready-goods/get-ready-goods',
   async (userData, { rejectWithValue }) => {
     try {
       const data = await axiosGetReadyGoods(userData);
@@ -38,7 +40,7 @@ export const getReadyGoods = createAsyncThunk(
 );
 
 export const getReadyGood = createAsyncThunk(
-  '/api/get-ready-good',
+  '/api/ready-goods/get-ready-good',
   async (userData, { rejectWithValue }) => {
     try {
       const data = await axiosGetReadyGood(userData);
@@ -52,11 +54,13 @@ export const getReadyGood = createAsyncThunk(
 );
 
 export const deleteReadyGood = createAsyncThunk(
-  '/api/delete-ready-good',
+  '/api/ready-goods/delete-ready-good',
   async (userData, { rejectWithValue }) => {
     try {
       const data = await axiosDeleteReadyGood(userData);
-      if(data) {toast.success('Ready good successfully deleted!');}
+      if (data) {
+        toast.success('Ready good successfully deleted!');
+      }
       return data;
     } catch (error) {
       toast.error('Failed to delete ready good.');
@@ -67,11 +71,13 @@ export const deleteReadyGood = createAsyncThunk(
 );
 
 export const editReadyGood = createAsyncThunk(
-  '/api/edit-ready-good',
+  '/api/ready-goods/edit-ready-good',
   async (userData, { rejectWithValue }) => {
     try {
       const data = await axiosEditReadyGood(userData);
-      if(data) {toast.success('Ready good successfully edited!');}
+      if (data) {
+        toast.success('Ready good successfully edited!');
+      }
       return data;
     } catch (error) {
       toast.error('Failed to edit ready good.');

@@ -39,7 +39,7 @@ function AboutMe() {
       <div id="about-me" className="absolute -top-[0px] h-[1px] w-full" />
       <div
         ref={scrollRef}
-        className="my-12 lg:my-16 flex flex-col gap-12 lg:gap-16 items-center"
+        className="mt-12 mb-16 flex flex-col gap-12 items-center"
         style={{
           height: `${totalScroll + visibleHeight}px`,
         }}

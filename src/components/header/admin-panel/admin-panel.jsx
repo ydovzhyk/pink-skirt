@@ -6,16 +6,19 @@ import { getIsLoginPanel } from '@/redux/auth/auth-selectors';
 import { getActiveSection } from '@/redux/technical/technical-selectors';
 import clsx from 'clsx';
 import Text from '@/components/shared/text/text';
-import { getSections } from '../navigation/navigation';
+
+  let sections = [
+    { id: 'admin-ready-goods', label: 'Admin Collection', offset: -130, offsetLogin: -190 },
+    { id: 'admin-models', label: 'Admin Models', offset: -85, offsetLogin: -148 },
+    { id: 'admin-fabric', label: 'Admin Fabric', offset: -85, offsetLogin: -190 },
+    { id: 'admin-stories', label: 'Admin Stories', offset: -135, offsetLogin: -148 },
+  ];
 
 const AdminPanel = ({ textColor = 'black' }) => {
   const pathname = usePathname();
   const router = useRouter();
   const isLoginPanel = useSelector(getIsLoginPanel);
   const activeSection = useSelector(getActiveSection);
-
-  const editableSectionIds = ['models', 'cloths', 'ready-goods', 'stories'];
-  const sections = getSections(true, true, editableSectionIds);
 
   const handleNavigate = id => {
     const section = sections.find(sec => sec.id === id);

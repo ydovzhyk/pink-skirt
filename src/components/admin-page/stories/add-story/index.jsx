@@ -51,6 +51,17 @@ const AddStory = () => {
       setIsLoading(true);
       setError('');
 
+      const hasPendingFiles = [
+        ...(mainImageRef.current?.files || []),
+        ...(imagesRef.current?.files || []),
+      ].some(file => file.size === 0);
+
+      if (hasPendingFiles) {
+        toast.error('Some files are still loading. Please wait...');
+        setIsLoading(false);
+        return;
+      }
+
       const imageUploadRes = await fetch('/api/upload-images', {
         method: 'POST',
         body: formData,
@@ -72,7 +83,7 @@ const AddStory = () => {
       await dispatch(getStories({ page: currentPage, limit: 2 })).unwrap();
 
       setTimeout(() => {
-        const el = document.getElementById('stories');
+        const el = document.getElementById('admin-stories');
         if (el) el.scrollIntoView({ behavior: 'smooth' });
       }, 100);
 

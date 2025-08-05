@@ -6,14 +6,15 @@ import { useSelector } from 'react-redux';
 import { getLogin } from '../../redux/auth/auth-selectors';
 import LoaderSpinner from '@/components/loader/loader';
 import { Suspense } from 'react';
-import {getAllStories} from '@/redux/stories/stories-selectors';
-import { getAllReadyGoods } from '../../redux/ready-goods/ready-goods-selectors';
 import MyStories from '@/components/my-stories/index.jsx';
 import AddStory from '@/components/admin-page/stories/add-story/index.jsx';
 import EditStory from '@/components/admin-page/stories/edit-story/index.jsx';
 import AddReadyGoods from '@/components/admin-page/ready-goods/add-ready-goods/index.jsx';
 import EditReadyGood from '@/components/admin-page/ready-goods/edit-ready-goods/index.jsx';
 import MyReadyGoods from '@/components/my-ready-goods/index.jsx';
+import MyModels from '@/components/my-model/index.jsx';
+import AddModel from '@/components/admin-page/models/add-models/index.jsx';
+import EditModel from '@/components/admin-page/models/edit-models/index.jsx';
 
 function AdminPage() {
   const isLogin = useSelector(getLogin);
@@ -40,13 +41,35 @@ function AdminPage() {
             </div>
           </div>
         </div>
+
+        {/* MyModels */}
+        <div
+          id="admin-models"
+          className="flex flex-col"
+          style={{
+            background: `linear-gradient(to bottom, rgba(250, 247, 195, 0.3), var(--section-fourth))`,
+          }}
+        >
+          <MyModels />
+          <div
+            style={{
+              background: `linear-gradient(to top, rgba(250, 247, 195, 0.3), var(--section-fourth))`,
+            }}
+          >
+            <div className="container grid grid-cols-1 gap-6 lg:grid-cols-2">
+              <AddModel />
+              <EditModel />
+            </div>
+          </div>
+        </div>
+
         {/* MyStories */}
         <div
           id="admin-stories"
-          className="flex flex-col gap-6 bg-[var(--section-third)]"
+          className="flex flex-col bg-[var(--section-third)]"
         >
           <MyStories />
-          <div className="container border-t border-black">
+          <div className="container">
             <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
               <AddStory />
               <EditStory />

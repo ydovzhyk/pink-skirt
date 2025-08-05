@@ -9,7 +9,7 @@ import {
 import { toast } from 'react-toastify';
 
 export const createStory = createAsyncThunk(
-  '/api/create-story',
+  '/api/stories/create-story',
   async (userData, { rejectWithValue }) => {
     try {
       const data = await axiosCreateStory(userData);
@@ -26,7 +26,7 @@ export const createStory = createAsyncThunk(
 );
 
 export const getStories = createAsyncThunk(
-  '/api/get-stories',
+  '/api/stories/get-stories',
   async (userData, { rejectWithValue }) => {
     try {
       const data = await axiosGetStories(userData);
@@ -40,7 +40,7 @@ export const getStories = createAsyncThunk(
 );
 
 export const getStory = createAsyncThunk(
-  '/api/get-story',
+  '/api/stories/get-story',
   async (userData, { rejectWithValue }) => {
     try {
       const data = await axiosGetStory(userData);
@@ -54,7 +54,7 @@ export const getStory = createAsyncThunk(
 );
 
 export const deleteStory = createAsyncThunk(
-  '/stories/delete',
+  '/api/stories/delete-story',
   async (userData, { rejectWithValue }) => {
     try {
       const data = await axiosDeleteStory(userData);
@@ -71,7 +71,7 @@ export const deleteStory = createAsyncThunk(
 );
 
 export const editStory = createAsyncThunk(
-  '/stories/edit',
+  '/api/stories/edit-story',
   async (userData, { rejectWithValue }) => {
     try {
       const data = await axiosEditStory(userData);

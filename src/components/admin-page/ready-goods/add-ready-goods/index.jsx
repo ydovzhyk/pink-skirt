@@ -154,6 +154,17 @@ const AddReadyGoods = () => {
       setIsLoading(true);
       setError('');
 
+      const hasPendingFiles = [
+        ...(mainImageRef.current?.files || []),
+        ...(imagesRef.current?.files || []),
+      ].some(file => file.size === 0);
+
+      if (hasPendingFiles) {
+        toast.error('Some files are still loading. Please wait...');
+        setIsLoading(false);
+        return;
+      }
+
       const imageUploadRes = await fetch('/api/upload-images', {
         method: 'POST',
         body: formData,
@@ -183,7 +194,7 @@ const AddReadyGoods = () => {
       await dispatch(getReadyGoods({ page: currentPage, limit: 6 })).unwrap();
 
       setTimeout(() => {
-        const el = document.getElementById('ready-goods');
+        const el = document.getElementById('admin-ready-goods');
         if (el) el.scrollIntoView({ behavior: 'smooth' });
       }, 100);
 
