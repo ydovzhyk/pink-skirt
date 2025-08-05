@@ -10,7 +10,7 @@ import Text from '@/components/shared/text/text';
   let sections = [
     { id: 'admin-ready-goods', label: 'Admin Collection', offset: -130, offsetLogin: -190 },
     { id: 'admin-models', label: 'Admin Models', offset: -85, offsetLogin: -148 },
-    { id: 'admin-fabric', label: 'Admin Fabric', offset: -85, offsetLogin: -190 },
+    { id: 'admin-fabrics', label: 'Admin Fabrics', offset: -85, offsetLogin: -190 },
     { id: 'admin-stories', label: 'Admin Stories', offset: -135, offsetLogin: -148 },
   ];
 

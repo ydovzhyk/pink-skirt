@@ -8,7 +8,6 @@ import {
 } from './stories-operations';
 
 const initialState = {
-  modalWindowStatus: false,
   error: null,
   message: null,
   loading: false,
@@ -24,9 +23,6 @@ const stories = createSlice({
   name: 'stories',
   initialState,
   reducers: {
-    setModalWindowStatus: (store, action) => {
-      store.modalWindowStatus = action.payload;
-    },
     setCurrentPageStories: (store, action) => {
       store.currentPageStories = action.payload;
     },

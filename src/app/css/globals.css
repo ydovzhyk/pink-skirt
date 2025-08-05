@@ -161,6 +161,16 @@
   min-height: 40px;
 }
 
+@layer utilities {
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+}
+
 :root {
   --accent: #e83894;
   --accent-transparent: rgba(232, 56, 148, 0.7);

@@ -4,7 +4,6 @@ const initialState = {
   error: '',
   message: '',
   loading: false,
-  modalWindowStatus: false,
   screenType: 'isDesctop',
   activeSection: null,
   link: '/?action=authorize&password=0503562938',
@@ -17,9 +16,6 @@ const technical = createSlice({
     setActiveSection: (store, action) => {
       store.activeSection = action.payload;
     },
-    setMessage: (store, action) => {
-      store.message = action.payload;
-    },
     clearTechnicalError: store => {
       store.error = '';
     },
@@ -28,9 +24,6 @@ const technical = createSlice({
     },
     setTechnicalError: (store, action) => {
       store.error = action.payload;
-    },
-    setModalWindowStatus: (store, action) => {
-      store.modalWindowStatus = action.payload;
     },
     setScreenType: (store, action) => {
       store.screenType = action.payload;
@@ -48,7 +41,5 @@ export const {
   clearTechnicalMessage,
   setActiveSection,
   setTechnicalError,
-  setMessage,
-  setModalWindowStatus,
   setScreenType,
 } = technical.actions;

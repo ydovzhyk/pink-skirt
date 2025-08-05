@@ -8,7 +8,6 @@ import {
 } from './ready-goods-operations';
 
 const initialState = {
-  modalWindowStatus: false,
   error: null,
   message: null,
   loading: false,
@@ -25,9 +24,6 @@ const readyGoods = createSlice({
   name: 'readyGoods',
   initialState,
   reducers: {
-    setModalWindowStatus: (store, action) => {
-      store.modalWindowStatus = action.payload;
-    },
     setCurrentPageReadyGoods: (store, action) => {
       store.currentPageReadyGoods = action.payload;
     },

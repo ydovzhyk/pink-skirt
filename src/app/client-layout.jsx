@@ -10,7 +10,6 @@ import { setActiveSection } from '@/redux/technical/technical-slice';
 import ActiveSectionObserver from '@/utils/active-section-observer';
 import 'react-toastify/dist/ReactToastify.css';
 import LoaderSpinner from '@/components/loader/loader';
-import ModalWindow from '@/components/modal-window-message/modal-window-message';
 import MediaQuery from '@/utils/media-query/media-query';
 import AuthProvider from '@/utils/auth-provider/auth-provider';
 import Header from '../components/header/header';
@@ -34,7 +33,6 @@ const ClientLayout = ({ children }) => {
     <div className="reletive min-h-screen flex flex-col justify-between">
       {loading && <LoaderSpinner />}
       <ToastContainer />
-      <ModalWindow />
       <MediaQuery />
       <AuthProvider />
       <ScrollToHashSection />

@@ -28,11 +28,9 @@ export const getSections = (
         ]
       : []),
     ...(hasModels
-      ? [
-          { id: 'models', label: 'Models', offset: -85, offsetLogin: -145 },
-        ]
+      ? [{ id: 'models', label: 'Models', offset: -85, offsetLogin: -145 }]
       : []),
-    { id: 'fabric', label: 'Fabric', offset: -85, offsetLogin: -190 },
+    { id: 'fabrics', label: 'Fabrics', offset: -85, offsetLogin: -190 },
     { id: 'about-me', label: 'About me', offset: -85, offsetLogin: -145 },
     { id: 'contacts', label: 'Contacts', offset: -130, offsetLogin: -190 },
     ...(hasStories
