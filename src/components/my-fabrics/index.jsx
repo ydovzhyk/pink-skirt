@@ -1,12 +1,14 @@
 'use client';
 
-import { useRef } from 'react';
+import { useRef, useEffect, useState } from 'react';
 import Text from '@/components/shared/text/text';
 import FabricCard from './fabric-card';
 import { IoIosArrowForward, IoIosArrowBack } from 'react-icons/io';
 
 function MyFabrics() {
   const sliderRef = useRef(null);
+  const [canScrollLeft, setCanScrollLeft] = useState(false);
+  const [canScrollRight, setCanScrollRight] = useState(true);
 
   const fabricsData = [
     {
@@ -48,6 +50,16 @@ function MyFabrics() {
 
   const scrollByAmount = 320;
 
+  const updateButtonVisibility = () => {
+    const slider = sliderRef.current;
+    if (!slider) return;
+
+    const { scrollLeft, scrollWidth, clientWidth } = slider;
+
+    setCanScrollLeft(scrollLeft > 0);
+    setCanScrollRight(scrollLeft + clientWidth < scrollWidth - 1); // -1 для уникнення округлення
+  };
+
   const handleScroll = direction => {
     if (sliderRef.current) {
       sliderRef.current.scrollBy({
@@ -57,16 +69,30 @@ function MyFabrics() {
     }
   };
 
+  useEffect(() => {
+    const slider = sliderRef.current;
+    if (!slider) return;
+
+    updateButtonVisibility();
+
+    const handleScrollEvent = () => updateButtonVisibility();
+
+    slider.addEventListener('scroll', handleScrollEvent);
+    window.addEventListener('resize', updateButtonVisibility);
+
+    return () => {
+      slider.removeEventListener('scroll', handleScrollEvent);
+      window.removeEventListener('resize', updateButtonVisibility);
+    };
+  }, []);
+
   return (
     <section
       id="fabrics"
       className="relative pt-12 pb-16 border border-transparent bg-cover bg-center"
-      style={{
-        backgroundImage: "url('/images/fabrics/fabric-bg.webp')",
-      }}
+      style={{ backgroundImage: "url('/images/fabrics/fabric-bg.webp')" }}
     >
-      <div className="absolute inset-0 bg-white opacity-30 z-0 pointer-events-none"></div>
-
+      <div className="absolute inset-0 bg-white opacity-30 z-0 pointer-events-none" />
       <div className="container relative flex flex-col items-center mt-8 gap-12">
         {/* Section title */}
         <div className="relative w-full flex items-center justify-start mb-6">
@@ -112,34 +138,34 @@ function MyFabrics() {
           </div>
 
           {/* LEFT SCROLL BUTTON */}
-          <button
-            className="group absolute top-1/2 left-0 transform -translate-y-1/2  z-10"
-            onClick={() => handleScroll('left')}
-          >
-            <div
-              style={{ borderWidth: '0.5px' }}
-              className="w-[50px] h-[50px] flex flex-row items-center justify-center group-hover:gap-3 rounded-full bg-white border-gray-300 tracking-wider transition-all duration-300 ease-out bg-transparent group-hover:bg-[#F8F1F1] group-hover:border-[#F8F1F1] group-hover:shadow-md btn-shine uppercase"
+          {canScrollLeft && (
+            <button
+              className="group absolute top-1/2 left-5 transform -translate-y-1/2 z-10"
+              onClick={() => handleScroll('left')}
             >
-              <div className="ml-[-3px] text-gray-800 group-hover:text-[#e83894] transition-colors duration-300">
-                <IoIosArrowBack />
+              <div
+                style={{ borderWidth: '0.5px' }}
+                className="w-[50px] h-[50px] flex items-center justify-center rounded-full bg-white border-gray-300 transition-all duration-300 group-hover:bg-[#F8F1F1] group-hover:border-[#F8F1F1] group-hover:shadow-md"
+              >
+                <IoIosArrowBack className="text-gray-800 group-hover:text-[#e83894] transition-colors duration-300" />
               </div>
-            </div>
-          </button>
+            </button>
+          )}
 
           {/* RIGHT SCROLL BUTTON */}
-          <button
-            className="group absolute top-1/2 right-0 transform -translate-y-1/2 z-10"
-            onClick={() => handleScroll('right')}
-          >
-            <div
-              style={{ borderWidth: '0.5px' }}
-              className="w-[50px] h-[50px] flex flex-row items-center justify-center group-hover:gap-3 rounded-full bg-white border-gray-300 tracking-wider transition-all duration-300 ease-out bg-transparent group-hover:bg-[#F8F1F1] group-hover:border-[#F8F1F1] group-hover:shadow-md btn-shine uppercase"
+          {canScrollRight && (
+            <button
+              className="group absolute top-1/2 right-5 transform -translate-y-1/2 z-10"
+              onClick={() => handleScroll('right')}
             >
-              <div className="mr-[-2px] text-gray-800 group-hover:text-[#e83894] transition-colors duration-300">
-                <IoIosArrowForward />
+              <div
+                style={{ borderWidth: '0.5px' }}
+                className="w-[50px] h-[50px] flex items-center justify-center rounded-full bg-white border-gray-300 transition-all duration-300 group-hover:bg-[#F8F1F1] group-hover:border-[#F8F1F1] group-hover:shadow-md"
+              >
+                <IoIosArrowForward className="text-gray-800 group-hover:text-[#e83894] transition-colors duration-300" />
               </div>
-            </div>
-          </button>
+            </button>
+          )}
         </div>
       </div>
     </section>
