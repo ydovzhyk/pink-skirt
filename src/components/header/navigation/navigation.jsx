@@ -53,7 +53,7 @@ export const getSections = (
 };
 
 
-const Navigation = ({ textColor = 'black' }) => {
+const Navigation = ({ textColor = '#444444' }) => {
   const pathname = usePathname();
   const router = useRouter();
   const isLoginPanel = useSelector(getIsLoginPanel);
@@ -89,7 +89,6 @@ const Navigation = ({ textColor = 'black' }) => {
     }, 50);
   };
 
-
   return (
     <nav className="relative w-full py-[13px]">
       <ul className="flex flex-row items-center justify-center gap-[20px] w-full">
@@ -102,10 +101,10 @@ const Navigation = ({ textColor = 'black' }) => {
                 className="relative block py-2 no-underline outline-none hover:no-underline group"
               >
                 <Text
-                  type="tiny"
+                  type="small"
                   as="p"
                   fontWeight="light"
-                  className={`text-${textColor}`}
+                  color={textColor}
                 >
                   {label}
                 </Text>

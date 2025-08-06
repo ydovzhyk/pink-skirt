@@ -38,7 +38,7 @@ const FabricCard = ({ id, title, imageUrls }) => {
 
   return (
     <div
-      className="relative w-full cursor-pointer group shadow-lg"
+      className="relative w-full cursor-pointer group border border-gray-300 shadow-lg rounded-md"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       onClick={handleNavigate}
@@ -54,7 +54,7 @@ const FabricCard = ({ id, title, imageUrls }) => {
       )}
 
       <div
-        className="w-full aspect-[3/4] overflow-hidden rounded-t-md border border-gray-300 bg-center bg-cover transition-all duration-300"
+        className="w-full aspect-[3/4] overflow-hidden rounded-t-md bg-center bg-cover transition-all duration-300"
         style={{
           backgroundImage: `url(${isHovered ? hoverImage : mainImageUrl})`,
         }}

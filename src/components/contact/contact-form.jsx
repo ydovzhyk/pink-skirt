@@ -55,21 +55,12 @@ function ContactForm() {
   };
 
   return (
-    <div>
-      <Text
-        type="normal"
-        as="p"
-        fontWeight="normal"
-        className={'text-black mb-5'}
-      >
-        Contact with me
-      </Text>
       <div className="max-w-3xl text-white rounded-md border border-[#464c6a] p-3 lg:p-5">
         <div className="flex flex-col gap-4">
           <div className="flex flex-col gap-2">
             <label className="text-base">
               <Text
-                type="tiny"
+                type="small"
                 as="p"
                 fontWeight="light"
                 className={'text-[var(--text-title)]'}
@@ -93,7 +84,7 @@ function ContactForm() {
           <div className="flex flex-col gap-2">
             <label>
               <Text
-                type="tiny"
+                type="small"
                 as="p"
                 fontWeight="light"
                 className={'text-[var(--text-title)]'}
@@ -119,7 +110,7 @@ function ContactForm() {
 
             {error.email && (
               <Text
-                type="tiny"
+                type="small"
                 as="p"
                 fontWeight="normal"
                 className="text-red-400"
@@ -132,7 +123,7 @@ function ContactForm() {
           <div className="flex flex-col gap-2">
             <label>
               <Text
-                type="tiny"
+                type="small"
                 as="p"
                 fontWeight="light"
                 className={'text-[var(--text-title)]'}
@@ -176,7 +167,7 @@ function ContactForm() {
               >
                 {isLoading ? (
                   <Text
-                    type="tiny"
+                    type="small"
                     as="span"
                     fontWeight="light"
                     className="text-[var(--text-title)]"
@@ -185,7 +176,7 @@ function ContactForm() {
                   </Text>
                 ) : (
                   <Text
-                    type="tiny"
+                    type="small"
                     as="span"
                     fontWeight="light"
                     className="text-[var(--text-title)]"
@@ -198,7 +189,6 @@ function ContactForm() {
           </div>
         </div>
       </div>
-    </div>
   );
 };
 

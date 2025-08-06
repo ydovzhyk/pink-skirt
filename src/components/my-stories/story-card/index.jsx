@@ -1,16 +1,18 @@
 'use client';
-// @flow strict
+
 import { useRouter, usePathname } from 'next/navigation';
 import { useDispatch, useSelector } from 'react-redux';
 import { setEditStory } from '@/redux/stories/stories-slice';
 import { deleteStory, getStories } from '@/redux/stories/stories-operations';
 import Text from '../../shared/text/text';
 import { getCurrentPageStories } from '@/redux/stories/stories-selectors';
+import { getScreenType } from '@/redux/technical/technical-selectors';
 
 const StoryCard = ({ id, title, date, content, mainImageUrl, story }) => {
   const router = useRouter();
   const dispatch = useDispatch();
   const currentPage = useSelector(getCurrentPageStories);
+  const screenType = useSelector(getScreenType);
 
   const pathname = usePathname();
   const isAdmin = pathname.startsWith('/admin');
@@ -42,14 +44,14 @@ const StoryCard = ({ id, title, date, content, mainImageUrl, story }) => {
   };
 
   return (
-    <div className="relative flex flex-col sm:flex-row sm:items-center">
+    <div className="relative flex flex-col lg:flex-row lg:items-center">
       <div
-        className="relative w-full sm:w-1/2 aspect-[3/4] rounded-md bg-cover bg-center"
+        className="relative w-full lg:w-[60%] aspect-[3/4] rounded-t-md lg:rounded-md bg-cover bg-center"
         style={{ backgroundImage: `url(${mainImageUrl})` }}
       ></div>
 
-      <div className="relative z-10 flex flex-col justify-between bg-white sm:absolute sm:right-[60px] sm:bottom-[-40px] w-full sm:w-1/2 aspect-[3/4] px-6 py-4 sm:px-6 sm:py-5 rounded-md shadow-lg">
-        <div className="flex flex-col gap-3">
+      <div className="w-full lg:w-[55%] min-h-[185px] md:min-h-[280px] lg:min-h-[385px] px-6 py-4 sm:px-6 sm:py-5 rounded-b-md lg:rounded-md shadow-lg bg-white flex flex-col justify-between lg:absolute lg:top-[40px] lg:left-[45%] lg:h-full lg:aspect-[3/4]">
+        <div className="w-full h-full flex flex-col gap-3">
           <Text
             type="normal"
             as="h3"
@@ -58,21 +60,30 @@ const StoryCard = ({ id, title, date, content, mainImageUrl, story }) => {
           >
             {title}
           </Text>
-          <Text type="tiny" as="p" fontWeight="light" className="text-black">
+          <Text type="small" as="p" fontWeight="light" className="text-black">
             {new Date(date).toDateString()}
           </Text>
           <Text
-            type="tiny"
+            type={
+              screenType === 'isDesktop'
+                ? 'tiny'
+                : screenType === 'isTablet'
+                  ? 'small'
+                  : screenType === 'isMobile'
+                    ? 'tiny'
+                    : 'normal'
+            }
             as="p"
             fontWeight="light"
-            lineHeight="snug"
-            className="text-black whitespace-pre-line"
+            lineHeight="normal"
+            className="text-[var(--text-title)] whitespace-pre-line"
           >
-            {String(content.slice(0, 240)) + '...'}
+            {String(content.slice(0, 165)) + '...'}
           </Text>
         </div>
+
         <button
-          className="border-b border-gray-400 hover:border-[var(--accent)] w-fit transition-colors duration-200"
+          className="border-b border-gray-400 hover:border-[var(--accent)] w-fit transition-colors duration-200 mt-3 md:mt-0"
           onClick={handleNavigate}
         >
           <Text
@@ -84,6 +95,7 @@ const StoryCard = ({ id, title, date, content, mainImageUrl, story }) => {
             Read more
           </Text>
         </button>
+
         {isAdmin && (
           <div className="absolute top-[-55px] left-0 w-full flex flex-row gap-[80px] items-center justify-center mt-4 rounded-md bg-white shadow-lg p-2">
             <button

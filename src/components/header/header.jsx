@@ -49,7 +49,7 @@ const Header = () => {
       <div className="container mx-auto py-3 flex items-center justify-between relative">
         <div>
           <Navigation
-            textColor={headerState === 'transparent' ? 'white' : 'black'}
+            textColor={headerState === 'transparent' ? 'white' : '#444444'}
           />
         </div>
 
@@ -59,14 +59,14 @@ const Header = () => {
 
         <div>
           <TranslateMe
-            textColor={headerState === 'transparent' ? 'white' : 'black'}
+            textColor={headerState === 'transparent' ? 'white' : '#444444'}
           />
         </div>
       </div>
 
       {isLoginPanel && (
         <AdminPanel
-          textColor={headerState === 'transparent' ? 'white' : 'black'}
+          textColor={headerState === 'transparent' ? 'white' : '#444444'}
         />
       )}
     </header>

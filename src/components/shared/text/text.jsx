@@ -11,15 +11,16 @@ const Text = ({
   className,
   noTranslate = false,
   textShadow = null, // 'black' | 'white' | null
+  color,
 }) => {
   const typeClasses = {
-    xxl: 'text-3xl sm:text-3xl md:text-4xl lg:text-5xl',
-    title: 'text-xl sm:text-2xl md:text-3xl lg:text-4xl',
-    normal: 'text-base sm:text-lg md:text-xl lg:text-2xl',
-    regular: 'text-sm sm:text-base md:text-lg lg:text-xl',
-    small: 'text-xs sm:text-sm md:text-base lg:text-lg',
-    tiny: 'text-[16px]',
-    extraSmall: 'text-[12px] sm:text-[12px] md:text-[12px] lg:text-[12px]',
+    xxl: 'text-[30px] sm:text-[30px] md:text-[36px] lg:text-[48px]', // раніше: 3xl → 30px, 4xl → 36px, 5xl → 48px
+    title: 'text-[20px] sm:text-[24px] md:text-[30px] lg:text-[36px]', // xl → 20px, 2xl → 24px, 3xl → 30px, 4xl → 36px
+    normal: 'text-[16px] sm:text-[18px] md:text-[20px] lg:text-[24px]', // base → 16px, lg → 18px, xl → 20px, 2xl → 24px
+    regular: 'text-[18px] sm:text-[16px] md:text-[18px] lg:text-[20px]', // спец: 18 → 16 → 18 → 20
+    tiny: 'text-[16px] sm:text-[17px] md:text-[18px] lg:text-[20px]', // вручну оновлено
+    small: 'text-[12px] sm:text-[14px] md:text-[16px] lg:text-[18px]', // xs → 12px, sm → 14px, base → 16px, lg → 18px
+    extraSmall: 'text-[12px]', // фіксований 12px
   };
 
   const fontClasses = {
@@ -58,6 +59,7 @@ const Text = ({
       )}
       style={{
         lineHeight: lineHeightValues[lineHeight],
+        color,
         ...(textShadow === 'black' && {
           textShadow: '2px 1px 1px rgba(0, 0, 0, 0.5)',
         }),

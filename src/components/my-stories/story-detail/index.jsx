@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import { getAllStories } from '@/redux/stories/stories-selectors';
 import { getStories } from '@/redux/stories/stories-operations';
 import Text from '../../shared/text/text';
+import { getScreenType } from '@/redux/technical/technical-selectors';
 
 const StoryDetail = ({
   id,
@@ -17,6 +18,7 @@ const StoryDetail = ({
 }) => {
   const [activeImage, setActiveImage] = useState(mainImageUrl);
   const allStories = useSelector(getAllStories);
+  const screenType = useSelector(getScreenType);
   const router = useRouter();
   const dispatch = useDispatch();
 
@@ -57,45 +59,41 @@ const StoryDetail = ({
   return (
     <section
       id="story-detail"
-      className="container my-12 lg:my-16 flex flex-col gap-12"
+      className="container py-12 lg:py-16 flex flex-col gap-10 lg:gap-12"
     >
       <div className="flex flex-col justify-center items-center">
         <div className="text-center">
           <Text
             type="normal"
-            as="p"
-            fontWeight="normal"
+            as="h2"
+            fontWeight="medium"
             className="text-black mb-5"
           >
             {title}
           </Text>
-          <Text type="tiny" as="p" fontWeight="light" className="text-black">
+          <Text type="small" as="p" fontWeight="light" className="text-black">
             {new Date(date).toDateString()}
           </Text>
         </div>
       </div>
 
-      <div>
-        <div className="grid gap-10 md:grid-cols-2">
-          {/* Фото та слайдер у спільному контейнері */}
-          <div className="w-full max-w-[600px] mx-auto">
+        <div className="grid gap-10 lg:grid-cols-2">
+          <div className="w-full">
             {activeImage && (
-              <div className="aspect-[4/3] w-full">
-                <div
-                  className="w-full h-full bg-cover bg-center rounded-md"
-                  style={{ backgroundImage: `url(${activeImage})` }}
-                ></div>
-              </div>
+              <div
+                className="w-full aspect-[4/3] bg-cover bg-center rounded-md"
+                style={{ backgroundImage: `url(${activeImage})` }}
+              ></div>
             )}
 
             {additionalImageUrls.length > 0 && (
               <div className="mt-4 overflow-x-auto">
-                <div className="flex gap-2 justify-start overflow-x-auto scroll-smooth thin-scrollbar pb-2">
+                <div className="flex gap-[2%] justify-start overflow-x-auto scroll-smooth thin-scrollbar pb-2">
                   {[mainImageUrl, ...additionalImageUrls].map((img, i) => (
                     <div
                       key={i}
                       onClick={() => setActiveImage(img)}
-                      className={`min-w-[140px] h-[90px] flex-shrink-0 bg-cover bg-center cursor-pointer rounded-md ${
+                      className={`min-w-[32%] aspect-[4/3] flex-shrink-0 bg-cover bg-center cursor-pointer rounded-md ${
                         activeImage === img
                           ? 'border-[var(--accent)] border-2'
                           : 'border-transparent'
@@ -108,22 +106,27 @@ const StoryDetail = ({
             )}
           </div>
 
-          {/* Текстовий контент */}
           <div className="flex flex-col justify-center items-start">
             <Text
-              type="small"
+              type={
+                screenType === 'isDesktop'
+                  ? 'tiny'
+                  : screenType === 'isTablet'
+                    ? 'small'
+                    : screenType === 'isMobile'
+                      ? 'tiny'
+                      : 'normal'
+              }
               as="p"
               fontWeight="light"
-              lineHeight="normal"
+              lineHeight="snug"
               className="text-[var(--text-title)] whitespace-pre-line"
             >
               {content}
             </Text>
           </div>
         </div>
-      </div>
 
-      {/* Навігація між постами */}
       <div className="flex justify-between items-center">
         <button
           onClick={handlePreviousPost}

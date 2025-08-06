@@ -1,5 +1,7 @@
 'use client';
 
+import { useSelector } from 'react-redux';
+import { getScreenType } from '@/redux/technical/technical-selectors';
 import Text from '@/components/shared/text/text';
 import Link from 'next/link';
 import { FaTelegramPlane, FaWhatsapp } from 'react-icons/fa';
@@ -11,14 +13,30 @@ import Logo from '../shared/logo/logo';
 import FooterNavigation from './footer-navigation/footer-navigation';
 
 const Footer = () => {
+  const screenType = useSelector(getScreenType);
+
+  let width;
+  let height;
+
+  if (screenType === 'isMobile') {
+    width = 300;
+    height = Math.round(300 * 0.2726);
+  } else if (screenType === 'isTablet') {
+    width = 500;
+    height = Math.round(500 * 0.2726);
+  } else if (screenType === 'isDesktop') {
+    width = 650;
+    height = Math.round(650 * 0.2726);
+  }
+
   return (
     <footer
       id="footer"
-      className="bg-[var(--section-first)] flex flex-col gap-12 py-12 border-t border-gray-200 shadow-sm"
+      className="bg-[var(--section-first)] flex flex-col gap-10 lg:gap-12 py-12 lg:py-16 border-t border-gray-200 shadow-sm"
     >
       <PartnersSlider />
-      <div className="container w-[80%] flex flex-row justify-between">
-        <div>
+      <div className="container w-full lg:w-[80%] flex flex-col gap-10 lg:gap-12 md:flex-row md:justify-between">
+        <div className="ml-6 md:ml-0">
           <Text
             type="regular"
             as="p"
@@ -29,7 +47,7 @@ const Footer = () => {
           </Text>
           <FooterNavigation />
         </div>
-        <div>
+        <div className="ml-6 md:ml-0">
           <Text
             type="regular"
             as="p"
@@ -113,7 +131,7 @@ const Footer = () => {
             </li>
           </ul>
         </div>
-        <div>
+        <div className="ml-6 md:ml-0">
           <Text
             type="regular"
             as="p"
@@ -144,8 +162,8 @@ const Footer = () => {
           </ul>
         </div>
       </div>
-      <div className="container w-full flex flex-col items-center justify-center my-[-35px]">
-        <Logo width={561} height={153} />
+      <div className="container w-full flex flex-col items-center justify-center lg:my-[-25px] my-[-10px]">
+        <Logo width={width} height={height} />
       </div>
       <div className="container w-full flex flex-col items-center justify-center">
         <Text type="tiny" as="span" fontWeight="light" className="text-inherit">

@@ -1,35 +1,48 @@
 'use client';
 
 import { useRouter, usePathname } from 'next/navigation';
+import { useSelector } from 'react-redux';
 import Text from '@/components/shared/text/text';
-
-const sections = [
-  { id: 'models', label: 'Models' },
-  { id: 'cloths', label: 'Cloths' },
-  { id: 'finished-goods', label: 'Finished goods' },
-  { id: 'about', label: 'About me' },
-  { id: 'contacts', label: 'Contacts' },
-];
+import { getIsLoginPanel } from '@/redux/auth/auth-selectors';
+import { getAllStories } from '@/redux/stories/stories-selectors';
+import { getAllReadyGoods } from '@/redux/ready-goods/ready-goods-selectors';
+import { getModelsList } from '@/redux/models/models-selectors';
+import { getSections } from '@/components/header/navigation/navigation';
 
 const FooterNavigation = () => {
   const router = useRouter();
   const pathname = usePathname();
 
-  const handleNavigate = id => {
-    if (pathname !== '/') {
-      router.push(`/#${id}`);
-    } else {
-      const element = document.getElementById(id);
-      if (element) {
-        const yOffset = -100;
-        const y =
-          element.getBoundingClientRect().top + window.pageYOffset + yOffset;
+  const isLoginPanel = useSelector(getIsLoginPanel);
+  const stories = useSelector(getAllStories);
+  const readyGoods = useSelector(getAllReadyGoods);
+  const modelItems = useSelector(getModelsList);
 
-        window.scrollTo({
-          top: y,
-          behavior: 'smooth',
-        });
-      }
+  const hasStories = stories.length > 0;
+  const hasReadyGoods = readyGoods.length > 0;
+  const hasModels = modelItems.length > 0;
+
+  const sections = getSections(hasReadyGoods, hasStories, hasModels);
+
+  const handleNavigate = id => {
+    const section = sections.find(sec => sec.id === id);
+    const yOffset = isLoginPanel ? section?.offsetLogin : section?.offset;
+
+    router.push(`/#${id}`);
+
+    if (pathname === '/') {
+      setTimeout(() => {
+        const element = document.getElementById(id);
+        if (element && yOffset !== undefined) {
+          const y =
+            element.getBoundingClientRect().top + window.pageYOffset + yOffset;
+
+          window.scrollTo({
+            top: y,
+            behavior: 'smooth',
+          });
+        }
+      }, 50);
     }
   };
 
