@@ -17,33 +17,44 @@ function AboutMe() {
   // Mobile version horizontal slider
   const sliderRef = useRef(null);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
-  const [canScrollRight, setCanScrollRight] = useState(false);
+  const [canScrollRight, setCanScrollRight] = useState(true);
+  const scrollByAmount = 320;
 
-const handleScroll = direction => {
-  if (!sliderRef.current) return;
-  const scrollAmount = 300;
+  const updateButtonVisibility = () => {
+    const slider = sliderRef.current;
+    if (!slider) return;
 
-  if (direction === 'left') {
-    sliderRef.current.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
-  } else {
-    sliderRef.current.scrollBy({ left: scrollAmount, behavior: 'smooth' });
-  }
-};
+    const { scrollLeft, scrollWidth, clientWidth } = slider;
 
-useEffect(() => {
-  const checkScroll = () => {
-    if (!sliderRef.current) return;
-    const { scrollLeft, scrollWidth, clientWidth } = sliderRef.current;
     setCanScrollLeft(scrollLeft > 0);
-    setCanScrollRight(scrollLeft < scrollWidth - clientWidth);
+    setCanScrollRight(scrollLeft + clientWidth < scrollWidth - 1);
   };
 
-  checkScroll();
-  const ref = sliderRef.current;
-  ref?.addEventListener('scroll', checkScroll);
-  return () => ref?.removeEventListener('scroll', checkScroll);
-}, []);
+  const handleScroll = direction => {
+    if (sliderRef.current) {
+      sliderRef.current.scrollBy({
+        left: direction === 'left' ? -scrollByAmount : scrollByAmount,
+        behavior: 'smooth',
+      });
+    }
+  };
 
+  useEffect(() => {
+    const slider = sliderRef.current;
+    if (!slider) return;
+
+    updateButtonVisibility();
+
+    const handleScrollEvent = () => updateButtonVisibility();
+
+    slider.addEventListener('scroll', handleScrollEvent);
+    window.addEventListener('resize', updateButtonVisibility);
+
+    return () => {
+      slider.removeEventListener('scroll', handleScrollEvent);
+      window.removeEventListener('resize', updateButtonVisibility);
+    };
+  }, []);
   // End of mobile version horizontal slider
 
   // Desktop version vertical slider
@@ -250,24 +261,32 @@ useEffect(() => {
 
             {/* HORIZONTAL SLIDER */}
             <div className="relative w-full">
-              {/* Buttons */}
+              {/* LEFT SCROLL BUTTON */}
               {canScrollLeft && (
                 <button
-                  className="group absolute top-1/2 left-2 transform -translate-y-1/2 z-10"
+                  className="group absolute top-1/2 left-5 transform -translate-y-1/2 z-10"
                   onClick={() => handleScroll('left')}
                 >
-                  <div className="w-[40px] h-[40px] flex items-center justify-center rounded-full bg-white border border-gray-300 group-hover:shadow-md">
-                    <IoIosArrowBack className="text-gray-800 group-hover:text-[#e83894]" />
+                  <div
+                    style={{ borderWidth: '0.5px' }}
+                    className="w-[50px] h-[50px] flex items-center justify-center rounded-full bg-white border-gray-300 transition-all duration-300 group-hover:bg-[#F8F1F1] group-hover:border-[#F8F1F1] group-hover:shadow-md"
+                  >
+                    <IoIosArrowBack className="text-gray-800 group-hover:text-[#e83894] transition-colors duration-300" />
                   </div>
                 </button>
               )}
+
+              {/* RIGHT SCROLL BUTTON */}
               {canScrollRight && (
                 <button
-                  className="group absolute top-1/2 right-2 transform -translate-y-1/2 z-10"
+                  className="group absolute top-1/2 right-5 transform -translate-y-1/2 z-10"
                   onClick={() => handleScroll('right')}
                 >
-                  <div className="w-[40px] h-[40px] flex items-center justify-center rounded-full bg-white border border-gray-300 group-hover:shadow-md">
-                    <IoIosArrowForward className="text-gray-800 group-hover:text-[#e83894]" />
+                  <div
+                    style={{ borderWidth: '0.5px' }}
+                    className="w-[50px] h-[50px] flex items-center justify-center rounded-full bg-white border-gray-300 transition-all duration-300 group-hover:bg-[#F8F1F1] group-hover:border-[#F8F1F1] group-hover:shadow-md"
+                  >
+                    <IoIosArrowForward className="text-gray-800 group-hover:text-[#e83894] transition-colors duration-300" />
                   </div>
                 </button>
               )}
@@ -275,12 +294,12 @@ useEffect(() => {
               {/* Image Scroll Area */}
               <div
                 ref={sliderRef}
-                className="w-full flex gap-4 overflow-x-auto scroll-smooth no-scrollbar"
+                className="flex gap-6 overflow-x-auto scroll-smooth no-scrollbar"
               >
                 {images.map((src, index) => (
                   <div
                     key={index}
-                    className="min-w-[310px] h-[270px] flex-shrink-0 rounded-md bg-cover bg-center"
+                    className="min-w-[300px] aspect-[3/4] flex-shrink-0 rounded-md bg-cover bg-center"
                     style={{ backgroundImage: `url(${src})` }}
                   />
                 ))}

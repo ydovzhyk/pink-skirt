@@ -6,10 +6,6 @@ import FabricCard from './fabric-card';
 import { IoIosArrowForward, IoIosArrowBack } from 'react-icons/io';
 
 function MyFabrics() {
-  const sliderRef = useRef(null);
-  const [canScrollLeft, setCanScrollLeft] = useState(false);
-  const [canScrollRight, setCanScrollRight] = useState(true);
-
   const fabricsData = [
     {
       id: '1',
@@ -47,7 +43,9 @@ function MyFabrics() {
       imageUrls: ['/images/fabrics/013.webp', '/images/fabrics/014.webp'],
     },
   ];
-
+  const sliderRef = useRef(null);
+  const [canScrollLeft, setCanScrollLeft] = useState(false);
+  const [canScrollRight, setCanScrollRight] = useState(true);
   const scrollByAmount = 320;
 
   const updateButtonVisibility = () => {
@@ -57,7 +55,7 @@ function MyFabrics() {
     const { scrollLeft, scrollWidth, clientWidth } = slider;
 
     setCanScrollLeft(scrollLeft > 0);
-    setCanScrollRight(scrollLeft + clientWidth < scrollWidth - 1); // -1 для уникнення округлення
+    setCanScrollRight(scrollLeft + clientWidth < scrollWidth - 1);
   };
 
   const handleScroll = direction => {
