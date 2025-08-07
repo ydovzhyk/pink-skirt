@@ -35,29 +35,29 @@ const Footer = () => {
       className="bg-[var(--section-first)] flex flex-col gap-10 lg:gap-12 py-12 lg:py-16 border-t border-gray-200 shadow-sm"
     >
       <PartnersSlider />
-      <div className="container w-full lg:w-[80%] flex flex-col gap-10 lg:gap-12 md:flex-row md:justify-between">
-        <div className="ml-6 md:ml-0">
+      <div className="container w-full lg:w-[80%] flex flex-col md:flex-row gap-10 lg:gap-12 items-center md:items-start md:justify-between">
+        <div className="w-full flex flex-col items-center sm:items-start gap-4">
           <Text
             type="regular"
             as="p"
             fontWeight="light"
-            className={'text-black mb-4'}
+            className={'text-black'}
           >
-            Navigate
+            Navigate:
           </Text>
           <FooterNavigation />
         </div>
-        <div className="ml-6 md:ml-0">
+        <div className="w-full flex flex-col items-center sm:items-start gap-4">
           <Text
             type="regular"
             as="p"
             fontWeight="light"
-            className={'text-black mb-4'}
+            className={'text-black'}
           >
-            Contact me
+            Contact me:
           </Text>
           <ul className="flex flex-col gap-[15px]">
-            <li>
+            <li className="w-full flex flex-col items-center sm:items-start">
               <a
                 href="https://t.me/pinkskirt_uk"
                 target="_blank"
@@ -76,7 +76,7 @@ const Footer = () => {
                 </Text>
               </a>
             </li>
-            <li>
+            <li className="w-full flex flex-col items-center sm:items-start">
               <a
                 href="https://wa.me/447748068828"
                 target="_blank"
@@ -95,7 +95,7 @@ const Footer = () => {
                 </Text>
               </a>
             </li>
-            <li>
+            <li className="w-full flex flex-col items-center sm:items-start">
               <a
                 href="mailto:pinkskirt.atelier@gmail.com"
                 className="flex items-center gap-2 transition-colors text-gray-500 duration-300 hover:text-black"
@@ -112,7 +112,7 @@ const Footer = () => {
                 </Text>
               </a>
             </li>
-            <li>
+            <li className="w-full flex flex-col items-center sm:items-start">
               <a
                 href="tel:+447748068828"
                 className="flex items-center gap-2 transition-colors text-gray-500 duration-300 hover:text-black"
@@ -131,14 +131,14 @@ const Footer = () => {
             </li>
           </ul>
         </div>
-        <div className="ml-6 md:ml-0">
+        <div className="w-full md:w-[30%] flex flex-col items-center sm:items-start gap-4">
           <Text
             type="regular"
             as="p"
             fontWeight="light"
-            className={'text-black mb-4'}
+            className={'text-black'}
           >
-            Follow me
+            Follow me:
           </Text>
           <ul className="flex flex-col gap-2">
             <li>
