@@ -42,7 +42,7 @@ function ContactSection() {
                     ? 'small'
                     : screenType === 'isMobile'
                       ? 'tiny'
-                      : 'normal'
+                      : 'tiny'
               }
               as="p"
               fontWeight="light"
@@ -59,7 +59,7 @@ function ContactSection() {
                     ? 'small'
                     : screenType === 'isMobile'
                       ? 'tiny'
-                      : 'normal'
+                      : 'tiny'
               }
               as="p"
               fontWeight="light"

@@ -24,9 +24,9 @@ const Footer = () => {
   } else if (screenType === 'isTablet') {
     width = 500;
     height = Math.round(500 * 0.2726);
-  } else if (screenType === 'isDesktop') {
+  } else if (screenType === 'isDesktop' || screenType === 'isLaptop') {
     width = 650;
-    height = Math.round(650 * 0.2726);
+    height = Math.round(600 * 0.2726);
   }
 
   return (

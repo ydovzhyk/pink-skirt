@@ -10,7 +10,7 @@ import { deleteReadyGood, getReadyGoods } from '@/redux/ready-goods/ready-goods-
 
 const ReadyGoodCard = ({
   id,
-  title,
+  title = '',
   mainImageUrl,
   additionalImageUrls = [],
   readyGood,

@@ -5,7 +5,6 @@ import Text from '../text/text';
 import { getSections } from '../../header/navigation/navigation';
 
 const ImageBanner = () => {
-
   const sections = getSections();
   const router = useRouter();
 
@@ -31,32 +30,32 @@ const ImageBanner = () => {
   };
 
   return (
-    <div className="relative w-full h-[300px] md:h-[350px] lg:h-[500px] flex flex-row border-t border-b border-gray-200">
-      {/* Ліва частина */}
+    <div className="relative w-full h-[450px] lg:h-[500px] flex flex-row border-t border-b border-gray-200">
+      {/* Ліва частина — тільки на md і більше */}
       <div
-        className="w-1/2 h-full bg-cover bg-center"
+        className="hidden md:block w-1/2 h-full bg-cover bg-center"
         style={{
           backgroundImage: "url('/images/image-banner/banner01.webp')",
         }}
       ></div>
 
-      {/* Права частина */}
+      {/* Права частина — на мобілці займає всю ширину */}
       <div
-        className="w-1/2 h-full bg-cover bg-center"
+        className="w-full md:w-1/2 h-full bg-cover bg-center"
         style={{
           backgroundImage: "url('/images/image-banner/banner02.webp')",
         }}
       ></div>
 
       {/* Текст по центру банера */}
-      <div className="absolute inset-0 flex items-center justify-center px-4">
+
+      <div className="absolute inset-0 flex items-end md:items-center justify-center px-4 pb-12 md:pb-0">
         <div className="max-w-[300px] flex flex-col items-center gap-10">
           <Text
             type="title"
             as="p"
             fontWeight="normal"
-            className="text-[#4C4C4C] text-center"
-            textShadow="white"
+            className="text-[#4c4c4ccf] text-center"
           >
             Enduring charm, playfully modern
           </Text>
@@ -70,7 +69,7 @@ const ImageBanner = () => {
               className="flex items-center gap-1 group-hover:gap-3 px-3 md:px-8 py-3 md:py-4 rounded-md bg-white border-gray-300 tracking-wider transition-all duration-300 ease-out bg-transparent group-hover:bg-[#F8F1F1] group-hover:border-[#F8F1F1] group-hover:shadow-md w-full btn-shine uppercase"
             >
               <Text
-                type="tiny"
+                type="small"
                 as="span"
                 fontWeight="light"
                 className="text-[var(--text-title)]"

@@ -1,16 +1,19 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import { useSelector } from 'react-redux';
 import translate from 'translate'
 import languagesAndCodes from './languagesAndCodes'
 import SelectField from '@/components/shared/select-field/select-field'
 import { useLanguage } from './language-context'
+import { getScreenType } from '@/redux/technical/technical-selectors'
 
 translate.key = process.env.NEXT_PUBLIC_TRANSLATE_API_KEY || ''
 
 export default function TranslateMe({ textColor = 'black' }) {
   const { updateLanguageIndex } = useLanguage();
   const [languageIndex, setLanguageIndex] = useState(0);
+  const screenType = useSelector(getScreenType);
 
   useEffect(() => {
     const savedIndex = localStorage.getItem('mental-health.languageIndex');
@@ -22,7 +25,7 @@ export default function TranslateMe({ textColor = 'black' }) {
 
   const options = languagesAndCodes.languages.map((language, index) => ({
     value: index.toString(),
-    label: language.lang,
+    label: screenType !== 'isDesktop' ? language.code.toUpperCase() : language.lang,
   }));
 
   const handleChange = async selectedOption => {
@@ -44,7 +47,7 @@ export default function TranslateMe({ textColor = 'black' }) {
         placeholder="Language"
         required={true}
         options={options}
-        width="125px"
+        width={screenType !== 'isDesktop' ? 80 : 125}
         topPlaceholder={false}
         textColor={textColor}
       />

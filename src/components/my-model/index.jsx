@@ -101,7 +101,7 @@ function MyModel() {
             onMouseLeave={startAutoplay}
           >
             <button
-              className="group absolute left-0 z-10"
+              className="group absolute left-5 z-10"
               onClick={handlePrev}
             >
               <div
@@ -114,7 +114,7 @@ function MyModel() {
               </div>
             </button>
 
-            <div className="flex gap-6 justify-center w-full max-w-[1200px] px-10">
+            <div className="flex gap-6 justify-center w-full">
               {visibleItems.map(item => (
                 <div key={item.id} className="flex-1 min-w-0">
                   <ModelCard model={item} />
@@ -123,7 +123,7 @@ function MyModel() {
             </div>
 
             <button
-              className="group absolute right-0 z-10"
+              className="group absolute right-5 z-10"
               onClick={handleNext}
             >
               <div

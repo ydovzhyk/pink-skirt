@@ -1,7 +1,10 @@
 'use client';
 
+import { useSelector } from 'react-redux';
+import { getScreenType } from '@/redux/technical/technical-selectors';
 import Logo from '../logo/logo';
 import Text from '../text/text';
+
 
 const quotes = [
   'Fashion should be as unique as you are.',
@@ -21,25 +24,69 @@ const quotes = [
   'She believed she could, so she dressed like she would.',
 ];
 
-const QuoteRow = () => (
-  <div className="flex items-center whitespace-nowrap py-3 mb-[-40px]">
-    {quotes.map((quote, index) => (
-      <div key={index} className="flex items-center gap-3 min-w-max">
-        <div className="mt-[-20px] ml-[-5px]">
-          <Logo width={211} height={58} />
+const QuoteRow = () => {
+  const screenType = useSelector(getScreenType);
+
+  const getLogoSize = screenType => {
+    switch (screenType) {
+      case 'isDesktop':
+        return { width: 211, height: 58, marginTop: '-25px' };
+      case 'isLaptop':
+        return { width: 179, height: 49, marginTop: '-23px' };
+      case 'isTablet':
+        return { width: 152, height: 42, marginTop: '-21px' };
+      case 'isMobile':
+        return { width: 129, height: 36, marginTop: '-19px' };
+      default:
+        return { width: 211, height: 58, marginTop: '-25px' };
+    }
+  };
+
+  const { width, height, marginTop } = getLogoSize(screenType);
+
+  return (
+    <div
+      className="flex items-center whitespace-nowrap pt-5"
+      style={{
+        marginBottom:
+          screenType === 'isDesktop'
+            ? '-50px'
+            : screenType === 'isLaptop'
+              ? '-50px'
+              : screenType === 'isTablet'
+                ? '-85px'
+                : '-85px',
+      }}
+    >
+      {quotes.map((quote, index) => (
+        <div key={index} className="flex items-center gap-3 min-w-max">
+          <div style={{ marginTop }} className="ml-[5px]">
+            <Logo width={width} height={height} />
+          </div>
+          <Text
+            type={
+              screenType === 'isDesktop'
+                ? 'tiny'
+                : screenType === 'isLaptop'
+                  ? 'tiny'
+                  : screenType === 'isTablet'
+                    ? 'small'
+                    : screenType === 'isMobile'
+                      ? 'normal'
+                      : 'tiny'
+            }
+            as="p"
+            fontWeight="thin"
+            lineHeight="snug"
+            className="ext-[#4C4C4C]"
+          >
+            {quote}
+          </Text>
         </div>
-        <Text
-          type="normal"
-          as="span"
-          fontWeight="thin"
-          className="text-[#4C4C4C]"
-        >
-          {quote}
-        </Text>
-      </div>
-    ))}
-  </div>
-);
+      ))}
+    </div>
+  );
+};
 
 const MarqueeQuote = () => {
   return (

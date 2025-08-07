@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef, useEffect, useState } from 'react';
+import { useRef, useLayoutEffect, useState } from 'react';
 import Text from '@/components/shared/text/text';
 import FabricCard from './fabric-card';
 import { IoIosArrowForward, IoIosArrowBack } from 'react-icons/io';
@@ -43,6 +43,7 @@ function MyFabrics() {
       imageUrls: ['/images/fabrics/013.webp', '/images/fabrics/014.webp'],
     },
   ];
+
   const sliderRef = useRef(null);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(true);
@@ -64,17 +65,37 @@ function MyFabrics() {
         left: direction === 'left' ? -scrollByAmount : scrollByAmount,
         behavior: 'smooth',
       });
+
+      setTimeout(updateButtonVisibility, 300); // після плавного scroll
     }
   };
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const slider = sliderRef.current;
     if (!slider) return;
 
-    updateButtonVisibility();
+    const checkImagesLoaded = () => {
+      const allImages = [
+        '/images/fabrics/landing.webp',
+        ...fabricsData.flatMap(fabric => fabric.imageUrls),
+      ];
+
+      const loaded = allImages.every(src => {
+        const img = new Image();
+        img.src = src;
+        return img.complete;
+      });
+
+      if (loaded) {
+        updateButtonVisibility();
+      } else {
+        setTimeout(checkImagesLoaded, 100);
+      }
+    };
+
+    checkImagesLoaded();
 
     const handleScrollEvent = () => updateButtonVisibility();
-
     slider.addEventListener('scroll', handleScrollEvent);
     window.addEventListener('resize', updateButtonVisibility);
 

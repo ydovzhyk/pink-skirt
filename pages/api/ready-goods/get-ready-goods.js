@@ -27,7 +27,7 @@ export default async function handler(req, res) {
     const hasNewest = newestReadyGoods.length > 0;
     if (!hasNewest) {
       if (limit === 6) limit = 8;
-      if (limit === 2) limit = 4;
+      if (limit === 4) limit = 6;
     }
 
     const total = goodsWithoutNewest.length;

@@ -71,7 +71,7 @@ const StoryCard = ({ id, title, date, content, mainImageUrl, story }) => {
                   ? 'small'
                   : screenType === 'isMobile'
                     ? 'tiny'
-                    : 'normal'
+                    : 'tiny'
             }
             as="p"
             fontWeight="light"

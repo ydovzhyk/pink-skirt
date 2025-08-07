@@ -5,8 +5,13 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useRouter } from 'next/navigation';
 import { getAllStories } from '@/redux/stories/stories-selectors';
 import { getStories } from '@/redux/stories/stories-operations';
+import { getAllReadyGoods } from '@/redux/ready-goods/ready-goods-selectors';
+import { getReadyGoods } from '@/redux/ready-goods/ready-goods-operations';
+import { getModels } from '@/redux/models/models-operations';
+import { getModelsList } from '@/redux/models/models-selectors';
 import Text from '../../shared/text/text';
 import { getScreenType } from '@/redux/technical/technical-selectors';
+import { RiArrowGoBackFill } from 'react-icons/ri';
 
 const StoryDetail = ({
   id,
@@ -18,6 +23,8 @@ const StoryDetail = ({
 }) => {
   const [activeImage, setActiveImage] = useState(mainImageUrl);
   const allStories = useSelector(getAllStories);
+  const allReadyGoods = useSelector(getAllReadyGoods);
+  const allModels = useSelector(getModelsList);
   const screenType = useSelector(getScreenType);
   const router = useRouter();
   const dispatch = useDispatch();
@@ -27,10 +34,18 @@ const StoryDetail = ({
   const hasNext = currentIndex < allStories.length - 1;
 
   useEffect(() => {
+    if (allReadyGoods.length === 0) {
+      dispatch(getReadyGoods({ page: 1, limit: 2 }));
+    }
+
     if (allStories.length === 0) {
       dispatch(getStories({ page: 1, limit: 2 }));
     }
-  }, [dispatch, allStories.length]);
+
+    if (allModels.length === 0) {
+      dispatch(getModels());
+    }
+  }, [dispatch, allReadyGoods.length, allStories.length, allModels.length]);
 
   const handleNavigate = (title, id) => {
     const formattedTitle = title
@@ -59,9 +74,24 @@ const StoryDetail = ({
   return (
     <section
       id="story-detail"
-      className="container py-12 lg:py-16 flex flex-col gap-10 lg:gap-12"
+      className="relative container py-12 lg:py-16 flex flex-col gap-10 lg:gap-12"
     >
-      <div className="flex flex-col justify-center items-center">
+      <button
+        onClick={() => router.back()}
+        className="absolute top-5 left-0 flex items-center gap-2 px-3 py-2 text-[var(--text-title)] hover:text-[var(--accent)] transition-colors duration-300"
+      >
+        <RiArrowGoBackFill className="w-5 h-5" />
+        <Text
+          type="small"
+          as="p"
+          fontWeight="light"
+          className="text-[var(--text-title)]"
+        >
+          Go back
+        </Text>
+      </button>
+
+      <div className="flex flex-col justify-center items-center mt-5">
         <div className="text-center">
           <Text
             type="normal"
@@ -77,55 +107,55 @@ const StoryDetail = ({
         </div>
       </div>
 
-        <div className="grid gap-10 lg:grid-cols-2">
-          <div className="w-full">
-            {activeImage && (
-              <div
-                className="w-full aspect-[4/3] bg-cover bg-center rounded-md"
-                style={{ backgroundImage: `url(${activeImage})` }}
-              ></div>
-            )}
+      <div className="grid gap-10 lg:grid-cols-2">
+        <div className="w-full">
+          {activeImage && (
+            <div
+              className="w-full aspect-[4/3] bg-cover bg-center rounded-md"
+              style={{ backgroundImage: `url(${activeImage})` }}
+            ></div>
+          )}
 
-            {additionalImageUrls.length > 0 && (
-              <div className="mt-4 overflow-x-auto">
-                <div className="flex gap-[2%] justify-start overflow-x-auto scroll-smooth thin-scrollbar pb-2">
-                  {[mainImageUrl, ...additionalImageUrls].map((img, i) => (
-                    <div
-                      key={i}
-                      onClick={() => setActiveImage(img)}
-                      className={`min-w-[32%] aspect-[4/3] flex-shrink-0 bg-cover bg-center cursor-pointer rounded-md ${
-                        activeImage === img
-                          ? 'border-[var(--accent)] border-2'
-                          : 'border-transparent'
-                      }`}
-                      style={{ backgroundImage: `url(${img})` }}
-                    />
-                  ))}
-                </div>
+          {additionalImageUrls.length > 0 && (
+            <div className="mt-4 overflow-x-auto">
+              <div className="flex gap-[2%] justify-start overflow-x-auto scroll-smooth thin-scrollbar pb-2">
+                {[mainImageUrl, ...additionalImageUrls].map((img, i) => (
+                  <div
+                    key={i}
+                    onClick={() => setActiveImage(img)}
+                    className={`min-w-[32%] aspect-[4/3] flex-shrink-0 bg-cover bg-center cursor-pointer rounded-md ${
+                      activeImage === img
+                        ? 'border-[var(--accent)] border-2'
+                        : 'border-transparent'
+                    }`}
+                    style={{ backgroundImage: `url(${img})` }}
+                  />
+                ))}
               </div>
-            )}
-          </div>
-
-          <div className="flex flex-col justify-center items-start">
-            <Text
-              type={
-                screenType === 'isDesktop'
-                  ? 'tiny'
-                  : screenType === 'isTablet'
-                    ? 'small'
-                    : screenType === 'isMobile'
-                      ? 'tiny'
-                      : 'normal'
-              }
-              as="p"
-              fontWeight="light"
-              lineHeight="snug"
-              className="text-[var(--text-title)] whitespace-pre-line"
-            >
-              {content}
-            </Text>
-          </div>
+            </div>
+          )}
         </div>
+
+        <div className="flex flex-col justify-center items-start">
+          <Text
+            type={
+              screenType === 'isDesktop'
+                ? 'tiny'
+                : screenType === 'isTablet'
+                  ? 'small'
+                  : screenType === 'isMobile'
+                    ? 'tiny'
+                    : 'tiny'
+            }
+            as="p"
+            fontWeight="light"
+            lineHeight="snug"
+            className="text-[var(--text-title)] whitespace-pre-line"
+          >
+            {content}
+          </Text>
+        </div>
+      </div>
 
       <div className="flex justify-between items-center">
         <button

@@ -5,8 +5,14 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useRouter } from 'next/navigation';
 import { getAllReadyGoods } from '@/redux/ready-goods/ready-goods-selectors';
 import { getReadyGoods } from '@/redux/ready-goods/ready-goods-operations';
+import { getAllStories } from '@/redux/stories/stories-selectors';
+import { getStories } from '@/redux/stories/stories-operations';
+import { getModels } from '@/redux/models/models-operations';
+import { getModelsList } from '@/redux/models/models-selectors';
 import Text from '../../shared/text/text';
 import MarqueeQuote from '../../shared/marquee-quote/index';
+import { RiArrowGoBackFill } from 'react-icons/ri';
+import { getScreenType } from '@/redux/technical/technical-selectors';
 
 const ReadyGoodsDetail = ({
   id,
@@ -21,6 +27,9 @@ const ReadyGoodsDetail = ({
   const allReadyGoods = useSelector(getAllReadyGoods);
   const router = useRouter();
   const dispatch = useDispatch();
+  const allStories = useSelector(getAllStories);
+  const allModels = useSelector(getModelsList);
+  const screenType = useSelector(getScreenType);
 
   const currentIndex = allReadyGoods.findIndex(item => item.id === id);
   const hasPrevious = currentIndex > 0;
@@ -30,10 +39,18 @@ const ReadyGoodsDetail = ({
     if (allReadyGoods.length === 0) {
       dispatch(getReadyGoods({ page: 1, limit: 2 }));
     }
-  }, [dispatch, allReadyGoods.length]);
+
+    if (allStories.length === 0) {
+      dispatch(getStories({ page: 1, limit: 2 }));
+    }
+
+    if (allModels.length === 0) {
+      dispatch(getModels());
+    }
+  }, [dispatch, allReadyGoods.length, allStories.length, allModels.length]);
 
   const handleNavigate = (title, id) => {
-    const formattedTitle = title
+    const formattedTitle = (title || '')
       .trim()
       .toLowerCase()
       .replace(/\s+/g, '-')
@@ -57,8 +74,48 @@ const ReadyGoodsDetail = ({
   };
 
   return (
-    <section id="story-detail" className="container my-12 flex flex-col gap-10">
+    <section
+      id="story-detail"
+      className="relative container py-12 lg:py-16 flex flex-col gap-10 lg:gap-12"
+    >
+      <button
+        onClick={() => router.back()}
+        className="absolute top-5 left-0 flex items-center gap-2 px-3 py-2 text-[var(--text-title)] hover:text-[var(--accent)] transition-colors duration-300"
+      >
+        <RiArrowGoBackFill className="w-5 h-5" />
+        <Text
+          type="small"
+          as="p"
+          fontWeight="light"
+          className="text-[var(--text-title)]"
+        >
+          Go back
+        </Text>
+      </button>
+
       <MarqueeQuote />
+
+      {screenType === 'isMobile' && (
+        <div className="text-center mt-[-20px]">
+          <Text
+            type="normal"
+            as="h2"
+            fontWeight="medium"
+            className="text-black mb-5"
+          >
+            {title}
+          </Text>
+          <Text
+            type="small"
+            as="p"
+            fontWeight="light"
+            className="text-black"
+          >
+            {new Date(date).toDateString()}
+          </Text>
+        </div>
+      )}
+
       <div className="grid gap-10 md:grid-cols-2 mt-[-10px]">
         <div className="w-full aspect-square flex flex-row gap-4">
           {/* Основне фото */}
@@ -94,43 +151,54 @@ const ReadyGoodsDetail = ({
         {/* Опис */}
         <div className="flex flex-col justify-start items-start w-full gap-8">
           <div className="flex flex-col justify-center items-center">
-            <div className="text-center">
-              <Text
-                type="normal"
-                as="p"
-                fontWeight="normal"
-                className="text-black mb-5"
-              >
-                {title}
-              </Text>
-              <Text
-                type="tiny"
-                as="p"
-                fontWeight="light"
-                className="text-black text-left"
-              >
-                {new Date(date).toDateString()}
-              </Text>
-            </div>
+            {screenType !== 'isMobile' && (
+              <div className="text-center">
+                <Text
+                  type="normal"
+                  as="h2"
+                  fontWeight="medium"
+                  className="text-black mb-5"
+                >
+                  {title}
+                </Text>
+                <Text
+                  type="small"
+                  as="p"
+                  fontWeight="light"
+                  className="text-black text-left"
+                >
+                  {new Date(date).toDateString()}
+                </Text>
+              </div>
+            )}
           </div>
-          <div className="w-full flex flex-col justify-start items-start gap-4">
+          <div className="w-full flex flex-col justify-start items-start gap-4"
+          style={{ marginTop: screenType === 'isMobile' ? '-40px' : '0px' }}>
             <Text
-              type="small"
+              type="tiny"
               as="p"
-              fontWeight="medium"
+              fontWeight="normal"
               lineHeight="normal"
               className="text-black"
             >
               Description:
             </Text>
             <Text
-              type="small"
+              type={
+                screenType === 'isDesktop'
+                  ? 'tiny'
+                  : screenType === 'isTablet'
+                    ? 'small'
+                    : screenType === 'isMobile'
+                      ? 'tiny'
+                      : 'tiny'
+              }
               as="p"
               fontWeight="light"
-              lineHeight="normal"
+              lineHeight="snug"
               className="text-[var(--text-title)] whitespace-pre-line"
             >
-              {description}
+              {description || 'No description available.'}
             </Text>
           </div>
           <div className="w-full flex justify-center items-center">
@@ -148,11 +216,19 @@ const ReadyGoodsDetail = ({
                 Fabrication:
               </Text>
               <Text
-                type="tiny"
+                type={
+                  screenType === 'isDesktop'
+                    ? 'tiny'
+                    : screenType === 'isTablet'
+                      ? 'small'
+                      : screenType === 'isMobile'
+                        ? 'tiny'
+                        : 'tiny'
+                }
                 as="p"
-                fontWeight="normal"
-                lineHeight="normal"
-                className="text-[var(--text-title)]"
+                fontWeight="light"
+                lineHeight="snug"
+                className="text-[var(--text-title)] whitespace-pre-line"
               >
                 {`${details.fabrication || 'N/A'}`}
               </Text>
@@ -168,11 +244,19 @@ const ReadyGoodsDetail = ({
                 Colourway:
               </Text>
               <Text
-                type="tiny"
+                type={
+                  screenType === 'isDesktop'
+                    ? 'tiny'
+                    : screenType === 'isTablet'
+                      ? 'small'
+                      : screenType === 'isMobile'
+                        ? 'tiny'
+                        : 'tiny'
+                }
                 as="p"
-                fontWeight="medium"
-                lineHeight="normal"
-                className="text-[var(--text-title)]"
+                fontWeight="light"
+                lineHeight="snug"
+                className="text-[var(--text-title)] whitespace-pre-line"
               >
                 {`${details.colourway || 'N/A'}`}
               </Text>
@@ -188,11 +272,19 @@ const ReadyGoodsDetail = ({
                 Size:
               </Text>
               <Text
-                type="tiny"
+                type={
+                  screenType === 'isDesktop'
+                    ? 'tiny'
+                    : screenType === 'isTablet'
+                      ? 'small'
+                      : screenType === 'isMobile'
+                        ? 'tiny'
+                        : 'tiny'
+                }
                 as="p"
-                fontWeight="normal"
-                lineHeight="normal"
-                className="text-[var(--text-title)]"
+                fontWeight="light"
+                lineHeight="snug"
+                className="text-[var(--text-title)] whitespace-pre-line"
               >
                 {`${details.size || 'N/A'}`}
               </Text>
@@ -201,7 +293,6 @@ const ReadyGoodsDetail = ({
         </div>
       </div>
 
-      {/* Навігація між постами */}
       <div className="flex justify-between items-center">
         <button
           onClick={handlePreviousItem}

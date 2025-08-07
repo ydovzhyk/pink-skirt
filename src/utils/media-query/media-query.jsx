@@ -10,25 +10,36 @@ const MediaQuery = () => {
   useEffect(() => {
     const mobileQuery = window.matchMedia('(max-width: 639px)');
     const tabletQuery = window.matchMedia(
-      '(min-width: 640px) and (max-width: 1279px)'
+      '(min-width: 640px) and (max-width: 1023px)'
     );
-    const desktopQuery = window.matchMedia('(min-width: 1280px)');
+    const laptopQuery = window.matchMedia(
+      '(min-width: 1024px) and (max-width: 1439px)'
+    );
+    const desktopQuery = window.matchMedia('(min-width: 1440px)');
 
     const handleChange = () => {
-      if (mobileQuery.matches) dispatch(setScreenType('isMobile'));
-      else if (tabletQuery.matches) dispatch(setScreenType('isTablet'));
-      else if (desktopQuery.matches) dispatch(setScreenType('isDesktop'));
+      if (mobileQuery.matches) {
+        dispatch(setScreenType('isMobile'));
+      } else if (tabletQuery.matches) {
+        dispatch(setScreenType('isTablet'));
+      } else if (laptopQuery.matches) {
+        dispatch(setScreenType('isLaptop'));
+      } else if (desktopQuery.matches) {
+        dispatch(setScreenType('isDesktop'));
+      }
     };
 
     handleChange();
 
     mobileQuery.addEventListener('change', handleChange);
     tabletQuery.addEventListener('change', handleChange);
+    laptopQuery.addEventListener('change', handleChange);
     desktopQuery.addEventListener('change', handleChange);
 
     return () => {
       mobileQuery.removeEventListener('change', handleChange);
       tabletQuery.removeEventListener('change', handleChange);
+      laptopQuery.removeEventListener('change', handleChange);
       desktopQuery.removeEventListener('change', handleChange);
     };
   }, [dispatch]);

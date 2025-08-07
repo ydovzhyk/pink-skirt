@@ -9,6 +9,7 @@ import { getModelsList } from '@/redux/models/models-selectors';
 import { getActiveSection } from '@/redux/technical/technical-selectors';
 import clsx from 'clsx';
 import Text from '@/components/shared/text/text';
+import { getScreenType } from '@/redux/technical/technical-selectors';
 
 export const getSections = (
   hasReadyGoods = true,
@@ -30,16 +31,16 @@ export const getSections = (
     ...(hasModels
       ? [{ id: 'models', label: 'Models', offset: -85, offsetLogin: -145 }]
       : []),
-    { id: 'fabrics', label: 'Fabrics', offset: -85, offsetLogin: -190 },
+    { id: 'fabrics', label: 'Fabrics', offset: -85, offsetLogin: -145 },
     { id: 'about-me', label: 'About me', offset: -85, offsetLogin: -145 },
-    { id: 'contacts', label: 'Contacts', offset: -130, offsetLogin: -190 },
+    { id: 'contacts', label: 'Contacts', offset: -85, offsetLogin: -145 },
     ...(hasStories
       ? [
           {
             id: 'stories',
             label: 'Stories',
-            offset: -150,
-            offsetLogin: -210,
+            offset: -85,
+            offsetLogin: -145,
           },
         ]
       : []),
@@ -56,6 +57,7 @@ export const getSections = (
 const Navigation = ({ textColor = '#444444' }) => {
   const pathname = usePathname();
   const router = useRouter();
+  const screenType = useSelector(getScreenType);
   const isLoginPanel = useSelector(getIsLoginPanel);
   const activeSection = useSelector(getActiveSection);
   const stories = useSelector(getAllStories);
@@ -91,7 +93,8 @@ const Navigation = ({ textColor = '#444444' }) => {
 
   return (
     <nav className="relative w-full py-[13px]">
-      <ul className="flex flex-row items-center justify-center gap-[20px] w-full">
+      <ul className="flex flex-row items-center justify-center w-full"
+        style={{gap: screenType === 'isTablet' ? '10px' : '20px'}}>
         {sections.map(({ id, label }) => {
           const isActive = pathname === '/' && activeSection === id;
           return (

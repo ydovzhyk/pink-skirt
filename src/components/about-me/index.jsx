@@ -1,10 +1,10 @@
 'use client';
 
-import Text from '@/components/shared/text/text';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useLayoutEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { getScreenType } from '@/redux/technical/technical-selectors';
 import { IoIosArrowBack, IoIosArrowForward } from 'react-icons/io';
+import Text from '@/components/shared/text/text';
 function AboutMe() {
   const screenType = useSelector(getScreenType);
   const images = [
@@ -25,7 +25,6 @@ function AboutMe() {
     if (!slider) return;
 
     const { scrollLeft, scrollWidth, clientWidth } = slider;
-
     setCanScrollLeft(scrollLeft > 0);
     setCanScrollRight(scrollLeft + clientWidth < scrollWidth - 1);
   };
@@ -36,17 +35,33 @@ function AboutMe() {
         left: direction === 'left' ? -scrollByAmount : scrollByAmount,
         behavior: 'smooth',
       });
+
+      setTimeout(updateButtonVisibility, 350); // чекати завершення scrollBy
     }
   };
 
-  useEffect(() => {
+  // ⚠️ Викликаємо тільки після рендеру (DOM готовий)
+  useLayoutEffect(() => {
     const slider = sliderRef.current;
     if (!slider) return;
 
-    updateButtonVisibility();
+    const checkIfImagesLoaded = () => {
+      const allLoaded = images.every(src => {
+        const img = new Image();
+        img.src = src;
+        return img.complete;
+      });
+
+      if (allLoaded) {
+        updateButtonVisibility();
+      } else {
+        setTimeout(checkIfImagesLoaded, 100);
+      }
+    };
+
+    checkIfImagesLoaded();
 
     const handleScrollEvent = () => updateButtonVisibility();
-
     slider.addEventListener('scroll', handleScrollEvent);
     window.addEventListener('resize', updateButtonVisibility);
 
@@ -132,7 +147,7 @@ function AboutMe() {
                         ? 'small'
                         : screenType === 'isMobile'
                           ? 'tiny'
-                          : 'normal'
+                          : 'tiny'
                   }
                   as="p"
                   fontWeight="light"

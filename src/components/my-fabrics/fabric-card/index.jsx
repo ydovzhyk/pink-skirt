@@ -38,7 +38,7 @@ const FabricCard = ({ id, title, imageUrls }) => {
 
   return (
     <div
-      className="relative w-full cursor-pointer group border border-gray-300 shadow-lg rounded-md"
+      className="relative w-full cursor-pointer group border border-gray-400 shadow-lg rounded-md"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       onClick={handleNavigate}

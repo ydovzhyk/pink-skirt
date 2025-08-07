@@ -14,6 +14,7 @@ import Text from '../shared/text/text';
 import ReadyGoodCard from './ready-good-card';
 import Pagination from '../shared/pagination';
 import NewestReadyGoodCard from './newest-card';
+import { getScreenType } from '@/redux/technical/technical-selectors';
 
 function MyReadyGoods() {
   const dispatch = useDispatch();
@@ -23,6 +24,9 @@ function MyReadyGoods() {
   const totalPages = useSelector(getTotalPagesReadyGoods);
   const currentPage = useSelector(getCurrentPageReadyGoods);
   const readyGoodsRef = useRef(null);
+  const screenType = useSelector(getScreenType);
+  const isMobileOrTablet =
+    screenType === 'isMobile' || screenType === 'isTablet';
 
   const newestGood =
     newestReadyGoods.length > 0
@@ -30,11 +34,15 @@ function MyReadyGoods() {
       : null;
 
   useEffect(() => {
-    dispatch(getReadyGoods({ page: currentPage, limit: 6 }));
-  }, [dispatch, currentPage]);
+    const limit = isMobileOrTablet ? 4 : 6;
+    dispatch(getReadyGoods({ page: currentPage, limit }));
+  }, [dispatch, currentPage, isMobileOrTablet]);
 
   useEffect(() => {
   }, [readyGoods]);
+
+  console.log('Ready Goods:', readyGoods);
+  console.log('Newest Ready Goods:', newestReadyGoods);
 
   if (allReadyGoods.length === 0) {
     return null;
@@ -68,28 +76,54 @@ function MyReadyGoods() {
           </div>
           <span className="w-full border-t border-gray-400"></span>
         </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {firstRow.map(item => (
-            <div key={item.id}>
-              <ReadyGoodCard {...item} readyGood={item} />
+
+        {(screenType === 'isDesktop' || screenType === 'isLaptop') && (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {firstRow.map(item => (
+              <div key={item.id}>
+                <ReadyGoodCard {...item} readyGood={item} />
+              </div>
+            ))}
+            <div>
+              {secondRowLeft && (
+                <ReadyGoodCard {...secondRowLeft} readyGood={secondRowLeft} />
+              )}
             </div>
-          ))}
-          <div>
-            {secondRowLeft && (
-              <ReadyGoodCard {...secondRowLeft} readyGood={secondRowLeft} />
-            )}
+            <div className="col-span-2 h-full">
+              {newestGood && (
+                <NewestReadyGoodCard {...newestGood} readyGood={newestGood} />
+              )}
+            </div>
+            <div>
+              {secondRowRight && (
+                <ReadyGoodCard {...secondRowRight} readyGood={secondRowRight} />
+              )}
+            </div>
           </div>
-          <div className="col-span-2 h-full">
+        )}
+
+        {(screenType === 'isMobile' || screenType === 'isTablet') && (
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            {readyGoods.slice(0, 2).map(item => (
+              <ReadyGoodCard {...item} key={item.id} readyGood={item} />
+            ))}
+
             {newestGood && (
-              <NewestReadyGoodCard {...newestGood} readyGood={newestGood} />
+              <div className="sm:col-span-2">
+                <NewestReadyGoodCard
+                  {...newestGood}
+                  key={newestGood.id}
+                  readyGood={newestGood}
+                />
+              </div>
             )}
+
+            {readyGoods.slice(2, 4).map(item => (
+              <ReadyGoodCard {...item} key={item.id} readyGood={item} />
+            ))}
           </div>
-          <div>
-            {secondRowRight && (
-              <ReadyGoodCard {...secondRowRight} readyGood={secondRowRight} />
-            )}
-          </div>
-        </div>
+        )}
+
         {totalPages > 1 && (
           <div className="mt-[70px] mb-[-40px] flex justify-center">
             <Pagination totalPages={totalPages} type="ready-goods" />
