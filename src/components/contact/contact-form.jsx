@@ -55,140 +55,138 @@ function ContactForm() {
   };
 
   return (
-      <div className="max-w-3xl text-white rounded-md border border-[#464c6a] p-3 lg:p-5">
-        <div className="flex flex-col gap-4">
-          <div className="flex flex-col gap-2">
-            <label className="text-base">
-              <Text
-                type="small"
-                as="p"
-                fontWeight="light"
-                className={'text-[var(--text-title)]'}
-              >
-                Your Name:
-              </Text>
-            </label>
-            <input
-              className="bg-white w-full rounded-md border-2 border-gray-300 outline-none ring-0 focus:border-[var(--accent)] focus:ring-[var(--accent)] transition-all duration-300 px-3 py-2 text-[var(--text-title)]"
-              type="text"
-              maxLength="100"
-              required={true}
-              onChange={e =>
-                setUserInput({ ...userInput, name: e.target.value })
-              }
-              onBlur={checkRequired}
-              value={userInput.name}
-            />
-          </div>
-
-          <div className="flex flex-col gap-2">
-            <label>
-              <Text
-                type="small"
-                as="p"
-                fontWeight="light"
-                className={'text-[var(--text-title)]'}
-              >
-                Your Email:
-              </Text>
-            </label>
-            <input
-              className="bg-white w-full rounded-md border-2 border-gray-300 outline-none ring-0 focus:border-[var(--accent)] focus:ring-[var(--accent)] transition-all duration-300 px-3 py-2 text-[var(--text-title)]"
-              type="email"
-              maxLength="100"
-              required
-              autoComplete="off"
-              value={userInput.email}
-              onChange={e =>
-                setUserInput({ ...userInput, email: e.target.value })
-              }
-              onBlur={() => {
-                checkRequired();
-                setError({ ...error, email: !isValidEmail(userInput.email) });
-              }}
-            />
-
-            {error.email && (
-              <Text
-                type="small"
-                as="p"
-                fontWeight="normal"
-                className="text-red-400"
-              >
-                Please provide a valid email!
-              </Text>
-            )}
-          </div>
-
-          <div className="flex flex-col gap-2">
-            <label>
-              <Text
-                type="small"
-                as="p"
-                fontWeight="light"
-                className={'text-[var(--text-title)]'}
-              >
-                Your Message:
-              </Text>
-            </label>
-            <textarea
-              className="bg-white w-full rounded-md border-2 border-gray-300 outline-none ring-0 focus:border-[var(--accent)] focus:ring-[var(--accent)] transition-all duration-300 px-3 py-2 text-[var(--text-title)]"
-              maxLength="500"
-              name="message"
-              required={true}
-              onChange={e =>
-                setUserInput({ ...userInput, message: e.target.value })
-              }
-              onBlur={checkRequired}
-              rows="4"
-              value={userInput.message}
-            />
-          </div>
-          <div className="flex flex-col items-center gap-3">
-            {error.required && (
-              <Text
-                type="tiny"
-                as="p"
-                fontWeight="normal"
-                className="text-red-400"
-              >
-                All fiels are required!
-              </Text>
-            )}
-            <button
-              className="group"
-              role="button"
-              onClick={handleSendMail}
-              disabled={isLoading}
+    <div className="max-w-3xl text-white rounded-md border border-[#464c6a] p-3 lg:p-5">
+      <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-2">
+          <label className="text-base">
+            <Text
+              type="samll"
+              as="h3"
+              fontWeight="normal"
+              className="text-[var(--text-title)] text-left"
             >
-              <div
-                style={{ borderWidth: '0.5px' }}
-                className="flex items-center gap-1 group-hover:gap-3 px-3 md:px-8 py-3 md:py-4 rounded-md border-gray-400 tracking-wider transition-all duration-300 ease-out bg-transparent group-hover:bg-[#F8F1F1] group-hover:border-[#F8F1F1] group-hover:shadow-md w-full btn-shine uppercase"
-              >
-                {isLoading ? (
-                  <Text
-                    type="small"
-                    as="span"
-                    fontWeight="light"
-                    className="text-[var(--text-title)]"
-                  >
-                    Sending Message...
-                  </Text>
-                ) : (
-                  <Text
-                    type="small"
-                    as="span"
-                    fontWeight="light"
-                    className="text-[var(--text-title)]"
-                  >
-                    Send Message
-                  </Text>
-                )}
-              </div>
-            </button>
-          </div>
+              Your Name:
+            </Text>
+          </label>
+          <input
+            className="bg-white w-full rounded-md border-2 border-gray-300 outline-none ring-0 focus:border-[var(--accent)] focus:ring-[var(--accent)] transition-all duration-300 px-3 py-2 text-[var(--text-title)]"
+            type="text"
+            maxLength="100"
+            required={true}
+            onChange={e => setUserInput({ ...userInput, name: e.target.value })}
+            onBlur={checkRequired}
+            value={userInput.name}
+          />
+        </div>
+
+        <div className="flex flex-col gap-2">
+          <label>
+            <Text
+              type="small"
+              as="h3"
+              fontWeight="normal"
+              className="text-[var(--text-title)] text-left"
+            >
+              Your Email:
+            </Text>
+          </label>
+          <input
+            className="bg-white w-full rounded-md border-2 border-gray-300 outline-none ring-0 focus:border-[var(--accent)] focus:ring-[var(--accent)] transition-all duration-300 px-3 py-2 text-[var(--text-title)]"
+            type="email"
+            maxLength="100"
+            required
+            autoComplete="off"
+            value={userInput.email}
+            onChange={e =>
+              setUserInput({ ...userInput, email: e.target.value })
+            }
+            onBlur={() => {
+              checkRequired();
+              setError({ ...error, email: !isValidEmail(userInput.email) });
+            }}
+          />
+
+          {error.email && (
+            <Text
+              type="small"
+              as="p"
+              fontWeight="normal"
+              className="text-red-400"
+            >
+              Please provide a valid email!
+            </Text>
+          )}
+        </div>
+
+        <div className="flex flex-col gap-2">
+          <label>
+            <Text
+              type="small"
+              as="h3"
+              fontWeight="normal"
+              className="text-[var(--text-title)] text-left"
+            >
+              Your Message:
+            </Text>
+          </label>
+          <textarea
+            className="bg-white w-full rounded-md border-2 border-gray-300 outline-none ring-0 focus:border-[var(--accent)] focus:ring-[var(--accent)] transition-all duration-300 px-3 py-2 text-[var(--text-title)]"
+            maxLength="500"
+            name="message"
+            required={true}
+            onChange={e =>
+              setUserInput({ ...userInput, message: e.target.value })
+            }
+            onBlur={checkRequired}
+            rows="4"
+            value={userInput.message}
+          />
+        </div>
+        <div className="flex flex-col items-center gap-3">
+          {error.required && (
+            <Text
+              type="tiny"
+              as="p"
+              fontWeight="normal"
+              className="text-red-400"
+            >
+              All fiels are required!
+            </Text>
+          )}
+          <button
+            className="group"
+            role="button"
+            onClick={handleSendMail}
+            disabled={isLoading}
+          >
+            <div
+              style={{ borderWidth: '0.5px' }}
+              className="flex items-center gap-1 group-hover:gap-3 px-3 md:px-8 py-3 md:py-4 rounded-md border-gray-400 tracking-wider transition-all duration-300 ease-out bg-transparent group-hover:bg-[#F8F1F1] group-hover:border-[#F8F1F1] group-hover:shadow-md w-full btn-shine uppercase"
+            >
+              {isLoading ? (
+                <Text
+                  type="small"
+                  as="span"
+                  fontWeight="light"
+                  className="text-[var(--text-title)]"
+                >
+                  Sending Message...
+                </Text>
+              ) : (
+                <Text
+                  type="small"
+                  as="span"
+                  fontWeight="light"
+                  className="text-[var(--text-title)]"
+                >
+                  Send Message
+                </Text>
+              )}
+            </div>
+          </button>
         </div>
       </div>
+    </div>
   );
 };
 

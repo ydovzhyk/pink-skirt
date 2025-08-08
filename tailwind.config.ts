@@ -41,20 +41,17 @@ export default {
           md: '32px',
           lg: '16px',
         },
-      },
-      spacing: {
-        sectionMobile: '20px',
-        sectionTablet: '30px',
-        sectionDesktop: '50px',
-      },
-      screens: {
-        mobile: '425px',
-        tablet: '768px',
-        desktop: '1280px',
+        screens: {
+          sm: '640px',
+          md: '768px',
+          lg: '1024px',
+          xl: '1280px',
+        },
       },
       maxWidth: {
-        mobile: '425px',
+        mobile: '640px',
         tablet: '768px',
+        laptop: '1024px',
         desktop: '1280px',
       },
     },

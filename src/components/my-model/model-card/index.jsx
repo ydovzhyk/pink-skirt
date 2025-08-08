@@ -1,13 +1,12 @@
 'use client';
 
-import { useEffect, useState, useRef } from 'react';
-import { useDispatch } from 'react-redux';
-import { usePathname } from 'next/navigation';
-import { usePreloadMedia } from '@/utils/usePreloadMedia';
-import { deleteModel } from '@/redux/models/models-operations';
-import { getModels } from '@/redux/models/models-operations';
-import { setEditModel } from '@/redux/models/models-slice';
 import Text from '@/components/shared/text/text';
+import { deleteModel, getModels } from '@/redux/models/models-operations';
+import { setEditModel } from '@/redux/models/models-slice';
+import { usePreloadMedia } from '@/utils/usePreloadMedia';
+import { usePathname } from 'next/navigation';
+import { useEffect, useRef, useState } from 'react';
+import { useDispatch } from 'react-redux';
 
 const ModelCard = ({ model }) => {
   const dispatch = useDispatch();
@@ -51,23 +50,23 @@ const ModelCard = ({ model }) => {
   };
 
   const handleEdit = () => {
-      dispatch(setEditModel(model));
-      setTimeout(() => {
-        const editSection = document.getElementById('edit-model');
-        if (editSection) {
-          editSection.scrollIntoView({ behavior: 'smooth' });
-        }
-      }, 0);
-    };
+    dispatch(setEditModel(model));
+    setTimeout(() => {
+      const editSection = document.getElementById('edit-model');
+      if (editSection) {
+        editSection.scrollIntoView({ behavior: 'smooth' });
+      }
+    }, 0);
+  };
 
   const handleDelete = async () => {
-      await dispatch(deleteModel(model.id)).unwrap();
-      await dispatch(getModels()).unwrap();
-    };
+    await dispatch(deleteModel(model.id)).unwrap();
+    await dispatch(getModels()).unwrap();
+  };
 
   return (
     <div
-      className="relative w-full h-[480px] rounded-md overflow-hidden shadow-lg group cursor-pointer"
+      className="relative w-full h-full rounded-md overflow-hidden shadow-lg group cursor-pointer aspect-[3/4]"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
@@ -90,19 +89,18 @@ const ModelCard = ({ model }) => {
 
       <div className="absolute bottom-0 left-0 w-full bg-white bg-opacity-70 p-2 flex flex-col gap-1 h-[90px] rounded-b-md-md">
         <Text
-          type="small"
-          as="p"
-          fontWeight="bold"
-          className="text-gray-700 text-left"
+          type="tiny"
+          as="h3"
+          fontWeight="normal"
+          className="text-black text-left"
         >
           {title}
         </Text>
         <Text
-          type="extra-small"
+          type="small"
           as="p"
-          fontWeight="normal"
-          lineHeight="normal"
-          className="text-[var(--text-title)] whitespace-pre-line"
+          fontWeight="light"
+          className="text-[var(--text-title)] text-left"
         >
           {description}
         </Text>

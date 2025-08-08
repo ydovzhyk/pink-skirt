@@ -56,7 +56,7 @@ const NewestReadyGoodCard = ({
 
   return (
     <div
-      className="relative w-full h-full cursor-pointer group shadow-lg"
+      className="relative w-full h-full cursor-pointer group shadow-lg lg:aspect-auto"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
@@ -69,7 +69,6 @@ const NewestReadyGoodCard = ({
           aria-hidden="true"
         />
       )}
-
       <div
         className="relative w-full h-full overflow-hidden rounded-md border border-gray-300 bg-center bg-cover transition-all duration-300 p-[20px]"
         style={{
@@ -77,9 +76,9 @@ const NewestReadyGoodCard = ({
         }}
       >
         <div className="w-full h-full border-[2px] border-white p-[30px] shadow-[0.5px_0.5px_0.5px_rgba(0,0,0,0.3)]">
-          <div className="flex flex-col justify-center items-center h-full gap-[30px]">
+          <div className="flex flex-col justify-center items-center w-full h-full gap-[30px]">
             <Text
-              type="title"
+              type="banner"
               as="h3"
               fontWeight="normal"
               className="text-[#FAFCFF] text-center"
@@ -87,9 +86,8 @@ const NewestReadyGoodCard = ({
             >
               New in Collection
             </Text>
-
             <Text
-              type="small"
+              type="tiny"
               as="p"
               fontWeight="light"
               className="text-[#FAFCFF] text-left"
@@ -97,28 +95,26 @@ const NewestReadyGoodCard = ({
             >
               {title}
             </Text>
-
             <Text
-              type="tiny"
+              type="small"
               as="p"
               fontWeight="light"
               lineHeight="snug"
-              className="text-[#FAFCFF] whitespace-pre-line w-[70%]"
-              textShadow={true}
+              className="text-[#FAFCFF] whitespace-pre-line w-[90%] sm:w-[70%] text-center"
+              textShadow="black"
             >
               {String(description.slice(0, 150)) + '...'}
             </Text>
-
             <button
               className="border-b border-[#FAFCFF] hover:border-[var(--accent)] w-fit transition-colors duration-200"
               onClick={handleNavigate}
             >
               <Text
-                type="extra-small"
+                type="small"
                 as="p"
                 fontWeight="light"
                 className="text-[#FAFCFF]"
-                textShadow={true}
+                textShadow="black"
               >
                 Read more
               </Text>

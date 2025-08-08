@@ -1,12 +1,15 @@
 'use client';
 
+import Text from '@/components/shared/text/text';
+import {
+  deleteReadyGood,
+  getReadyGoods,
+} from '@/redux/ready-goods/ready-goods-operations';
+import { getCurrentPageReadyGoods } from '@/redux/ready-goods/ready-goods-selectors';
+import { setEditReadyGood } from '@/redux/ready-goods/ready-goods-slice';
+import { usePathname, useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useRouter, usePathname } from 'next/navigation';
-import { getCurrentPageReadyGoods } from '@/redux/ready-goods/ready-goods-selectors';
-import Text from '@/components/shared/text/text';
-import { setEditReadyGood } from '@/redux/ready-goods/ready-goods-slice';
-import { deleteReadyGood, getReadyGoods } from '@/redux/ready-goods/ready-goods-operations';
 
 const ReadyGoodCard = ({
   id,
@@ -68,7 +71,7 @@ const ReadyGoodCard = ({
       )}
 
       <div
-        className="w-full aspect-[3/5] overflow-hidden rounded-t-md border border-gray-300 bg-center bg-cover transition-all duration-300"
+        className="w-full aspect-[27/40]  overflow-hidden rounded-t-md border border-gray-300 bg-center bg-cover transition-all duration-300"
         style={{
           backgroundImage: `url(${isHovered ? hoverImage : mainImageUrl})`,
         }}
@@ -76,10 +79,10 @@ const ReadyGoodCard = ({
 
       <div className="min-h-[60px] px-3 py-2 flex flex-row items-center justify-center rounded-b-md">
         <Text
-          type="small"
-          as="p"
+          type="tiny"
+          as="h3"
           fontWeight="light"
-          className="text-black text-center"
+          className="text-[var(--text-title)] text-center"
         >
           {title}
         </Text>

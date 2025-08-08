@@ -1,5 +1,9 @@
+'use client';
+
 import clsx from 'clsx';
+import { useSelector } from 'react-redux';
 import { TranslatedText } from '@/utils/translating/translating';
+import { getScreenType } from '@/redux/technical/technical-selectors';
 
 const Text = ({
   type = 'normal',
@@ -13,15 +17,62 @@ const Text = ({
   textShadow = null, // 'black' | 'white' | null
   color,
 }) => {
-  const typeClasses = {
-    xxl: 'text-[30px] sm:text-[30px] md:text-[36px] lg:text-[48px]', // раніше: 3xl → 30px, 4xl → 36px, 5xl → 48px
-    title: 'text-[20px] sm:text-[24px] md:text-[30px] lg:text-[36px]', // xl → 20px, 2xl → 24px, 3xl → 30px, 4xl → 36px
-    normal: 'text-[16px] sm:text-[18px] md:text-[20px] lg:text-[24px]', // base → 16px, lg → 18px, xl → 20px, 2xl → 24px
-    regular: 'text-[18px] sm:text-[16px] md:text-[18px] lg:text-[20px]', // спец: 18 → 16 → 18 → 20
-    tiny: 'text-[16px] sm:text-[17px] md:text-[18px] lg:text-[20px]', // вручну оновлено
-    small: 'text-[12px] sm:text-[14px] md:text-[16px] lg:text-[18px]', // xs → 12px, sm → 14px, base → 16px, lg → 18px
-    extraSmall: 'text-[12px]', // фіксований 12px
+  const screenType = useSelector(getScreenType);
+
+  // БЕЗ TS-типів — звичайний об'єкт
+  const sizeMap = {
+    xxl: {
+      isMobile: 'text-[30px]',
+      isTablet: 'text-[36px]',
+      isLaptop: 'text-[48px]',
+      isDesktop: 'text-[48px]',
+    },
+    banner: {
+      isMobile: 'text-[28px]',
+      isTablet: 'text-[36px]',
+      isLaptop: 'text-[36px]',
+      isDesktop: 'text-[36px]',
+    },
+    title: {
+      isMobile: 'text-[20px]',
+      isTablet: 'text-[30px]',
+      isLaptop: 'text-[36px]',
+      isDesktop: 'text-[36px]',
+    },
+    normal: {
+      isMobile: 'text-[22px]',
+      isTablet: 'text-[24px]',
+      isLaptop: 'text-[24px]',
+      isDesktop: 'text-[24px]',
+    },
+    regular: {
+      isMobile: 'text-[19px]',
+      isTablet: 'text-[19px]',
+      isLaptop: 'text-[22px]',
+      isDesktop: 'text-[22px]',
+    },
+    tiny: {
+      isMobile: 'text-[18px]',
+      isTablet: 'text-[18px]',
+      isLaptop: 'text-[20px]',
+      isDesktop: 'text-[20px]',
+    },
+    small: {
+      isMobile: 'text-[17px]',
+      isTablet: 'text-[17px]',
+      isLaptop: 'text-[18px]',
+      isDesktop: 'text-[18px]',
+    },
+    extraSmall: {
+      isMobile: 'text-[12px]',
+      isTablet: 'text-[12px]',
+      isLaptop: 'text-[12px]',
+      isDesktop: 'text-[12px]',
+    },
   };
+
+  const sizeClass =
+    (sizeMap[type] && sizeMap[type][screenType]) || 'text-[16px]';
 
   const fontClasses = {
     josefin: 'font-josefin',
@@ -52,7 +103,7 @@ const Text = ({
   return (
     <Tag
       className={clsx(
-        typeClasses[type],
+        sizeClass,
         fontClasses[fontFamily],
         fontWeightClasses[fontWeight],
         className
@@ -64,7 +115,7 @@ const Text = ({
           textShadow: '2px 1px 1px rgba(0, 0, 0, 0.5)',
         }),
         ...(textShadow === 'white' && {
-          textShadow: '2px 1px 2px rgba(255, 255, 255, 0.8)',
+          textShadow: '1px 1px 1px rgba(255, 255, 255, 0.7)',
         }),
       }}
     >
@@ -82,3 +133,94 @@ const Text = ({
 };
 
 export default Text;
+
+// 'use client';
+
+// import clsx from 'clsx';
+// import { useSelector } from 'react-redux';
+// import { TranslatedText } from '@/utils/translating/translating';
+// import { getScreenType } from '@/redux/technical/technical-selectors';
+
+// const Text = ({
+//   type = 'normal',
+//   as: Tag = 'p',
+//   fontFamily = 'urbanist',
+//   fontWeight = 'normal',
+//   lineHeight = 'tight',
+//   children,
+//   className,
+//   noTranslate = false,
+//   textShadow = null, // 'black' | 'white' | null
+//   color,
+// }) => {
+//   const screenType = useSelector(getScreenType);
+//   const typeClasses = {
+//     xxl: 'text-[30px] sm:text-[30px] md:text-[36px] lg:text-[48px]',
+//     banner: 'text-[28px] sm:text-[30px] md:text-[36px] lg:text-[36px]',
+//     title: 'text-[20px] sm:text-[24px] md:text-[30px] lg:text-[36px]',
+//     normal: 'text-[22px] sm:text-[22px] md:text-[24px] lg:text-[24px]',
+//     regular: 'text-[20px] sm:text-[20px] md:text-[22px] lg:text-[22px]',
+//     tiny: 'text-[18px] sm:text-[18px] md:text-[20px] lg:text-[20px]',
+//     small: 'text-[17px] sm:text-[17px] md:text-[18px] lg:text-[18px]',
+//     extraSmall: 'text-[12px]',
+//   };
+
+//   const fontClasses = {
+//     josefin: 'font-josefin',
+//     maven: 'font-maven',
+//     oblik: 'font-oblik',
+//     fraunces: 'font-fraunces',
+//     urbanist: 'font-urbanist',
+//   };
+
+//   const fontWeightClasses = {
+//     thin: 'font-thin',
+//     light: 'font-light',
+//     normal: 'font-normal',
+//     medium: 'font-medium',
+//     bold: 'font-bold',
+//     extrabold: 'font-extrabold',
+//   };
+
+//   const lineHeightValues = {
+//     none: '1',
+//     tight: '1.2',
+//     snug: '1.3',
+//     normal: '1.5',
+//     relaxed: '1.6',
+//     loose: '1.7',
+//   };
+
+//   return (
+//     <Tag
+//       className={clsx(
+//         typeClasses[type],
+//         fontClasses[fontFamily],
+//         fontWeightClasses[fontWeight],
+//         className
+//       )}
+//       style={{
+//         lineHeight: lineHeightValues[lineHeight],
+//         color,
+//         ...(textShadow === 'black' && {
+//           textShadow: '2px 1px 1px rgba(0, 0, 0, 0.5)',
+//         }),
+//         ...(textShadow === 'white' && {
+//           textShadow: '1px 1px 1px rgba(255, 255, 255, 0.7)',
+//         }),
+//       }}
+//     >
+//       {typeof children === 'string' || typeof children === 'number' ? (
+//         noTranslate ? (
+//           children
+//         ) : (
+//           <TranslatedText text={String(children)} />
+//         )
+//       ) : (
+//         children
+//       )}
+//     </Tag>
+//   );
+// };
+
+// export default Text;

@@ -1,17 +1,17 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { useRouter } from 'next/navigation';
-import { getAllStories } from '@/redux/stories/stories-selectors';
-import { getStories } from '@/redux/stories/stories-operations';
-import { getAllReadyGoods } from '@/redux/ready-goods/ready-goods-selectors';
-import { getReadyGoods } from '@/redux/ready-goods/ready-goods-operations';
 import { getModels } from '@/redux/models/models-operations';
 import { getModelsList } from '@/redux/models/models-selectors';
-import Text from '../../shared/text/text';
+import { getReadyGoods } from '@/redux/ready-goods/ready-goods-operations';
+import { getAllReadyGoods } from '@/redux/ready-goods/ready-goods-selectors';
+import { getStories } from '@/redux/stories/stories-operations';
+import { getAllStories } from '@/redux/stories/stories-selectors';
 import { getScreenType } from '@/redux/technical/technical-selectors';
+import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
 import { RiArrowGoBackFill } from 'react-icons/ri';
+import { useDispatch, useSelector } from 'react-redux';
+import Text from '../../shared/text/text';
 
 const StoryDetail = ({
   id,
@@ -111,7 +111,7 @@ const StoryDetail = ({
         <div className="w-full">
           {activeImage && (
             <div
-              className="w-full aspect-[4/3] bg-cover bg-center rounded-md"
+              className="w-full aspect-[27/40]  bg-cover bg-center rounded-md"
               style={{ backgroundImage: `url(${activeImage})` }}
             ></div>
           )}
@@ -123,7 +123,7 @@ const StoryDetail = ({
                   <div
                     key={i}
                     onClick={() => setActiveImage(img)}
-                    className={`min-w-[32%] aspect-[4/3] flex-shrink-0 bg-cover bg-center cursor-pointer rounded-md ${
+                    className={`min-w-[32%] aspect-[27/40]  flex-shrink-0 bg-cover bg-center cursor-pointer rounded-md ${
                       activeImage === img
                         ? 'border-[var(--accent)] border-2'
                         : 'border-transparent'

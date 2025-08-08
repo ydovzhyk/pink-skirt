@@ -28,43 +28,25 @@ function ContactSection() {
       >
         Contact with me
       </Text>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
-        {screenType !== 'isMobile' && (
-          <ContactForm />
-        )}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-10 items-center">
+        {screenType !== 'isMobile' && <ContactForm />}
         <div className="w-full flex flex-row justify-center items-center">
-          <div className="w-[80%] lg:w-[70%] flex flex-col gap-10">
+          <div className="w-[100%] lg:w-[70%] flex flex-col gap-10">
             <Text
-              type={
-                screenType === 'isDesktop'
-                  ? 'tiny'
-                  : screenType === 'isTablet'
-                    ? 'small'
-                    : screenType === 'isMobile'
-                      ? 'tiny'
-                      : 'tiny'
-              }
+              type="regular"
               as="p"
               fontWeight="light"
               lineHeight="normal"
-              className="text-[var(--text-title)] whitespace-pre-line text-center"
+              className="text-[var(--text-title)] whitespace-pre-line"
             >
               Have questions or dream of creating something one-of-a-kind?
             </Text>
             <Text
-              type={
-                screenType === 'isDesktop'
-                  ? 'tiny'
-                  : screenType === 'isTablet'
-                    ? 'small'
-                    : screenType === 'isMobile'
-                      ? 'tiny'
-                      : 'tiny'
-              }
+              type="regular"
               as="p"
               fontWeight="light"
               lineHeight="normal"
-              className="text-[var(--text-title)] whitespace-pre-line text-center"
+              className="text-[var(--text-title)] whitespace-pre-line"
             >
               Contact me — I’m always excited to turn new design ideas into
               reality and craft garments that reflect your personal style and

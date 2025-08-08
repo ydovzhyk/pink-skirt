@@ -1,10 +1,10 @@
 'use client';
 
-import { useEffect, useRef, useLayoutEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
-import { getScreenType } from '@/redux/technical/technical-selectors';
-import { IoIosArrowBack, IoIosArrowForward } from 'react-icons/io';
 import Text from '@/components/shared/text/text';
+import { getScreenType } from '@/redux/technical/technical-selectors';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { IoIosArrowBack, IoIosArrowForward } from 'react-icons/io';
+import { useSelector } from 'react-redux';
 function AboutMe() {
   const screenType = useSelector(getScreenType);
   const images = [
@@ -13,6 +13,11 @@ function AboutMe() {
     '/images/about-slider/03.webp',
     '/images/about-slider/04.webp',
   ];
+
+  const isMobile = screenType === 'isMobile';
+  const isTablet = screenType === 'isTablet';
+  const isLaptop = screenType === 'isLaptop';
+  const isDesktop = screenType === 'isDesktop';
 
   // Mobile version horizontal slider
   const sliderRef = useRef(null);
@@ -36,11 +41,10 @@ function AboutMe() {
         behavior: 'smooth',
       });
 
-      setTimeout(updateButtonVisibility, 350); // чекати завершення scrollBy
+      setTimeout(updateButtonVisibility, 350);
     }
   };
 
-  // ⚠️ Викликаємо тільки після рендеру (DOM готовий)
   useLayoutEffect(() => {
     const slider = sliderRef.current;
     if (!slider) return;
@@ -96,12 +100,11 @@ function AboutMe() {
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, [totalScroll]);
-
   // End of desktop version vertical slider
 
   return (
     <>
-      {screenType !== 'isMobile' && (
+      {(isLaptop || isDesktop) && (
         <section className="relative bg-[var(--section-second)] border border-transparent">
           <div id="about-me" className="absolute -top-[0px] h-[1px] w-full" />
           <div
@@ -128,9 +131,9 @@ function AboutMe() {
 
             <div
               id="about-me-content"
-              className="container sticky top-[110px] lg:h-[490px] flex flex-row justify-between gap-8 lg:gap-16"
+              className="container sticky top-[110px] lg:h-[490px] flex flex-row justify-between gap-10"
             >
-              <div className="flex flex-col justify-center items-start gap-10 w-[40%]">
+              <div className="flex flex-col justify-center items-start gap-10 w-[50%] lg:pr-[20px]">
                 <Text
                   type="normal"
                   as="p"
@@ -140,15 +143,7 @@ function AboutMe() {
                   My Insight
                 </Text>
                 <Text
-                  type={
-                    screenType === 'isDesktop'
-                      ? 'tiny'
-                      : screenType === 'isTablet'
-                        ? 'small'
-                        : screenType === 'isMobile'
-                          ? 'tiny'
-                          : 'tiny'
-                  }
+                  type="regular"
                   as="p"
                   fontWeight="light"
                   lineHeight="normal"
@@ -182,7 +177,7 @@ function AboutMe() {
                 </Text>
               </div>
 
-              <div className="w-full md:w-[60%] h-[500px] md:h-full relative">
+              <div className="w-full md:w-[50%] h-[500px] md:h-full relative">
                 <div className="absolute top-0 right-0 w-full h-full flex items-start overflow-hidden">
                   <div
                     className="w-full flex flex-col items-end gap-5"
@@ -218,7 +213,7 @@ function AboutMe() {
         </section>
       )}
 
-      {screenType === 'isMobile' && (
+      {(isMobile || isTablet) && (
         <section
           id="about-me"
           className="relative bg-[var(--section-second)] py-12 lg:py-16"
@@ -239,7 +234,7 @@ function AboutMe() {
               <span className="max-w-24 min-w-10 border-t border-gray-400"></span>
             </div>
 
-            <div className="w-full flex flex-col items-start gap-10">
+            <div className="w-full flex flex-col items-start gap-10 border">
               <Text
                 type="normal"
                 as="p"
@@ -314,7 +309,7 @@ function AboutMe() {
                 {images.map((src, index) => (
                   <div
                     key={index}
-                    className="min-w-[300px] aspect-[3/4] flex-shrink-0 rounded-md bg-cover bg-center"
+                    className="min-w-[300px] aspect-[27/40]  flex-shrink-0 rounded-md bg-cover bg-center"
                     style={{ backgroundImage: `url(${src})` }}
                   />
                 ))}

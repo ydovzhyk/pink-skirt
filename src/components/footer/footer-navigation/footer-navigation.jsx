@@ -50,7 +50,7 @@ const FooterNavigation = () => {
     <ul className="flex flex-col gap-2">
       {sections.map(({ id, label }) => (
         <li
-          className="w-full flex flex-col items-center sm:items-start"
+          className="w-full flex flex-col items-center md:items-start"
           key={id}
         >
           <button

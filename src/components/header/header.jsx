@@ -26,6 +26,8 @@ const Header = () => {
   const pathname = usePathname();
   const screenType = useSelector(getScreenType);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isMobileHeader, setIsMobileHeader] = useState(false);
+  const [afterMobileHeader, setAfterMobileHeader] = useState(false);
 
   useEffect(() => {
     if (pathname !== '/') {
@@ -48,6 +50,17 @@ const Header = () => {
     return () => window.removeEventListener('scroll', onScroll);
   }, [pathname]);
 
+  useEffect(() => {
+    const checkWidth = () => {
+      setIsMobileHeader(window.innerWidth <= 768);
+      setAfterMobileHeader(window.innerWidth > 768);
+    };
+
+    checkWidth();
+    window.addEventListener('resize', checkWidth);
+    return () => window.removeEventListener('resize', checkWidth);
+  }, []);
+
   return (
     <header
       id="header"
@@ -59,7 +72,7 @@ const Header = () => {
       )}
     >
       <div className="relative container h-[85px] mx-auto flex items-center justify-between">
-        {screenType === 'isMobile' && (
+        {isMobileHeader && (
           <div className="w-[60px] flex flex-row items-center justify-center">
             <Image
               src={
@@ -98,20 +111,20 @@ const Header = () => {
           </div>
         )}
 
-        {(screenType === 'isLaptop' || screenType === 'isTablet') && (
+        {(screenType === 'isLaptop' || (screenType === 'isTablet' && afterMobileHeader)) && (
           <div className="mt-[-20px]">
             {screenType === 'isLaptop' && <Logo width={224} height={61} />}
             {screenType === 'isTablet' && <Logo width={162} height={44} />}
           </div>
         )}
 
-        {screenType === 'isMobile' && (
+        {isMobileHeader && (
           <div className="mt-[-10px]">
             <Logo width={178} height={48} />
           </div>
         )}
 
-        {(screenType === 'isLaptop' || screenType === 'isTablet') && (
+        {(screenType === 'isLaptop' || (screenType === 'isTablet' && afterMobileHeader)) && (
           <div>
             <Navigation
               textColor={headerState === 'transparent' ? 'white' : '#444444'}
@@ -132,7 +145,7 @@ const Header = () => {
         />
       )}
 
-      {isMobileMenuOpen && screenType === 'isMobile' && (
+      {isMobileMenuOpen && isMobileHeader && (
         <div className="fixed top-[85px] left-0 w-full h-[calc(100vh-85px)] bg-[var(--section-first)] z-[60] px-6 py-4 flex flex-col justify-start items-start gap-6 transition-all duration-300 border-t border-gray-300 shadow-lg">
           {/* Кнопка закриття */}
           <button

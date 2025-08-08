@@ -30,32 +30,27 @@ const ImageBanner = () => {
   };
 
   return (
-    <div className="relative w-full h-[450px] lg:h-[500px] flex flex-row border-t border-b border-gray-200">
-      {/* Ліва частина — тільки на md і більше */}
+    <div className="relative w-full h-[580px] flex flex-row border-t border-b border-gray-200">
       <div
         className="hidden md:block w-1/2 h-full bg-cover bg-center"
         style={{
           backgroundImage: "url('/images/image-banner/banner01.webp')",
         }}
       ></div>
-
-      {/* Права частина — на мобілці займає всю ширину */}
       <div
         className="w-full md:w-1/2 h-full bg-cover bg-center"
         style={{
           backgroundImage: "url('/images/image-banner/banner02.webp')",
         }}
       ></div>
-
-      {/* Текст по центру банера */}
-
       <div className="absolute inset-0 flex items-end md:items-center justify-center px-4 pb-12 md:pb-0">
         <div className="max-w-[300px] flex flex-col items-center gap-10">
           <Text
-            type="title"
+            type="banner"
             as="p"
-            fontWeight="normal"
-            className="text-[#4c4c4ccf] text-center"
+            fontWeight="light"
+            className="text-[#010101ea] text-center"
+            textShadow="white"
           >
             Enduring charm, playfully modern
           </Text>

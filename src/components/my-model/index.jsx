@@ -7,6 +7,7 @@ import { getModels } from '@/redux/models/models-operations';
 import Text from '@/components/shared/text/text';
 import ModelCard from './model-card';
 import { IoIosArrowForward, IoIosArrowBack } from 'react-icons/io';
+import { getScreenType } from '@/redux/technical/technical-selectors';
 
 function MyModel() {
   const [startIndex, setStartIndex] = useState(0);
@@ -15,22 +16,37 @@ function MyModel() {
   const containerRef = useRef(null);
   const dispatch = useDispatch();
   const modelItems = useSelector(getModelsList);
+  const screenType = useSelector(getScreenType);
 
   useEffect(() => {
     dispatch(getModels());
   }, [dispatch]);
 
-  useEffect(() => {
-    const updateCards = () => {
-      if (window.innerWidth < 640) setCardsToShow(1);
-      else if (window.innerWidth < 1024) setCardsToShow(2);
-      else setCardsToShow(3);
-    };
+  // useEffect(() => {
+  //   const updateCards = () => {
+  //     if (window.innerWidth < 640) setCardsToShow(1);
+  //     else if (window.innerWidth < 1024) setCardsToShow(2);
+  //     else setCardsToShow(3);
+  //   };
 
-    updateCards();
-    window.addEventListener('resize', updateCards);
-    return () => window.removeEventListener('resize', updateCards);
-  }, []);
+  //   updateCards();
+  //   window.addEventListener('resize', updateCards);
+  //   return () => window.removeEventListener('resize', updateCards);
+  // }, []);
+
+  useEffect(() => {
+    switch (screenType) {
+      case 'isTablet':
+        setCardsToShow(2);
+        break;
+      case 'isLaptop':
+      case 'isDesktop':
+        setCardsToShow(3);
+        break;
+      default:
+        setCardsToShow(1);
+    }
+  }, [screenType]);
 
   const handlePrev = () => {
     if (modelItems.length === 0) return;
@@ -116,7 +132,7 @@ function MyModel() {
 
             <div className="flex gap-6 justify-center w-full">
               {visibleItems.map(item => (
-                <div key={item.id} className="flex-1 min-w-0">
+                <div key={item.id} className="w-full h-full">
                   <ModelCard model={item} />
                 </div>
               ))}

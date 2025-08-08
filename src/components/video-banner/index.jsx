@@ -10,8 +10,8 @@ const VideoBanner = ({ type = 'top', id }) => {
     type === 'top' ? '/video/banner-top.mp4' : '/video/banner-bottom.mp4';
   const heightClasses =
     type === 'top'
-      ? 'h-[500px] sm:h-[500px] md:h-[580px]'
-      : 'h-[450px] sm:h-[400px] md:h-[450px]';
+      ? 'h-[580px] sm:h-[550px] md:h-[580px]'
+      : 'h-[580px] sm:h-[500px] md:h-[500px]';
 
   return (
     <section
@@ -54,14 +54,14 @@ const VideoBanner = ({ type = 'top', id }) => {
                     : screenType === 'isTablet'
                       ? '65%'
                       : screenType === 'isLaptop'
-                        ? '45%'
+                        ? '50%'
                         : '45%',
               }}
             >
               <Text
-                type="title"
-                as="p"
-                fontWeight="normal"
+                type="banner"
+                as="h1"
+                fontWeight="light"
                 className="text-[#FAFCFF]"
                 textShadow="black"
               >

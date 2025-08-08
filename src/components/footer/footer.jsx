@@ -36,7 +36,7 @@ const Footer = () => {
     >
       <PartnersSlider />
       <div className="container w-full lg:w-[80%] flex flex-col md:flex-row gap-10 lg:gap-12 items-center md:items-start md:justify-between">
-        <div className="w-full flex flex-col items-center sm:items-start gap-4">
+        <div className="w-full flex flex-col items-center md:items-start gap-4">
           <Text
             type="regular"
             as="p"
@@ -47,7 +47,7 @@ const Footer = () => {
           </Text>
           <FooterNavigation />
         </div>
-        <div className="w-full flex flex-col items-center sm:items-start gap-4">
+        <div className="w-full flex flex-col items-center md:items-start gap-4">
           <Text
             type="regular"
             as="p"
@@ -57,7 +57,7 @@ const Footer = () => {
             Contact me:
           </Text>
           <ul className="flex flex-col gap-[15px]">
-            <li className="w-full flex flex-col items-center sm:items-start">
+            <li className="w-full flex flex-col items-center md:items-start">
               <a
                 href="https://t.me/pinkskirt_uk"
                 target="_blank"
@@ -76,7 +76,7 @@ const Footer = () => {
                 </Text>
               </a>
             </li>
-            <li className="w-full flex flex-col items-center sm:items-start">
+            <li className="w-full flex flex-col items-center md:items-start">
               <a
                 href="https://wa.me/447748068828"
                 target="_blank"
@@ -95,7 +95,7 @@ const Footer = () => {
                 </Text>
               </a>
             </li>
-            <li className="w-full flex flex-col items-center sm:items-start">
+            <li className="w-full flex flex-col items-center md:items-start">
               <a
                 href="mailto:pinkskirt.atelier@gmail.com"
                 className="flex items-center gap-2 transition-colors text-gray-500 duration-300 hover:text-black"
@@ -112,7 +112,7 @@ const Footer = () => {
                 </Text>
               </a>
             </li>
-            <li className="w-full flex flex-col items-center sm:items-start">
+            <li className="w-full flex flex-col items-center md:items-start">
               <a
                 href="tel:+447748068828"
                 className="flex items-center gap-2 transition-colors text-gray-500 duration-300 hover:text-black"
@@ -131,7 +131,7 @@ const Footer = () => {
             </li>
           </ul>
         </div>
-        <div className="w-full md:w-[30%] flex flex-col items-center sm:items-start gap-4">
+        <div className="w-full md:w-[30%] flex flex-col items-center md:items-start gap-4">
           <Text
             type="regular"
             as="p"
@@ -166,7 +166,7 @@ const Footer = () => {
         <Logo width={width} height={height} />
       </div>
       <div className="container w-full flex flex-col items-center justify-center">
-        <Text type="tiny" as="span" fontWeight="light" className="text-inherit">
+        <Text type="small" as="p" fontWeight="light" className="text-[var(--text-title)] text-center">
           © 2025 PinkSkirt – A studio in a new format
         </Text>
       </div>

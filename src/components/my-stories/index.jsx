@@ -52,7 +52,7 @@ function MyStories() {
         <span className="w-full border-t border-gray-400"></span>
       </div>
 
-        <div className="w-full grid gap-10 md:grid-cols-2 mt-2 lg:mt-4">
+        <div className="w-full grid gap-10 sm:grid-cols-2 mt-2 lg:mt-4">
           {stories.map(story => (
             <StoryCard key={story.id} {...story} story={story} />
           ))}

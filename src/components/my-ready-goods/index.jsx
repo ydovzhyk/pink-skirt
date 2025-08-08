@@ -1,20 +1,20 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 import { getReadyGoods } from '@/redux/ready-goods/ready-goods-operations';
 import {
-  getReadyGoodsList,
-  getTotalPagesReadyGoods,
+  getAllReadyGoods,
   getCurrentPageReadyGoods,
   getNewestReadyGoods,
-  getAllReadyGoods,
+  getReadyGoodsList,
+  getTotalPagesReadyGoods,
 } from '@/redux/ready-goods/ready-goods-selectors';
-import Text from '../shared/text/text';
-import ReadyGoodCard from './ready-good-card';
-import Pagination from '../shared/pagination';
-import NewestReadyGoodCard from './newest-card';
 import { getScreenType } from '@/redux/technical/technical-selectors';
+import { useEffect, useRef } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import Pagination from '../shared/pagination';
+import Text from '../shared/text/text';
+import NewestReadyGoodCard from './newest-card';
+import ReadyGoodCard from './ready-good-card';
 
 function MyReadyGoods() {
   const dispatch = useDispatch();
@@ -38,11 +38,7 @@ function MyReadyGoods() {
     dispatch(getReadyGoods({ page: currentPage, limit }));
   }, [dispatch, currentPage, isMobileOrTablet]);
 
-  useEffect(() => {
-  }, [readyGoods]);
-
-  console.log('Ready Goods:', readyGoods);
-  console.log('Newest Ready Goods:', newestReadyGoods);
+  useEffect(() => {}, [readyGoods]);
 
   if (allReadyGoods.length === 0) {
     return null;
@@ -89,7 +85,12 @@ function MyReadyGoods() {
                 <ReadyGoodCard {...secondRowLeft} readyGood={secondRowLeft} />
               )}
             </div>
-            <div className="col-span-2 h-full">
+            <div
+              className="col-span-2 h-full"
+              style={{
+                maxHeight: screenType === 'isLaptop' ? '400px' : '495px',
+              }}
+            >
               {newestGood && (
                 <NewestReadyGoodCard {...newestGood} readyGood={newestGood} />
               )}
@@ -109,7 +110,7 @@ function MyReadyGoods() {
             ))}
 
             {newestGood && (
-              <div className="sm:col-span-2">
+              <div className="sm:col-span-2 aspect-[27/40]  sm:aspect-square">
                 <NewestReadyGoodCard
                   {...newestGood}
                   key={newestGood.id}

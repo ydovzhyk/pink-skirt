@@ -5,8 +5,6 @@ import {
   axiosLogout,
   axiosGetCurrentUser,
 } from '../../api/auth';
-import { setModalWindowStatus } from '../technical/technical-slice';
-
 export const register = createAsyncThunk(
   'auth/register',
   async (userData, { dispatch, rejectWithValue }) => {
@@ -14,7 +12,7 @@ export const register = createAsyncThunk(
       const data = await axiosRegister(userData);
       const { accessToken, refreshToken, sid } = data;
       const authData = { accessToken, refreshToken, sid };
-      localStorage.setItem('mental-health.authData', JSON.stringify(authData));
+      localStorage.setItem('pink-skirt.authData', JSON.stringify(authData));
       return data;
     } catch (error) {
       const { data, status } = error.response;
@@ -31,7 +29,7 @@ export const login = createAsyncThunk(
       const data = await axiosLogin(userData);
       const { accessToken, refreshToken, sid } = data;
       const authData = { accessToken, refreshToken, sid };
-      localStorage.setItem('mental-health.authData', JSON.stringify(authData));
+      localStorage.setItem('pink-skirt..authData', JSON.stringify(authData));
       return data;
     } catch (error) {
       const { data, status } = error.response;
@@ -46,7 +44,7 @@ export const logout = createAsyncThunk(
   async (_, { dispatch, rejectWithValue }) => {
     try {
       const data = await axiosLogout();
-      localStorage.removeItem('mental-health.authData');
+      localStorage.removeItem('pink-skirt.authData');
       return data;
     } catch (error) {
       const { data, status } = error.response;
@@ -60,7 +58,7 @@ export const updateUser = createAsyncThunk(
   'auth/current',
   async (_, { dispatch, rejectWithValue }) => {
     try {
-      const authDataJSON = localStorage.getItem('mental-health.authData');
+      const authDataJSON = localStorage.getItem('pink-skirt.authData');
       const authData = JSON.parse(authDataJSON);
       const userData = authData;
       const data = await axiosGetCurrentUser(userData);
@@ -77,7 +75,7 @@ export const getCurrentUser = createAsyncThunk(
   'auth/current',
   async (_, { dispatch, rejectWithValue }) => {
     try {
-      const authDataJSON = localStorage.getItem('mental-health.authData');
+      const authDataJSON = localStorage.getItem('pink-skirt.authData');
       const authData = JSON.parse(authDataJSON);
       const userData = authData;
       const data = await axiosGetCurrentUser(userData);

@@ -1,12 +1,12 @@
 'use client';
 
-import { useRouter, usePathname } from 'next/navigation';
-import { useDispatch, useSelector } from 'react-redux';
-import { setEditStory } from '@/redux/stories/stories-slice';
 import { deleteStory, getStories } from '@/redux/stories/stories-operations';
-import Text from '../../shared/text/text';
 import { getCurrentPageStories } from '@/redux/stories/stories-selectors';
+import { setEditStory } from '@/redux/stories/stories-slice';
 import { getScreenType } from '@/redux/technical/technical-selectors';
+import { usePathname, useRouter } from 'next/navigation';
+import { useDispatch, useSelector } from 'react-redux';
+import Text from '../../shared/text/text';
 
 const StoryCard = ({ id, title, date, content, mainImageUrl, story }) => {
   const router = useRouter();
@@ -16,6 +16,15 @@ const StoryCard = ({ id, title, date, content, mainImageUrl, story }) => {
 
   const pathname = usePathname();
   const isAdmin = pathname.startsWith('/admin');
+
+  const charLimits = {
+    isMobile: 80,
+    isTablet: 120,
+    isLaptop: 155,
+    isDesktop: 290,
+  };
+
+  const limit = charLimits[screenType] || 165;
 
   const formattedTitle = title
     .trim()
@@ -46,17 +55,17 @@ const StoryCard = ({ id, title, date, content, mainImageUrl, story }) => {
   return (
     <div className="relative flex flex-col lg:flex-row lg:items-center">
       <div
-        className="relative w-full lg:w-[60%] aspect-[3/4] rounded-t-md lg:rounded-md bg-cover bg-center"
+        className="relative w-full lg:w-[60%] aspect-[27/40]  rounded-t-md lg:rounded-md bg-cover bg-center"
         style={{ backgroundImage: `url(${mainImageUrl})` }}
       ></div>
 
-      <div className="w-full lg:w-[55%] min-h-[185px] md:min-h-[280px] lg:min-h-[385px] px-6 py-4 sm:px-6 sm:py-5 rounded-b-md lg:rounded-md shadow-lg bg-white flex flex-col justify-between lg:absolute lg:top-[40px] lg:left-[45%] lg:h-full lg:aspect-[3/4]">
+      <div className="w-full lg:w-[55%] min-h-[185px] sm:min-h-[280px] lg:min-h-[385px] px-6 py-4 sm:px-6 sm:py-5 rounded-b-md lg:rounded-md shadow-lg bg-white flex flex-col justify-between lg:absolute lg:top-[40px] lg:left-[45%] lg:h-full lg:aspect-[6/7]">
         <div className="w-full h-full flex flex-col gap-3">
           <Text
             type="normal"
             as="h3"
-            fontWeight="medium"
-            className="text-black"
+            fontWeight="normal"
+            className={'text-black'}
           >
             {title}
           </Text>
@@ -64,21 +73,13 @@ const StoryCard = ({ id, title, date, content, mainImageUrl, story }) => {
             {new Date(date).toDateString()}
           </Text>
           <Text
-            type={
-              screenType === 'isDesktop'
-                ? 'tiny'
-                : screenType === 'isTablet'
-                  ? 'small'
-                  : screenType === 'isMobile'
-                    ? 'tiny'
-                    : 'tiny'
-            }
+            type="small"
             as="p"
             fontWeight="light"
             lineHeight="normal"
             className="text-[var(--text-title)] whitespace-pre-line"
           >
-            {String(content.slice(0, 165)) + '...'}
+            {String(content.slice(0, limit)) + '...'}
           </Text>
         </div>
 
@@ -86,12 +87,7 @@ const StoryCard = ({ id, title, date, content, mainImageUrl, story }) => {
           className="border-b border-gray-400 hover:border-[var(--accent)] w-fit transition-colors duration-200 mt-3 md:mt-0"
           onClick={handleNavigate}
         >
-          <Text
-            type="extra-small"
-            as="p"
-            fontWeight="light"
-            className="text-black"
-          >
+          <Text type="small" as="p" fontWeight="light" className="text-black">
             Read more
           </Text>
         </button>
