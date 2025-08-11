@@ -38,7 +38,8 @@ function MyReadyGoods() {
     dispatch(getReadyGoods({ page: currentPage, limit }));
   }, [dispatch, currentPage, isMobileOrTablet]);
 
-  useEffect(() => {}, [readyGoods]);
+  useEffect(() => {
+  }, [readyGoods, totalPages, currentPage]);
 
   if (allReadyGoods.length === 0) {
     return null;
@@ -54,11 +55,7 @@ function MyReadyGoods() {
       id="collection"
       className="bg-white border border-transparent"
     >
-      <div
-        className={`container mt-12 lg:mt-16 ${
-          totalPages > 1 ? 'lg:mb-[104px]' : 'lg:mb-[64px]'
-        }`}
-      >
+      <div className="container mt-12 lg:mt-16">
         <div className="flex items-center justify-start relative my-12 lg:my-16">
           <div className="bg-[var(--section-first)] absolute left-0 w-fit p-2 px-5 rounded-md border border-gray-300">
             <Text
@@ -126,8 +123,12 @@ function MyReadyGoods() {
         )}
 
         {totalPages > 1 && (
-          <div className="mt-[70px] mb-[-40px] flex justify-center">
-            <Pagination totalPages={totalPages} type="ready-goods" />
+          <div className="my-12 lg:my-16 flex justify-center">
+            <Pagination
+              totalPages={totalPages}
+              type="ready-goods"
+              scrollTargetId="collection"
+            />
           </div>
         )}
       </div>

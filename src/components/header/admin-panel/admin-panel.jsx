@@ -1,20 +1,47 @@
 'use client';
 
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { usePathname, useRouter } from 'next/navigation';
 import { getIsLoginPanel } from '@/redux/auth/auth-selectors';
 import { getActiveSection } from '@/redux/technical/technical-selectors';
+import { updateIsLoginPanel } from '@/redux/auth/auth-slice';
 import clsx from 'clsx';
 import Text from '@/components/shared/text/text';
+import { BsEscape } from 'react-icons/bs';
 
-  let sections = [
-    { id: 'admin-ready-goods', label: 'Admin Collection', offset: -130, offsetLogin: -190 },
-    { id: 'admin-models', label: 'Admin Models', offset: -85, offsetLogin: -148 },
-    { id: 'admin-fabrics', label: 'Admin Fabrics', offset: -85, offsetLogin: -190 },
-    { id: 'admin-stories', label: 'Admin Stories', offset: -135, offsetLogin: -148 },
-  ];
+export const sections = [
+  {
+    id: 'admin-collection',
+    label: 'Admin Collection',
+    offset: -130,
+    offsetLogin: -190,
+    offsetLoginMobile: -25,
+  },
+  {
+    id: 'admin-models',
+    label: 'Admin Models',
+    offset: -85,
+    offsetLogin: -148,
+    offsetLoginMobile: -85,
+  },
+  {
+    id: 'admin-fabrics',
+    label: 'Admin Fabrics',
+    offset: -85,
+    offsetLogin: -190,
+    offsetLoginMobile: -85,
+  },
+  {
+    id: 'admin-stories',
+    label: 'Admin Stories',
+    offset: -135,
+    offsetLogin: -148,
+    offsetLoginMobile: 25,
+  },
+];
 
 const AdminPanel = ({ textColor = 'black' }) => {
+  const dispatch = useDispatch();
   const pathname = usePathname();
   const router = useRouter();
   const isLoginPanel = useSelector(getIsLoginPanel);
@@ -41,8 +68,14 @@ const AdminPanel = ({ textColor = 'black' }) => {
     }, 50);
   };
 
+  const handleExit = () => {
+    localStorage.removeItem('pink-skirt');
+    dispatch(updateIsLoginPanel(false));
+    router.push('/');
+  };
+
   return (
-    <nav className="relative w-full py-[13px]">
+    <nav className="relative container w-full py-[13px]">
       <ul className="flex flex-row items-center justify-center gap-[20px] w-full">
         {sections.map(({ id, label }) => {
           const isActive = pathname === '/admin' && activeSection === id;
@@ -53,7 +86,7 @@ const AdminPanel = ({ textColor = 'black' }) => {
                 className="relative block py-2 no-underline outline-none hover:no-underline group"
               >
                 <Text
-                  type="tiny"
+                  type="small"
                   as="p"
                   fontWeight="light"
                   className={`text-${textColor}`}
@@ -73,6 +106,23 @@ const AdminPanel = ({ textColor = 'black' }) => {
           );
         })}
       </ul>
+
+      <div className="absolute top-0 right-4 h-full flex flex-row items-center">
+        <button
+          onClick={handleExit}
+          className="flex items-center gap-3 py-2 text-[var(--text-title)] hover:text-black"
+        >
+          <Text
+            type="small"
+            as="p"
+            fontWeight="light"
+            className="text-[var(--text-title)] hover:text-dark"
+          >
+            Exit
+          </Text>
+          <BsEscape className="w-[30px] h-[30px]" />
+        </button>
+      </div>
     </nav>
   );
 };

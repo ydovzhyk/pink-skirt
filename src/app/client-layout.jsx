@@ -24,10 +24,21 @@ const ClientLayout = ({ children }) => {
   const loadingStories = useSelector(getLoadingStories);
   const [loading, setLoading] = useState(false);
   const isLoginPanel = useSelector(getIsLoginPanel);
+  const [afterMobileHeader, setAfterMobileHeader] = useState(false);
 
   useEffect(() => {
     setLoading(loadingAuth || loadingTechnical || loadingStories);
   }, [loadingAuth, loadingTechnical, loadingStories]);
+
+  useEffect(() => {
+    const checkWidth = () => {
+      setAfterMobileHeader(window.innerWidth > 768);
+    };
+
+    checkWidth();
+    window.addEventListener('resize', checkWidth);
+    return () => window.removeEventListener('resize', checkWidth);
+  }, []);
 
   return (
     <div className="reletive min-h-screen flex flex-col justify-between">
@@ -40,7 +51,9 @@ const ClientLayout = ({ children }) => {
         setActiveSection={section => dispatch(setActiveSection(section))}
       />
       <Header />
-      <main className={`flex-1 ${isLoginPanel ? 'mt-[148px]' : 'mt-[85px]'}`}>
+      <main
+        className={`flex-1 ${(isLoginPanel && afterMobileHeader) ? 'mt-[148px]' : 'mt-[85px]'}`}
+      >
         {children}
       </main>
       <ScrollToTopButton />

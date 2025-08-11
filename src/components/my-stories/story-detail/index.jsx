@@ -111,9 +111,10 @@ const StoryDetail = ({
         <div className="w-full">
           {activeImage && (
             <div
-              className="w-full aspect-[27/40]  bg-cover bg-center rounded-md"
+              className="relative w-full aspect-[27/40]  bg-cover bg-center rounded-md"
               style={{ backgroundImage: `url(${activeImage})` }}
-            ></div>
+            >
+            </div>
           )}
 
           {additionalImageUrls.length > 0 && (

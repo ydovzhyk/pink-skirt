@@ -6,14 +6,31 @@ import { getCurrentPageStories } from '@/redux/stories/stories-selectors';
 import { setCurrentPageReadyGoods } from '@/redux/ready-goods/ready-goods-slice';
 import { getCurrentPageReadyGoods } from '@/redux/ready-goods/ready-goods-selectors';
 import Text from '../text/text';
+import { getIsLoginPanel } from '@/redux/auth/auth-selectors';
 
-const Pagination = ({ totalPages, type }) => {
+const Pagination = ({
+  totalPages,
+  type,
+  scrollTargetId,
+}) => {
   const dispatch = useDispatch();
   const currentPageStories = useSelector(getCurrentPageStories);
   const currentPageReadyGoods = useSelector(getCurrentPageReadyGoods);
+  const isLoginPanel = useSelector(getIsLoginPanel);
 
   const currentPage =
     type === 'ready-goods' ? currentPageReadyGoods : currentPageStories;
+
+  const scrollOffset = !isLoginPanel ? -85 : -148;
+
+  const scrollToTarget = () => {
+    if (!scrollTargetId) return;
+    const el = document.getElementById(scrollTargetId);
+    if (!el) return;
+    const y =
+      el.getBoundingClientRect().top + window.pageYOffset + scrollOffset;
+    window.scrollTo({ top: y, behavior: 'smooth' });
+  };
 
   const handleChange = page => {
     if (page >= 1 && page <= totalPages) {
@@ -23,6 +40,7 @@ const Pagination = ({ totalPages, type }) => {
         dispatch(setCurrentPageStories(page));
       }
     }
+    setTimeout(scrollToTarget, 0);
   };
 
   return (

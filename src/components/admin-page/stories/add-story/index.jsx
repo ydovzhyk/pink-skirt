@@ -10,11 +10,12 @@ import FileUpload from '@/components/shared/file-upload';
 import { toast } from 'react-toastify';
 import { createStory, getStories } from '@/redux/stories/stories-operations';
 import { getCurrentPageStories } from '@/redux/stories/stories-selectors';
+import { v4 as uuidv4 } from 'uuid';
 
 const MAX_IMAGES = 6;
 const MAX_IMAGE_SIZE = 500 * 1024;
 
-const generateStoryId = () => crypto.randomUUID();
+const generateStoryId = () => uuidv4();
 
 const AddStory = () => {
   const { register, handleSubmit, reset } = useForm();

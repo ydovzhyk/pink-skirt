@@ -32,7 +32,7 @@ function AdminPage() {
     <div className="">
       <Suspense fallback={<LoaderSpinner />}>
         {/* MyReadyGoods */}
-        <div id="admin-ready-goods" className="flex flex-col">
+        <div id="admin-collection" className="flex flex-col">
           <MyReadyGoods />
           <div className="container">
             <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">

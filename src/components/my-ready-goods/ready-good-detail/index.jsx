@@ -11,8 +11,10 @@ import { getModels } from '@/redux/models/models-operations';
 import { getModelsList } from '@/redux/models/models-selectors';
 import Text from '../../shared/text/text';
 import MarqueeQuote from '../../shared/marquee-quote/index';
+import ImageModal from '../../shared/image-modal/index';
 import { RiArrowGoBackFill } from 'react-icons/ri';
 import { getScreenType } from '@/redux/technical/technical-selectors';
+import { CiZoomIn } from 'react-icons/ci';
 
 const ReadyGoodsDetail = ({
   id,
@@ -34,6 +36,11 @@ const ReadyGoodsDetail = ({
   const currentIndex = allReadyGoods.findIndex(item => item.id === id);
   const hasPrevious = currentIndex > 0;
   const hasNext = currentIndex < allReadyGoods.length - 1;
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalIndex, setModalIndex] = useState(0);
+
+  const imagesAll = [mainImageUrl, ...(additionalImageUrls || [])];
 
   useEffect(() => {
     if (allReadyGoods.length === 0) {
@@ -73,6 +80,12 @@ const ReadyGoodsDetail = ({
     }
   };
 
+  const openModalAtActive = () => {
+    const idx = Math.max(0, imagesAll.indexOf(activeImage));
+    setModalIndex(idx);
+    setIsModalOpen(true);
+  };
+
   return (
     <section
       id="story-detail"
@@ -105,12 +118,7 @@ const ReadyGoodsDetail = ({
           >
             {title}
           </Text>
-          <Text
-            type="small"
-            as="p"
-            fontWeight="light"
-            className="text-black"
-          >
+          <Text type="small" as="p" fontWeight="light" className="text-black">
             {new Date(date).toDateString()}
           </Text>
         </div>
@@ -120,10 +128,24 @@ const ReadyGoodsDetail = ({
         <div className="w-full aspect-square flex flex-row gap-4">
           {/* Основне фото */}
           {activeImage && (
-            <div
-              className="w-[65%] h-full bg-cover bg-center rounded-md shadow-lg"
-              style={{ backgroundImage: `url(${activeImage})` }}
-            />
+            <div className="relative w-[65%] h-full rounded-md shadow-lg overflow-hidden">
+              <div
+                className="w-full h-full bg-cover bg-center"
+                style={{ backgroundImage: `url(${activeImage})` }}
+              />
+              {screenType === 'isMobile' && (
+                <button
+                  type="button"
+                  onClick={openModalAtActive}
+                  aria-label="Zoom image"
+                  className="absolute top-2 right-2 flex items-center justify-center"
+                >
+                  <span className="inline-flex items-center justify-center w-[50px] h-[50px] rounded-full bg-black/20 backdrop-blur-sm border border-gray-300">
+                    <CiZoomIn className="w-7 h-7 text-white" />
+                  </span>
+                </button>
+              )}
+            </div>
           )}
 
           {/* Вертикальний слайдер */}
@@ -172,8 +194,10 @@ const ReadyGoodsDetail = ({
               </div>
             )}
           </div>
-          <div className="w-full flex flex-col justify-start items-start gap-4"
-          style={{ marginTop: screenType === 'isMobile' ? '-40px' : '0px' }}>
+          <div
+            className="w-full flex flex-col justify-start items-start gap-4"
+            style={{ marginTop: screenType === 'isMobile' ? '-40px' : '0px' }}
+          >
             <Text
               type="tiny"
               as="p"
@@ -331,6 +355,15 @@ const ReadyGoodsDetail = ({
           </Text>
         </button>
       </div>
+
+      {/* Modal for zoomed image */}
+      {isModalOpen && screenType === 'isMobile' && (
+        <ImageModal
+          images={imagesAll}
+          initialIndex={modalIndex}
+          onClose={() => setIsModalOpen(false)}
+        />
+      )}
     </section>
   );
 };

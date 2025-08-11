@@ -1,6 +1,7 @@
 'use client';
 
 import clsx from 'clsx';
+import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { TranslatedText } from '@/utils/translating/translating';
 import { getScreenType } from '@/redux/technical/technical-selectors';
@@ -19,7 +20,11 @@ const Text = ({
 }) => {
   const screenType = useSelector(getScreenType);
 
-  // БЕЗ TS-типів — звичайний об'єкт
+  const [hydrated, setHydrated] = useState(false);
+  useEffect(() => setHydrated(true), []);
+
+  const safeScreen = hydrated ? screenType : 'isMobile';
+
   const sizeMap = {
     xxl: {
       isMobile: 'text-[30px]',
@@ -72,7 +77,7 @@ const Text = ({
   };
 
   const sizeClass =
-    (sizeMap[type] && sizeMap[type][screenType]) || 'text-[16px]';
+    (sizeMap[type] && sizeMap[type][safeScreen]) || 'text-[16px]';
 
   const fontClasses = {
     josefin: 'font-josefin',

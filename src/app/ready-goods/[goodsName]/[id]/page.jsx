@@ -22,7 +22,6 @@ function DetailReadyGoodsPage() {
       !id ||
       typeof id !== 'string'
     ) {
-      console.log('Invalid parameters');
       router.replace('/404');
       return;
     }

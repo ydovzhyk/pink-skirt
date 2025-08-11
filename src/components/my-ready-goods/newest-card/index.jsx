@@ -25,6 +25,8 @@ const NewestReadyGoodCard = ({
   const dispatch = useDispatch();
   const currentPage = useSelector(getCurrentPageReadyGoods);
 
+  
+
   const pathname = usePathname();
   const isAdmin = pathname.startsWith('/admin');
 

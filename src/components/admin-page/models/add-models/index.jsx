@@ -9,12 +9,13 @@ import TextareaField from '@/components/shared/textarea-field/index.jsx';
 import FileUpload from '@/components/shared/file-upload/index.jsx';
 import { toast } from 'react-toastify';
 import { createModel, getModels } from '@/redux/models/models-operations';
+import { v4 as uuidv4 } from 'uuid';
 
 const MAX_IMAGES = 6;
 const MAX_IMAGE_SIZE = 5 * 1024 * 1024;
 
 const generateItemId = () => {
-  return crypto.randomUUID();
+  return uuidv4();
 };
 
 const AddModels = () => {

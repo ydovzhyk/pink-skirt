@@ -14,12 +14,13 @@ import {
   getReadyGoods,
 } from '@/redux/ready-goods/ready-goods-operations';
 import { getCurrentPageReadyGoods } from '@/redux/ready-goods/ready-goods-selectors';
+import { v4 as uuidv4 } from 'uuid';
 
 const MAX_IMAGES = 6;
 const MAX_IMAGE_SIZE = 500 * 1024;
 
 const generateItemId = () => {
-  return crypto.randomUUID();
+  return uuidv4();
 };
 
 const AddReadyGoods = () => {
