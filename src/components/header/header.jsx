@@ -95,6 +95,7 @@ const Header = () => {
               height={45}
               className="cursor-pointer"
               onClick={() => setIsMobileMenuOpen(true)}
+              style={{ height: '25px', width: 'auto' }}
             />
           </div>
         )}
@@ -151,12 +152,11 @@ const Header = () => {
         </div>
       </div>
 
-      {isLoginPanel &&
-        !isMobileHeader && (
-          <AdminPanel
-            textColor={headerState === 'transparent' ? 'white' : '#444444'}
-          />
-        )}
+      {isLoginPanel && !isMobileHeader && (
+        <AdminPanel
+          textColor={headerState === 'transparent' ? 'white' : '#444444'}
+        />
+      )}
 
       {isMobileMenuOpen && isMobileHeader && (
         <div className="fixed top-[85px] left-0 w-full h-[calc(100vh-85px)] bg-[var(--section-first)] z-[60] border-t border-gray-300 shadow-lg flex flex-row items-start justify-center">

@@ -31,10 +31,7 @@ const AdminMobileNavigation = ({ onClose }) => {
 
     if (onClose) onClose();
 
-    setTimeout(() => {
       router.push(`/admin/#${id}`);
-
-      if (pathname === '/admin/') {
         setTimeout(() => {
           const element = document.getElementById(id);
           if (element && yOffset !== undefined) {
@@ -49,8 +46,6 @@ const AdminMobileNavigation = ({ onClose }) => {
             });
           }
         }, 50);
-      }
-    }, 300);
   };
 
   return (

@@ -30,26 +30,22 @@ const MobileNavigation = ({ onClose }) => {
 
     if (onClose) onClose();
 
+    router.push(`/#${id}`);
+
     setTimeout(() => {
-      router.push(`/#${id}`);
+      const element = document.getElementById(id);
+      if (element && yOffset !== undefined) {
+        const y =
+          element.getBoundingClientRect().top +
+          window.pageYOffset +
+          yOffset;
 
-      if (pathname === '/') {
-        setTimeout(() => {
-          const element = document.getElementById(id);
-          if (element && yOffset !== undefined) {
-            const y =
-              element.getBoundingClientRect().top +
-              window.pageYOffset +
-              yOffset;
-
-            window.scrollTo({
-              top: y,
-              behavior: 'smooth',
-            });
-          }
-        }, 50);
+        window.scrollTo({
+          top: y,
+          behavior: 'smooth',
+        });
       }
-    }, 300);
+    }, 100);
   };
 
   return (

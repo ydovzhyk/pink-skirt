@@ -78,17 +78,18 @@ const Navigation = ({ textColor = '#444444' }) => {
 
     setTimeout(() => {
       const element = document.getElementById(id);
-
       if (element && yOffset !== undefined) {
         const y =
-          element.getBoundingClientRect().top + window.pageYOffset + yOffset;
+          element.getBoundingClientRect().top +
+          window.pageYOffset +
+          yOffset;
 
         window.scrollTo({
           top: y,
           behavior: 'smooth',
         });
       }
-    }, 50);
+    }, 100);
   };
 
   return (

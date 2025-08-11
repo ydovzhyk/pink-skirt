@@ -13,13 +13,13 @@ export const sections = [
   {
     id: 'admin-collection',
     label: 'Admin Collection',
-    offset: -130,
+    offset: -105,
     offsetLogin: -190,
   },
   {
     id: 'admin-models',
     label: 'Admin Models',
-    offset: -85,
+    offset: -63,
     offsetLogin: -148,
   },
   {
@@ -31,7 +31,7 @@ export const sections = [
   {
     id: 'admin-stories',
     label: 'Admin Stories',
-    offset: -135,
+    offset: -85,
     offsetLogin: -148,
   },
 ];
@@ -51,17 +51,18 @@ const AdminPanel = ({ textColor = 'black' }) => {
 
     setTimeout(() => {
       const element = document.getElementById(id);
-
       if (element && yOffset !== undefined) {
         const y =
-          element.getBoundingClientRect().top + window.pageYOffset + yOffset;
+          element.getBoundingClientRect().top +
+          window.pageYOffset +
+          yOffset;
 
         window.scrollTo({
           top: y,
           behavior: 'smooth',
         });
       }
-    }, 50);
+    }, 100);
   };
 
   const handleExit = () => {
