@@ -15,28 +15,24 @@ export const sections = [
     label: 'Admin Collection',
     offset: -130,
     offsetLogin: -190,
-    offsetLoginMobile: -25,
   },
   {
     id: 'admin-models',
     label: 'Admin Models',
     offset: -85,
     offsetLogin: -148,
-    offsetLoginMobile: -85,
   },
   {
     id: 'admin-fabrics',
     label: 'Admin Fabrics',
     offset: -85,
     offsetLogin: -190,
-    offsetLoginMobile: -85,
   },
   {
     id: 'admin-stories',
     label: 'Admin Stories',
     offset: -135,
     offsetLogin: -148,
-    offsetLoginMobile: 25,
   },
 ];
 

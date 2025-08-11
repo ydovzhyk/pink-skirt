@@ -27,14 +27,7 @@ const AdminMobileNavigation = ({ onClose }) => {
 
   const handleNavigate = id => {
     const section = sections.find(sec => sec.id === id);
-    const yOffset =
-      isLoginPanel && afterMobileHeader
-        ? section?.offsetLogin
-        : isLoginPanel && isMobileHeader
-        ? section?.offsetLoginMobile
-        : section?.offset;
-
-    console.log('Navigating to:', id, 'with offset:', yOffset);
+    const yOffset = section?.offset;
 
     if (onClose) onClose();
 
