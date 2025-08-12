@@ -40,22 +40,23 @@ const FooterNavigation = () => {
     const section = sections.find(sec => sec.id === id);
     const yOffset = (isLoginPanel && afterMobileHeader) ? section?.offsetLogin : section?.offset;
 
-    router.push(`/#${id}`);
+    router.push(`/#${id}`, { scroll: false });
 
-    if (pathname === '/') {
-      setTimeout(() => {
-        const element = document.getElementById(id);
-        if (element && yOffset !== undefined) {
-          const y =
-            element.getBoundingClientRect().top + window.pageYOffset + yOffset;
+    let tries = 0;
+    const maxTries = 60;
 
-          window.scrollTo({
-            top: y,
-            behavior: 'smooth',
-          });
-        }
-      }, 50);
-    }
+    const tryScroll = () => {
+      const el = document.getElementById(id);
+      if (el) {
+        const y =
+          el.getBoundingClientRect().top + window.pageYOffset + (yOffset ?? 0);
+        window.scrollTo({ top: y, behavior: 'smooth' });
+      } else if (tries++ < maxTries) {
+        requestAnimationFrame(tryScroll);
+      }
+    };
+
+    requestAnimationFrame(tryScroll);
   };
 
   return (

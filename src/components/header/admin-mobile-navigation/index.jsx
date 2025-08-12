@@ -13,21 +13,25 @@ const AdminMobileNavigation = ({ onClose }) => {
 
     if (onClose) onClose();
 
-      router.push(`/admin/#${id}`);
-        setTimeout(() => {
-          const element = document.getElementById(id);
-          if (element && yOffset !== undefined) {
-            const y =
-              element.getBoundingClientRect().top +
-              window.pageYOffset +
-              yOffset;
+    router.push(`/admin/#${id}`, { scroll: false });
 
-            window.scrollTo({
-              top: y,
-              behavior: 'smooth',
-            });
-          }
-        }, 50);
+    let tries = 0;
+    const maxTries = 60;
+
+    const tryScroll = () => {
+      const el = document.getElementById(id);
+      if (el) {
+        const y =
+          el.getBoundingClientRect().top +
+          window.pageYOffset +
+          (yOffset ?? 0);
+        window.scrollTo({ top: y, behavior: 'smooth' });
+      } else if (tries++ < maxTries) {
+        requestAnimationFrame(tryScroll);
+      }
+    };
+
+    requestAnimationFrame(tryScroll);
   };
 
   return (

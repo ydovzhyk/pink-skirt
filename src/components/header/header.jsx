@@ -66,10 +66,13 @@ const Header = () => {
   }, []);
 
   const handleExit = () => {
-      localStorage.removeItem('pink-skirt');
+    localStorage.removeItem('pink-skirt');
+    router.replace('/');
+    setIsMobileMenuOpen(false);
+    setTimeout(() => {
       dispatch(updateIsLoginPanel(false));
-      router.push('/');
-    };
+    }, 50);
+  };
 
   return (
     <header

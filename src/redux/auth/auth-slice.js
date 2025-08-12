@@ -6,7 +6,7 @@ const initialState = {
   sid: null,
   accessToken: null,
   refreshToken: null,
-  isLogin: false,
+  isLogin: null,
   loading: false,
   isRefreshing: false,
   error: null,

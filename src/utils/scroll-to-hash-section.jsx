@@ -17,7 +17,6 @@ const ScrollToHashSection = () => {
 
     const element = document.getElementById(id);
     if (element && yOffset !== undefined) {
-      // Дочекатися повного завантаження сторінки
       setTimeout(() => {
         const y =
           element.getBoundingClientRect().top + window.pageYOffset + yOffset;

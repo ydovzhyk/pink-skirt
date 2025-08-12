@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, notFound } from 'next/navigation';
 import { useSelector } from 'react-redux';
 import { getLogin } from '../../redux/auth/auth-selectors';
 import LoaderSpinner from '@/components/loader/loader';
@@ -21,12 +21,16 @@ function AdminPage() {
   const router = useRouter();
 
   useEffect(() => {
-    if (isLogin === undefined) return;
+    if (isLogin === undefined || isLogin === null) return;
 
     if (!isLogin) {
-      router.replace('/');
+      notFound();
     }
   }, [isLogin, router]);
+
+  if (isLogin === undefined || isLogin === null) {
+    return null;
+  }
 
   return (
     <div className="">
@@ -46,22 +50,24 @@ function AdminPage() {
           id="admin-models"
           className="flex flex-col"
           style={{
-            background: `linear-gradient(to bottom, rgba(250, 247, 195, 0.3), var(--section-fourth))`,
+            background:
+              'linear-gradient(to bottom, rgba(250, 247, 195, 0.3), var(--section-fourth))',
           }}
         >
           <MyModels />
           <div
             style={{
-              background: `linear-gradient(to top, rgba(250, 247, 195, 0.3), var(--section-fourth))`,
+              background:
+                `linear-gradient(to top, rgba(250, 247, 195, 0.3), var(--section-fourth))`,
             }}
           >
-              <div className="container">
+            <div className="container">
               <div className="grid grid-cols-1 lg:grid-cols-2">
                 <AddModel />
-                  <EditModel />
-                </div>
+                <EditModel />
+              </div>
             </div>
-            </div>
+          </div>
         </div>
         {/* MyStories */}
         <div

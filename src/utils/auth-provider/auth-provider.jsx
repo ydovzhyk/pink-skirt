@@ -23,6 +23,8 @@ const AuthProvider = () => {
         // Зберігаємо поточну URL (включно з hash) і чистимо search-параметри
         const currentPath = window.location.pathname + window.location.hash;
         router.replace(currentPath);
+      } else {
+        dispatch(updateIsLoginPanel(false));
       }
     };
 

@@ -47,28 +47,31 @@ const AdminPanel = ({ textColor = 'black' }) => {
     const section = sections.find(sec => sec.id === id);
     const yOffset = isLoginPanel ? section?.offsetLogin : section?.offset;
 
-    router.push(`/admin/#${id}`);
+    router.push(`/admin/#${id}`, { scroll: false });
 
-    setTimeout(() => {
-      const element = document.getElementById(id);
-      if (element && yOffset !== undefined) {
+    let tries = 0;
+    const maxTries = 60;
+
+    const tryScroll = () => {
+      const el = document.getElementById(id);
+      if (el) {
         const y =
-          element.getBoundingClientRect().top +
-          window.pageYOffset +
-          yOffset;
-
-        window.scrollTo({
-          top: y,
-          behavior: 'smooth',
-        });
+          el.getBoundingClientRect().top + window.pageYOffset + (yOffset ?? 0);
+        window.scrollTo({ top: y, behavior: 'smooth' });
+      } else if (tries++ < maxTries) {
+        requestAnimationFrame(tryScroll);
       }
-    }, 100);
+    };
+
+    requestAnimationFrame(tryScroll);
   };
 
   const handleExit = () => {
     localStorage.removeItem('pink-skirt');
-    dispatch(updateIsLoginPanel(false));
-    router.push('/');
+    router.replace('/');
+    setTimeout(() => {
+      dispatch(updateIsLoginPanel(false));
+    }, 50);
   };
 
   return (
