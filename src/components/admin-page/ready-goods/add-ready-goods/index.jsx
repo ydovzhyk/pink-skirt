@@ -227,31 +227,24 @@ const AddReadyGoods = () => {
         </Text>
 
         <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
-          {/* Title */}
           <InputField
             label="Title:"
             name="title"
             register={register}
             required
           />
-
-          {/* Short Description */}
           <InputField
             label="Short Description:"
             name="shortDescription"
             register={register}
             required
           />
-
-          {/* Description */}
           <TextareaField
             label="Description:"
             name="description"
             register={register}
             required
           />
-
-          {/* Date */}
           <InputField
             label="Date:"
             name="date"
@@ -260,26 +253,19 @@ const AddReadyGoods = () => {
             defaultValue={new Date().toISOString().split('T')[0]}
             required
           />
-
-          {/* Fabrication */}
           <InputField
             label="Fabrication:"
             name="fabrication"
             register={register}
             required
           />
-
-          {/* Colourway */}
           <InputField
             label="Colourway:"
             name="colourway"
             register={register}
             required
           />
-
-          {/* Size */}
           <InputField label="Size:" name="size" register={register} required />
-
           <div className="flex flex-col gap-2">
             <Text
               type="tiny"
@@ -311,8 +297,6 @@ const AddReadyGoods = () => {
               </label>
             </div>
           </div>
-
-          {/* Clothing Type Select */}
           <div className="w-full flex flex-row align-center justify-center">
             <SelectField
               name="clothingType"
@@ -327,16 +311,12 @@ const AddReadyGoods = () => {
               textAlign="left"
             />
           </div>
-
-          {/* Upload Main Image */}
           <FileUpload
             label="Upload Main Image (≤ 500KB):"
             id="mainImage-addReadyGood"
             inputRef={mainImageRef}
             single={true}
           />
-
-          {/* Upload Additional Images */}
           <FileUpload
             label={`Upload Additional Images (Max ${MAX_IMAGES}, ≤ 500KB each):`}
             id="images-addReadyGood"
@@ -346,7 +326,6 @@ const AddReadyGoods = () => {
 
           {error && <p className="text-red-500 text-sm">{error}</p>}
 
-          {/* Submit */}
           <div className="flex justify-center mt-4">
             <button type="submit" className="group" disabled={isLoading}>
               <div
@@ -354,7 +333,7 @@ const AddReadyGoods = () => {
                 className="w-fit flex items-center justify-center gap-1 group-hover:gap-3 px-6 py-3 md:px-8 md:py-4 rounded-md border-gray-400 transition-all duration-300 ease-out bg-transparent group-hover:bg-[#F8F1F1] group-hover:border-[#F8F1F1] group-hover:shadow-md btn-shine uppercase"
               >
                 <Text
-                  type="tiny"
+                  type="small"
                   as="span"
                   fontWeight="light"
                   className="text-[var(--text-title)]"

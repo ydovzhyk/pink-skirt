@@ -93,7 +93,7 @@ const StoryCard = ({ id, title, date, content, mainImageUrl, story }) => {
         </button>
 
         {isAdmin && (
-          <div className="absolute top-[-55px] left-0 w-full flex flex-row gap-[80px] items-center justify-center mt-4 rounded-md bg-white shadow-lg p-2">
+          <div className="absolute top-[-15px] md:top-[-55px] left-0 w-full flex flex-row gap-[80px] items-center justify-center mt-4 rounded-md bg-white shadow-lg p-2">
             <button
               className="border-b border-green-600 hover:border-black w-fit transition-colors duration-200"
               onClick={handleEdit}

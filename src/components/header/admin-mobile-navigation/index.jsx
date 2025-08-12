@@ -1,29 +1,11 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import { useRouter, usePathname } from 'next/navigation';
-import { useSelector } from 'react-redux';
+import { useRouter } from 'next/navigation';
 import Text from '@/components/shared/text/text';
-import { getIsLoginPanel } from '@/redux/auth/auth-selectors';
 import { sections } from '@/components/header/admin-panel/admin-panel';
 
 const AdminMobileNavigation = ({ onClose }) => {
   const router = useRouter();
-  const pathname = usePathname();
-  const isLoginPanel = useSelector(getIsLoginPanel);
-  const [isMobileHeader, setIsMobileHeader] = useState(false);
-  const [afterMobileHeader, setAfterMobileHeader] = useState(false);
-
-  useEffect(() => {
-      const checkWidth = () => {
-        setIsMobileHeader(window.innerWidth <= 768);
-        setAfterMobileHeader(window.innerWidth > 768);
-      };
-
-      checkWidth();
-      window.addEventListener('resize', checkWidth);
-      return () => window.removeEventListener('resize', checkWidth);
-    }, []);
 
   const handleNavigate = id => {
     const section = sections.find(sec => sec.id === id);

@@ -163,7 +163,7 @@ const Header = () => {
           <div className="container flex flex-col justify-start items-start gap-6 transition-all duration-300">
             <button
               onClick={() => setIsMobileMenuOpen(false)}
-              className="self-end text-2xl text-[var(--text-title)] hover:text-[var(--accent)] transition-colors duration-300"
+              className="self-end text-2xl text-[var(--text-title)] hover:text-[var(--accent)] transition-colors duration-300 mt-3 mr-3"
               aria-label="Close menu"
             >
               ✕

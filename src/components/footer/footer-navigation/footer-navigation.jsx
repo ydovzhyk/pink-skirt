@@ -1,13 +1,14 @@
 'use client';
 
+import { useEffect, useState } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import { useSelector } from 'react-redux';
-import Text from '@/components/shared/text/text';
 import { getIsLoginPanel } from '@/redux/auth/auth-selectors';
 import { getAllStories } from '@/redux/stories/stories-selectors';
 import { getAllReadyGoods } from '@/redux/ready-goods/ready-goods-selectors';
 import { getModelsList } from '@/redux/models/models-selectors';
 import { getSections } from '@/components/header/navigation/navigation';
+import Text from '@/components/shared/text/text';
 
 const FooterNavigation = () => {
   const router = useRouter();
@@ -23,10 +24,21 @@ const FooterNavigation = () => {
   const hasModels = modelItems.length > 0;
 
   const sections = getSections(hasReadyGoods, hasStories, hasModels);
+  const [afterMobileHeader, setAfterMobileHeader] = useState(false);
+
+  useEffect(() => {
+    const checkWidth = () => {
+      setAfterMobileHeader(window.innerWidth > 768);
+    };
+
+    checkWidth();
+    window.addEventListener('resize', checkWidth);
+    return () => window.removeEventListener('resize', checkWidth);
+  }, []);
 
   const handleNavigate = id => {
     const section = sections.find(sec => sec.id === id);
-    const yOffset = isLoginPanel ? section?.offsetLogin : section?.offset;
+    const yOffset = (isLoginPanel && afterMobileHeader) ? section?.offsetLogin : section?.offset;
 
     router.push(`/#${id}`);
 

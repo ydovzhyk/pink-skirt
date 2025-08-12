@@ -113,7 +113,7 @@ const EditStory = () => {
   };
 
   return (
-    <section id="edit-story" className="container my-12 lg:my-16">
+    <section id="edit-story" className="container mb-12 lg:my-16">
       <div className="w-full rounded-md border border-[#464c6a] p-3 lg:p-5 bg-white">
         <Text
           type="normal"
@@ -169,7 +169,7 @@ const EditStory = () => {
                 className="w-fit flex items-center justify-center gap-1 group-hover:gap-3 px-6 py-3 md:px-8 md:py-4 rounded-md border-gray-400 transition-all duration-300 ease-out bg-transparent group-hover:bg-[#F8F1F1] group-hover:border-[#F8F1F1] group-hover:shadow-md btn-shine uppercase"
               >
                 <Text
-                  type="tiny"
+                  type="small"
                   as="span"
                   fontWeight="light"
                   className="text-[var(--text-title)]"

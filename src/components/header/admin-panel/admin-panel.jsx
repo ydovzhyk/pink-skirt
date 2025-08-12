@@ -118,7 +118,7 @@ const AdminPanel = ({ textColor = 'black' }) => {
             Exit
           </Text>
           <BsEscape
-            className={`text-${textColor === 'black' ? 'var(--text-title)' : textColor} w-[28px] h-[28px] mb-[4px]`}
+            className={`text-${textColor === 'black' ? 'var(--text-title)' : textColor} w-[30px] h-[30px] mb-[4px]`}
           />
           <span
             className={clsx(

@@ -35,13 +35,12 @@ function AdminPage() {
         <div id="admin-collection" className="flex flex-col">
           <MyReadyGoods />
           <div className="container">
-            <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+            <div className="grid grid-cols-1 lg:grid-cols-2">
               <AddReadyGoods />
               <EditReadyGood />
             </div>
           </div>
         </div>
-
         {/* MyModels */}
         <div
           id="admin-models"
@@ -56,13 +55,14 @@ function AdminPage() {
               background: `linear-gradient(to top, rgba(250, 247, 195, 0.3), var(--section-fourth))`,
             }}
           >
-            <div className="container grid grid-cols-1 gap-6 lg:grid-cols-2">
-              <AddModel />
-              <EditModel />
+              <div className="container">
+              <div className="grid grid-cols-1 lg:grid-cols-2">
+                <AddModel />
+                  <EditModel />
+                </div>
             </div>
-          </div>
+            </div>
         </div>
-
         {/* MyStories */}
         <div
           id="admin-stories"
@@ -70,7 +70,7 @@ function AdminPage() {
         >
           <MyStories />
           <div className="container">
-            <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+            <div className="grid grid-cols-1 lg:grid-cols-2 -mt-12 lg:-mt-16">
               <AddStory />
               <EditStory />
             </div>
