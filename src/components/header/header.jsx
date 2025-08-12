@@ -95,7 +95,7 @@ const Header = () => {
               height={45}
               className="cursor-pointer"
               onClick={() => setIsMobileMenuOpen(true)}
-              style={{ height: '25px', width: 'auto' }}
+              style={{ height: '20px', width: 'auto' }}
             />
           </div>
         )}

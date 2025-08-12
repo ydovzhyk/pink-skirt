@@ -107,17 +107,24 @@ const AdminPanel = ({ textColor = 'black' }) => {
       <div className="absolute top-0 right-4 h-full flex flex-row items-center">
         <button
           onClick={handleExit}
-          className="flex items-center gap-3 py-2 text-[var(--text-title)] hover:text-black"
+          className="relative flex flex-row gap-3 items-center py-2 no-underline outline-none hover:no-underline group"
         >
           <Text
             type="small"
             as="p"
             fontWeight="light"
-            className="text-[var(--text-title)] hover:text-dark"
+            className={`text-${textColor}`}
           >
             Exit
           </Text>
-          <BsEscape className="w-[30px] h-[30px]" />
+          <BsEscape
+            className={`text-${textColor === 'black' ? 'var(--text-title)' : textColor} w-[28px] h-[28px] mb-[4px]`}
+          />
+          <span
+            className={clsx(
+              'absolute bottom-[3px] left-0 w-full h-[0.5px] rounded-full transition-all duration-300 bg-[#e83894] opacity-0 group-hover:opacity-100'
+            )}
+          ></span>
         </button>
       </div>
     </nav>
