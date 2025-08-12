@@ -50,7 +50,8 @@ export default function NotFound() {
               type="xxl"
               as="p"
               fontWeight="semibold"
-              className="text-white"
+              className="text-[#FAFCFF]"
+              textShadow="black"
               noTranslate={true}
             >
               404
@@ -59,7 +60,8 @@ export default function NotFound() {
               type="xxl"
               as="h1"
               fontWeight="semibold"
-              className="text-white"
+              className="text-[#FAFCFF]"
+              textShadow="black"
             >
               Page Not Found
             </Text>
@@ -72,7 +74,8 @@ export default function NotFound() {
                 type="tiny"
                 as="p"
                 fontWeight="light"
-                className="text-white"
+                className="text-[#FAFCFF]"
+                textShadow="black"
               >
                 Hi, this page is on vacation.
               </Text>
@@ -80,7 +83,8 @@ export default function NotFound() {
                 type="banner"
                 as="p"
                 fontWeight="light"
-                className="text-white"
+                className="text-[#FAFCFF]"
+                textShadow="black"
               >
                 You should be too.
               </Text>
@@ -90,7 +94,8 @@ export default function NotFound() {
                   type="tiny"
                   as="span"
                   fontWeight="light"
-                  className="text-white"
+                  className="text-[#FAFCFF]"
+                  textShadow="black"
                 >
                   But don&apos;t worry, you can find your way back to my{' '}
                 </Text>
@@ -103,7 +108,8 @@ export default function NotFound() {
                     type="tiny"
                     as="span"
                     fontWeight="light"
-                    className="text-white"
+                    className="text-[#FAFCFF]"
+                    textShadow="black"
                   >
                     site.
                   </Text>
