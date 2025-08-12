@@ -2,17 +2,24 @@
 
 import Link from 'next/link';
 import { useEffect, useMemo, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { getIsLoginPanel } from '@/redux/auth/auth-selectors';
 import Text from '@/components/shared/text/text';
+import { getStories } from '../redux/stories/stories-operations';
+import { getReadyGoods } from '../redux/ready-goods/ready-goods-operations';
+import { getModels } from '../redux/models/models-operations';
 
 export default function NotFound() {
+  const dispatch = useDispatch();
   const isLoginPanel = useSelector(getIsLoginPanel);
   const [afterMobileHeader, setAfterMobileHeader] = useState(false);
 
   useEffect(() => {
     window.scrollTo(0, 0);
-  }, []);
+    dispatch(getStories({ page: 1, limit: 2 }));
+    dispatch(getReadyGoods({ page: 1, limit: 2 }));
+    dispatch(getModels());
+  }, [dispatch]);
 
   useEffect(() => {
     const onResize = () => setAfterMobileHeader(window.innerWidth > 768);
