@@ -1,4 +1,5 @@
 import { GoogleTagManager } from '@next/third-parties/google';
+import { SpeedInsights } from '@vercel/speed-insights/next';
 import { StoreProvider } from '@/redux/store-provider';
 import { LanguageProvider } from '@/utils/translating/language-context';
 import ClientLayout from './client-layout';
@@ -83,6 +84,7 @@ export default function RootLayout({ children }) {
           </LanguageProvider>
         </StoreProvider>
         <GoogleTagManager gtmId={process.env.NEXT_PUBLIC_GTM} />
+        <SpeedInsights />
       </body>
     </html>
   );
