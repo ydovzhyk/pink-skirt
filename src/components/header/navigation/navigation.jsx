@@ -70,28 +70,6 @@ const Navigation = ({ textColor = '#444444' }) => {
 
   const sections = getSections(hasReadyGoods, hasStories, hasModels);
 
-  // const handleNavigate = id => {
-  //   const section = sections.find(sec => sec.id === id);
-  //   const yOffset = isLoginPanel ? section?.offsetLogin : section?.offset;
-
-  //   router.push(`/#${id}`);
-
-  //   setTimeout(() => {
-  //     const element = document.getElementById(id);
-  //     if (element && yOffset !== undefined) {
-  //       const y =
-  //         element.getBoundingClientRect().top +
-  //         window.pageYOffset +
-  //         yOffset;
-
-  //       window.scrollTo({
-  //         top: y,
-  //         behavior: 'smooth',
-  //       });
-  //     }
-  //   }, 100);
-  // };
-
   const handleNavigate = id => {
     const section = sections.find(sec => sec.id === id);
     const yOffset = isLoginPanel ? section?.offsetLogin : section?.offset;

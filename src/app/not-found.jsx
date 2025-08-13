@@ -8,18 +8,32 @@ import Text from '@/components/shared/text/text';
 import { getStories } from '../redux/stories/stories-operations';
 import { getReadyGoods } from '../redux/ready-goods/ready-goods-operations';
 import { getModels } from '../redux/models/models-operations';
+import { getAllReadyGoods } from '../redux/ready-goods/ready-goods-selectors';
+import { getAllStories } from '../redux/stories/stories-selectors';
+import { getModelsList } from '../redux/models/models-selectors';
 
 export default function NotFound() {
   const dispatch = useDispatch();
   const isLoginPanel = useSelector(getIsLoginPanel);
   const [afterMobileHeader, setAfterMobileHeader] = useState(false);
+  const readyGoods = useSelector(getAllReadyGoods);
+  const stories = useSelector(getAllStories);
+  const models = useSelector(getModelsList);
 
   useEffect(() => {
     window.scrollTo(0, 0);
-    dispatch(getStories({ page: 1, limit: 2 }));
-    dispatch(getReadyGoods({ page: 1, limit: 2 }));
-    dispatch(getModels());
-  }, [dispatch]);
+
+    if (!stories.length) {
+      dispatch(getStories({ page: 1, limit: 2 }));
+    }
+    if (!readyGoods.length) {
+      dispatch(getReadyGoods({ page: 1, limit: 2 }));
+    }
+    if (!models.length) {
+      dispatch(getModels());
+    }
+  }, [dispatch, stories.length, readyGoods.length, models.length]);
+
 
   useEffect(() => {
     const onResize = () => setAfterMobileHeader(window.innerWidth > 768);
@@ -35,7 +49,7 @@ export default function NotFound() {
 
   return (
     <section
-      className="relative bg-center bg-no-repeat bg-cover"
+      className="w-full h-full relative bg-center bg-no-repeat bg-cover"
       style={{
         paddingTop: `${topOffset}px`,
         height: `calc(100dvh - ${topOffset}px)`,
@@ -43,7 +57,7 @@ export default function NotFound() {
       }}
     >
       <div className="absolute inset-0 bg-white/10 backdrop-blur-[2px]" />
-      <div className="w-full h-ful flex flex-row items-center justify-center">
+      <div className="absolute inset-0 flex flex-row items-center justify-center">
         <div className="container relative flex flex-col gap-12 items-center">
           <div className="flex flex-col items-center gap-5">
             <Text
@@ -101,7 +115,7 @@ export default function NotFound() {
                 </Text>
                 <Link
                   href="/"
-                  className="underline decoration-[#e83894] underline-offset-4 hover:opacity-80 lowercase"
+                  className="border-b border-[#FAFCFF] hover:border-[var(--accent)] w-fit transition-colors duration-200 lowercase"
                   aria-label="Go to homepage"
                 >
                   <Text

@@ -117,7 +117,7 @@ const Text = ({
         lineHeight: lineHeightValues[lineHeight],
         color,
         ...(textShadow === 'black' && {
-          textShadow: '2px 1px 1px rgba(25, 25, 112, 0.5)',
+          textShadow: '1px 1px 1px rgba(25, 25, 112, 0.7)',
         }),
         ...(textShadow === 'white' && {
           textShadow: '1px 1px 1px rgba(255, 255, 255, 0.7)',

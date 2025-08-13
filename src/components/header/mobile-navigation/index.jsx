@@ -1,9 +1,8 @@
 'use client';
 
-import { useRouter, usePathname } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { useSelector } from 'react-redux';
 import Text from '@/components/shared/text/text';
-import { getIsLoginPanel } from '@/redux/auth/auth-selectors';
 import { getAllStories } from '@/redux/stories/stories-selectors';
 import { getAllReadyGoods } from '@/redux/ready-goods/ready-goods-selectors';
 import { getModelsList } from '@/redux/models/models-selectors';
@@ -11,9 +10,6 @@ import { getSections } from '@/components/header/navigation/navigation';
 
 const MobileNavigation = ({ onClose }) => {
   const router = useRouter();
-  const pathname = usePathname();
-
-  const isLoginPanel = useSelector(getIsLoginPanel);
   const stories = useSelector(getAllStories);
   const readyGoods = useSelector(getAllReadyGoods);
   const modelItems = useSelector(getModelsList);
@@ -26,22 +22,24 @@ const MobileNavigation = ({ onClose }) => {
 
   const handleNavigate = id => {
     const section = sections.find(sec => sec.id === id);
-    const yOffset = section?.offset;
-
-    console.log('Y Offset:', yOffset);
+    const yOffset = section?.offset ?? 0;
 
     if (onClose) onClose();
 
     router.push(`/#${id}`, { scroll: false });
 
     let tries = 0;
-    const maxTries = 60;
+    const maxTries = 200;
 
     const tryScroll = () => {
+      if (window.location.pathname !== '/') {
+        requestAnimationFrame(tryScroll);
+        return;
+      }
+
       const el = document.getElementById(id);
       if (el) {
-        const y =
-          el.getBoundingClientRect().top + window.pageYOffset + (yOffset ?? 0);
+        const y = el.getBoundingClientRect().top + window.pageYOffset + yOffset;
         window.scrollTo({ top: y, behavior: 'smooth' });
       } else if (tries++ < maxTries) {
         requestAnimationFrame(tryScroll);

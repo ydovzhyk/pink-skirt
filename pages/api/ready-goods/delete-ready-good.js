@@ -1,4 +1,5 @@
-import { db } from '@/utils/firebase/firebase-сonfig';
+import { db, storage } from '@/utils/firebase/firebase-сonfig';
+import { gcsPathFromUrl } from '@/utils/path-from-url';
 
 export default async function handler(req, res) {
   if (req.method !== 'DELETE') {
@@ -6,21 +7,53 @@ export default async function handler(req, res) {
   }
 
   try {
-    const { id } = req.body;
-
+    const id = req.body?.id || req.query?.id;
     if (!id) {
       return res.status(400).json({ error: 'Good ID is required' });
     }
 
-    await db.collection('ready-goods').doc(id).delete();
+    const docRef = db.collection('ready-goods').doc(id);
+    const snap = await docRef.get();
 
-    return res
-      .status(200)
-      .json({ message: 'Ready Good successfully deleted from Firestore' });
+    if (!snap.exists) {
+      return res.status(404).json({ error: 'Ready Good not found' });
+    }
+
+    const data = snap.data();
+
+    const urls = [
+      data?.mainImageUrl,
+      ...(Array.isArray(data?.additionalImageUrls)
+        ? data.additionalImageUrls
+        : []),
+    ].filter(Boolean);
+
+    const paths = urls.map(u => gcsPathFromUrl(u)).filter(Boolean);
+
+    const results = await Promise.allSettled(
+      paths.map(p => storage.file(p).delete({ ignoreNotFound: true }))
+    );
+
+    const filesReport = results.map((r, i) =>
+      r.status === 'fulfilled'
+        ? { url: urls[i], path: paths[i], deleted: true }
+        : {
+            url: urls[i],
+            path: paths[i],
+            deleted: false,
+            error: String(r.reason?.message || r.reason),
+          }
+    );
+
+    await docRef.delete();
+
+    return res.status(200).json({
+      ok: true,
+      message: 'Ready Good and images deleted',
+      filesReport,
+    });
   } catch (error) {
     console.error('❌ Error deleting ready good:', error);
-    return res
-      .status(500)
-      .json({ error: 'Failed to delete ready good from Firestore' });
+    return res.status(500).json({ error: 'Failed to delete ready good' });
   }
 }

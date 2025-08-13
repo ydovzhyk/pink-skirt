@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { getIsLoginPanel } from '@/redux/auth/auth-selectors';
 import { getSections } from '@/components/header/navigation/navigation';
@@ -6,6 +6,17 @@ import { getSections } from '@/components/header/navigation/navigation';
 const ScrollToHashSection = () => {
   const isLoginPanel = useSelector(getIsLoginPanel);
   const sections = getSections(true, true);
+  const [afterMobileHeader, setAfterMobileHeader] = useState(false);
+
+  useEffect(() => {
+    const checkWidth = () => {
+      setAfterMobileHeader(window.innerWidth > 768);
+    };
+
+    checkWidth();
+    window.addEventListener('resize', checkWidth);
+    return () => window.removeEventListener('resize', checkWidth);
+  }, []);
 
   useEffect(() => {
     const hash = window.location.hash;
@@ -13,7 +24,7 @@ const ScrollToHashSection = () => {
 
     const id = hash.replace('#', '');
     const section = sections.find(sec => sec.id === id);
-    const yOffset = isLoginPanel ? section?.offsetLogin : section?.offset;
+    const yOffset = (isLoginPanel && afterMobileHeader) ? section?.offsetLogin : section?.offset;
 
     const element = document.getElementById(id);
     if (element && yOffset !== undefined) {
