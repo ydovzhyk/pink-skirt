@@ -1,53 +1,68 @@
 'use client';
 
-import { useRef, useLayoutEffect, useState } from 'react';
+import { useRef, useLayoutEffect, useState, useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import Text from '@/components/shared/text/text';
 import FabricCard from './fabric-card';
 import { IoIosArrowForward, IoIosArrowBack } from 'react-icons/io';
+import { getAllFabrics } from '@/redux/fabrics/fabrics-selectors';
+import { getFabrics } from '@/redux/fabrics/fabrics-operations';
 
 function MyFabrics() {
-  const fabricsData = [
-    {
-      id: '1',
-      name: 'Viscose',
-      imageUrls: ['/images/fabrics/01.webp', '/images/fabrics/02.webp'],
-    },
-    {
-      id: '2',
-      name: 'Wool',
-      imageUrls: ['/images/fabrics/03.webp', '/images/fabrics/04.webp'],
-    },
-    {
-      id: '3',
-      name: 'Silk',
-      imageUrls: ['/images/fabrics/05.webp', '/images/fabrics/06.webp'],
-    },
-    {
-      id: '4',
-      name: 'Cotton',
-      imageUrls: ['/images/fabrics/07.webp', '/images/fabrics/08.webp'],
-    },
-    {
-      id: '5',
-      name: 'Linen',
-      imageUrls: ['/images/fabrics/09.webp', '/images/fabrics/010.webp'],
-    },
-    {
-      id: '6',
-      name: 'Polyester',
-      imageUrls: ['/images/fabrics/011.webp', '/images/fabrics/012.webp'],
-    },
-    {
-      id: '7',
-      name: 'Cashmere',
-      imageUrls: ['/images/fabrics/013.webp', '/images/fabrics/014.webp'],
-    },
-  ];
+  // const fabricsData = [
+  //   {
+  //     id: '1',
+  //     name: 'Viscose',
+  //     imageUrls: ['/images/fabrics/01.webp', '/images/fabrics/02.webp'],
+  //   },
+  //   {
+  //     id: '2',
+  //     name: 'Wool',
+  //     imageUrls: ['/images/fabrics/03.webp', '/images/fabrics/04.webp'],
+  //   },
+  //   {
+  //     id: '3',
+  //     name: 'Silk',
+  //     imageUrls: ['/images/fabrics/05.webp', '/images/fabrics/06.webp'],
+  //   },
+  //   {
+  //     id: '4',
+  //     name: 'Cotton',
+  //     imageUrls: ['/images/fabrics/07.webp', '/images/fabrics/08.webp'],
+  //   },
+  //   {
+  //     id: '5',
+  //     name: 'Linen',
+  //     imageUrls: ['/images/fabrics/09.webp', '/images/fabrics/010.webp'],
+  //   },
+  //   {
+  //     id: '6',
+  //     name: 'Polyester',
+  //     imageUrls: ['/images/fabrics/011.webp', '/images/fabrics/012.webp'],
+  //   },
+  //   {
+  //     id: '7',
+  //     name: 'Cashmere',
+  //     imageUrls: ['/images/fabrics/013.webp', '/images/fabrics/014.webp'],
+  //   },
+  // ];
 
+  const dispatch = useDispatch();
+  const fabricsData = useSelector(getAllFabrics);
   const sliderRef = useRef(null);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(true);
   const scrollByAmount = 320;
+  const [isChecked, setIsChecked] = useState(false);
+
+  useEffect(() => {
+    if (fabricsData.length === 0 && !isChecked) {
+      dispatch(getFabrics());
+      setIsChecked(true);
+    } else {
+      return;
+    }
+  }, [dispatch, isChecked, fabricsData]);
 
   const updateButtonVisibility = () => {
     const slider = sliderRef.current;
@@ -66,7 +81,7 @@ function MyFabrics() {
         behavior: 'smooth',
       });
 
-      setTimeout(updateButtonVisibility, 300); // після плавного scroll
+      setTimeout(updateButtonVisibility, 300);
     }
   };
 
@@ -103,7 +118,7 @@ function MyFabrics() {
       slider.removeEventListener('scroll', handleScrollEvent);
       window.removeEventListener('resize', updateButtonVisibility);
     };
-  }, []);
+  }, [fabricsData]);
 
   return (
     <section
@@ -144,19 +159,18 @@ function MyFabrics() {
               />
             </div>
 
-            {/* FABRIC CARDS */}
             {fabricsData.map(fabric => (
               <div key={fabric.id} className="min-w-[300px] flex-shrink-0">
                 <FabricCard
                   id={fabric.id}
                   title={fabric.name}
                   imageUrls={fabric.imageUrls}
+                  fabric={fabric}
                 />
               </div>
             ))}
           </div>
 
-          {/* LEFT SCROLL BUTTON */}
           {canScrollLeft && (
             <button
               className="group absolute top-1/2 left-5 transform -translate-y-1/2 z-10"
@@ -171,7 +185,6 @@ function MyFabrics() {
             </button>
           )}
 
-          {/* RIGHT SCROLL BUTTON */}
           {canScrollRight && (
             <button
               className="group absolute top-1/2 right-5 transform -translate-y-1/2 z-10"

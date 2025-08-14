@@ -1,14 +1,9 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { useState } from 'react';
+import { useSelector } from 'react-redux';
 import { useRouter } from 'next/navigation';
 import { getAllReadyGoods } from '@/redux/ready-goods/ready-goods-selectors';
-import { getReadyGoods } from '@/redux/ready-goods/ready-goods-operations';
-import { getAllStories } from '@/redux/stories/stories-selectors';
-import { getStories } from '@/redux/stories/stories-operations';
-import { getModels } from '@/redux/models/models-operations';
-import { getModelsList } from '@/redux/models/models-selectors';
 import Text from '../../shared/text/text';
 import MarqueeQuote from '../../shared/marquee-quote/index';
 import ImageModal from '../../shared/image-modal/index';
@@ -28,9 +23,6 @@ const ReadyGoodsDetail = ({
   const [activeImage, setActiveImage] = useState(mainImageUrl);
   const allReadyGoods = useSelector(getAllReadyGoods);
   const router = useRouter();
-  const dispatch = useDispatch();
-  const allStories = useSelector(getAllStories);
-  const allModels = useSelector(getModelsList);
   const screenType = useSelector(getScreenType);
 
   const currentIndex = allReadyGoods.findIndex(item => item.id === id);
@@ -41,20 +33,6 @@ const ReadyGoodsDetail = ({
   const [modalIndex, setModalIndex] = useState(0);
 
   const imagesAll = [mainImageUrl, ...(additionalImageUrls || [])];
-
-  useEffect(() => {
-    if (allReadyGoods.length === 0) {
-      dispatch(getReadyGoods({ page: 1, limit: 2 }));
-    }
-
-    if (allStories.length === 0) {
-      dispatch(getStories({ page: 1, limit: 2 }));
-    }
-
-    if (allModels.length === 0) {
-      dispatch(getModels());
-    }
-  }, [dispatch, allReadyGoods.length, allStories.length, allModels.length]);
 
   const handleNavigate = (title, id) => {
     const formattedTitle = (title || '')
@@ -126,7 +104,6 @@ const ReadyGoodsDetail = ({
 
       <div className="grid gap-10 md:grid-cols-2 mt-[-10px]">
         <div className="w-full aspect-square flex flex-row gap-4">
-          {/* Основне фото */}
           {activeImage && (
             <div className="relative w-[65%] h-full rounded-md shadow-lg overflow-hidden">
               <div
@@ -148,7 +125,6 @@ const ReadyGoodsDetail = ({
             </div>
           )}
 
-          {/* Вертикальний слайдер */}
           {additionalImageUrls.length > 0 && (
             <div className="w-[35%] h-full overflow-y-auto scroll-smooth thin-scrollbar pr-2 flex flex-col gap-4">
               {[mainImageUrl, ...additionalImageUrls].map((img, i) => (
@@ -170,7 +146,6 @@ const ReadyGoodsDetail = ({
           )}
         </div>
 
-        {/* Опис */}
         <div className="flex flex-col justify-start items-start w-full gap-8">
           <div className="flex flex-col justify-center items-center">
             {screenType !== 'isMobile' && (
@@ -356,7 +331,6 @@ const ReadyGoodsDetail = ({
         </button>
       </div>
 
-      {/* Modal for zoomed image */}
       {isModalOpen && screenType === 'isMobile' && (
         <ImageModal
           images={imagesAll}

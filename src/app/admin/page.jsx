@@ -15,6 +15,9 @@ import MyReadyGoods from '@/components/my-ready-goods/index.jsx';
 import MyModels from '@/components/my-model/index.jsx';
 import AddModel from '@/components/admin-page/models/add-models/index.jsx';
 import EditModel from '@/components/admin-page/models/edit-models/index.jsx';
+import MyFabrics from '@/components/my-fabrics/index.jsx';
+import AddFabric from '@/components/admin-page/fabrics/add-fabric/index.jsx';
+import EditFabric from '@/components/admin-page/fabrics/edit-fabric/index.jsx';
 
 function AdminPage() {
   const isLogin = useSelector(getLogin);
@@ -57,8 +60,7 @@ function AdminPage() {
           <MyModels />
           <div
             style={{
-              background:
-                `linear-gradient(to top, rgba(250, 247, 195, 0.3), var(--section-fourth))`,
+              background: `linear-gradient(to top, rgba(250, 247, 195, 0.3), var(--section-fourth))`,
             }}
           >
             <div className="container">
@@ -69,7 +71,17 @@ function AdminPage() {
             </div>
           </div>
         </div>
-        {/* MyStories */}
+        {/* MyFabrics */}
+        <div id="admin-fabrics" className="flex flex-col">
+          <MyFabrics />
+          <div className="container">
+            <div className="grid grid-cols-1 lg:grid-cols-2">
+              <AddFabric />
+              <EditFabric />
+            </div>
+          </div>
+        </div>
+
         <div
           id="admin-stories"
           className="flex flex-col bg-[var(--section-third)]"

@@ -1,20 +1,20 @@
 'use client';
 
 import Text from '@/components/shared/text/text';
-import { getCurrentPageReadyGoods } from '@/redux/ready-goods/ready-goods-selectors';
 import { usePathname, useRouter } from 'next/navigation';
+import { useDispatch } from 'react-redux';
 import { useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { setEditFabric } from '@/redux/fabrics/fabrics-slice';
+import { deleteFabric, getFabrics } from '@/redux/fabrics/fabrics-operations';
 
-const FabricCard = ({ id, title, imageUrls }) => {
+const FabricCard = ({ id, title, imageUrls, fabric }) => {
+  const dispatch = useDispatch();
   const [isHovered, setIsHovered] = useState(false);
 
-  const mainImageUrl = imageUrls?.[0] || '/images/default-fabric.jpg';
+  const mainImageUrl = imageUrls?.[0];
   const hoverImage = imageUrls?.[1] || mainImageUrl;
 
   const router = useRouter();
-  const dispatch = useDispatch();
-  const currentPage = useSelector(getCurrentPageReadyGoods);
 
   const pathname = usePathname();
   const isAdmin = pathname.startsWith('/admin');
@@ -30,9 +30,20 @@ const FabricCard = ({ id, title, imageUrls }) => {
     router.push(`/fabrics/${formattedTitle}/${id}`);
   };
 
-  const handleEdit = () => {};
+  const handleEdit = () => {
+    dispatch(setEditFabric(fabric));
+        setTimeout(() => {
+          const editSection = document.getElementById('edit-fabric');
+          if (editSection) {
+            editSection.scrollIntoView({ behavior: 'smooth' });
+          }
+        }, 0);
+  };
 
-  const handleDelete = async () => {};
+  const handleDelete = async () => {
+    await dispatch(deleteFabric(id)).unwrap();
+    await dispatch(getFabrics()).unwrap();
+  };
 
   return (
     <div

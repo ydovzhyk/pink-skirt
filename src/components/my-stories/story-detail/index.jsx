@@ -1,16 +1,11 @@
 'use client';
 
-import { getModels } from '@/redux/models/models-operations';
-import { getModelsList } from '@/redux/models/models-selectors';
-import { getReadyGoods } from '@/redux/ready-goods/ready-goods-operations';
-import { getAllReadyGoods } from '@/redux/ready-goods/ready-goods-selectors';
-import { getStories } from '@/redux/stories/stories-operations';
+import { useRouter } from 'next/navigation';
+import { useState } from 'react';
+import { useSelector } from 'react-redux';
 import { getAllStories } from '@/redux/stories/stories-selectors';
 import { getScreenType } from '@/redux/technical/technical-selectors';
-import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
 import { RiArrowGoBackFill } from 'react-icons/ri';
-import { useDispatch, useSelector } from 'react-redux';
 import Text from '../../shared/text/text';
 
 const StoryDetail = ({
@@ -23,29 +18,12 @@ const StoryDetail = ({
 }) => {
   const [activeImage, setActiveImage] = useState(mainImageUrl);
   const allStories = useSelector(getAllStories);
-  const allReadyGoods = useSelector(getAllReadyGoods);
-  const allModels = useSelector(getModelsList);
   const screenType = useSelector(getScreenType);
   const router = useRouter();
-  const dispatch = useDispatch();
 
   const currentIndex = allStories.findIndex(story => story.id === id);
   const hasPrevious = currentIndex > 0;
   const hasNext = currentIndex < allStories.length - 1;
-
-  useEffect(() => {
-    if (allReadyGoods.length === 0) {
-      dispatch(getReadyGoods({ page: 1, limit: 2 }));
-    }
-
-    if (allStories.length === 0) {
-      dispatch(getStories({ page: 1, limit: 2 }));
-    }
-
-    if (allModels.length === 0) {
-      dispatch(getModels());
-    }
-  }, [dispatch, allReadyGoods.length, allStories.length, allModels.length]);
 
   const handleNavigate = (title, id) => {
     const formattedTitle = title

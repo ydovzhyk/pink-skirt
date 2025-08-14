@@ -2,37 +2,17 @@
 
 import Link from 'next/link';
 import { useEffect, useMemo, useState } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { getIsLoginPanel } from '@/redux/auth/auth-selectors';
 import Text from '@/components/shared/text/text';
-import { getStories } from '../redux/stories/stories-operations';
-import { getReadyGoods } from '../redux/ready-goods/ready-goods-operations';
-import { getModels } from '../redux/models/models-operations';
-import { getAllReadyGoods } from '../redux/ready-goods/ready-goods-selectors';
-import { getAllStories } from '../redux/stories/stories-selectors';
-import { getModelsList } from '../redux/models/models-selectors';
 
 export default function NotFound() {
-  const dispatch = useDispatch();
   const isLoginPanel = useSelector(getIsLoginPanel);
   const [afterMobileHeader, setAfterMobileHeader] = useState(false);
-  const readyGoods = useSelector(getAllReadyGoods);
-  const stories = useSelector(getAllStories);
-  const models = useSelector(getModelsList);
 
   useEffect(() => {
     window.scrollTo(0, 0);
-
-    if (!stories.length) {
-      dispatch(getStories({ page: 1, limit: 2 }));
-    }
-    if (!readyGoods.length) {
-      dispatch(getReadyGoods({ page: 1, limit: 2 }));
-    }
-    if (!models.length) {
-      dispatch(getModels());
-    }
-  }, [dispatch, stories.length, readyGoods.length, models.length]);
+  }, []);
 
 
   useEffect(() => {

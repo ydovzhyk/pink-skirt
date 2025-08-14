@@ -6,7 +6,6 @@ const initialState = {
   loading: false,
   screenType: 'isDesctop',
   activeSection: null,
-  link: '/?action=authorize&password=0503562938',
 };
 
 const technical = createSlice({

@@ -6,6 +6,7 @@ import { getIsLoginPanel } from '@/redux/auth/auth-selectors';
 import { getAllStories } from '@/redux/stories/stories-selectors';
 import { getAllReadyGoods } from '@/redux/ready-goods/ready-goods-selectors';
 import { getModelsList } from '@/redux/models/models-selectors';
+import { getAllFabrics } from '@/redux/fabrics/fabrics-selectors';
 import { getActiveSection } from '@/redux/technical/technical-selectors';
 import clsx from 'clsx';
 import Text from '@/components/shared/text/text';
@@ -15,6 +16,7 @@ export const getSections = (
   hasReadyGoods = true,
   hasStories = true,
   hasModels = true,
+  hasFabrics = true,
   allowedIds = null
 ) => {
   let sections = [
@@ -31,7 +33,9 @@ export const getSections = (
     ...(hasModels
       ? [{ id: 'models', label: 'Models', offset: -85, offsetLogin: -145 }]
       : []),
-    { id: 'fabrics', label: 'Fabrics', offset: -85, offsetLogin: -145 },
+    ...(hasFabrics
+      ? [{ id: 'fabrics', label: 'Fabrics', offset: -85, offsetLogin: -145 }]
+      : []),
     { id: 'about-me', label: 'About me', offset: -85, offsetLogin: -145 },
     { id: 'contacts', label: 'Contacts', offset: -85, offsetLogin: -145 },
     ...(hasStories
@@ -62,13 +66,15 @@ const Navigation = ({ textColor = '#444444' }) => {
   const activeSection = useSelector(getActiveSection);
   const stories = useSelector(getAllStories);
   const readyGoods = useSelector(getAllReadyGoods);
+  const fabrics = useSelector(getAllFabrics);
   const modelItems = useSelector(getModelsList);
 
   const hasStories = stories.length > 0;
   const hasReadyGoods = readyGoods.length > 0;
+  const hasFabrics = fabrics.length > 0;
   const hasModels = modelItems.length > 0;
 
-  const sections = getSections(hasReadyGoods, hasStories, hasModels);
+  const sections = getSections(hasReadyGoods, hasStories, hasModels, hasFabrics);
 
   const handleNavigate = id => {
     const section = sections.find(sec => sec.id === id);

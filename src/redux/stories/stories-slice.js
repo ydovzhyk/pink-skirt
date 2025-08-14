@@ -56,7 +56,6 @@ const stories = createSlice({
       .addCase(createStory.fulfilled, (store, { payload }) => {
         store.loading = false;
         store.message = payload.message;
-        store.modalWindowStatus = true;
       })
       .addCase(createStory.rejected, (store, { payload }) => {
         store.loading = false;
@@ -67,7 +66,6 @@ const stories = createSlice({
         } else {
           store.error = 'Oops, something went wrong, try again';
         }
-        store.modalWindowStatus = true;
       })
       // * EDIT STORY
       .addCase(editStory.pending, store => {
@@ -78,7 +76,6 @@ const stories = createSlice({
       .addCase(editStory.fulfilled, (store, { payload }) => {
         store.loading = false;
         store.message = payload.message;
-        store.modalWindowStatus = true;
         store.editStory = null;
       })
       .addCase(editStory.rejected, (store, { payload }) => {
@@ -90,7 +87,6 @@ const stories = createSlice({
         } else {
           store.error = 'Oops, something went wrong, try again';
         }
-        store.modalWindowStatus = true;
       })
       // * GET STORIES
       .addCase(getStories.pending, store => {
@@ -112,7 +108,6 @@ const stories = createSlice({
         } else {
           store.error = 'Oops, something went wrong, try again';
         }
-        store.modalWindowStatus = true;
       })
       // * GET STORY
       .addCase(getStory.pending, store => {
@@ -132,7 +127,6 @@ const stories = createSlice({
         } else {
           store.error = 'Oops, something went wrong, try again';
         }
-        store.modalWindowStatus = true;
       })
       // * DELETE STORY
       .addCase(deleteStory.pending, store => {
@@ -143,7 +137,6 @@ const stories = createSlice({
       .addCase(deleteStory.fulfilled, (store, { payload }) => {
         store.loading = false;
         store.message = payload.message;
-        store.modalWindowStatus = true;
       })
       .addCase(deleteStory.rejected, (store, { payload }) => {
         store.loading = false;
@@ -154,14 +147,12 @@ const stories = createSlice({
         } else {
           store.error = 'Oops, something went wrong, try again';
         }
-        store.modalWindowStatus = true;
       });
   },
 });
 
 export default stories.reducer;
 export const {
-  setModalWindowStatus,
   setCurrentPageStories,
   setCurrentStory,
   clearCurrentStory,

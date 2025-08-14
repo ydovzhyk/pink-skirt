@@ -1,64 +1,57 @@
 import { createSlice } from '@reduxjs/toolkit';
 import {
-  createReadyGood,
-  getReadyGoods,
-  deleteReadyGood,
-  editReadyGood,
-  getReadyGood,
-} from './ready-goods-operations';
+  createFabric,
+  getFabrics,
+  deleteFabric,
+  editFabric,
+  getFabric,
+} from './fabrics-operations';
 
 const initialState = {
   error: null,
   message: null,
   loading: false,
-  readyGoods: [],
-  allReadyGoods: [],
-  newestReadyGoods: [],
-  currentReadyGood: null,
-  editReadyGood: null,
-  totalPagesReadyGoods: 0,
-  currentPageReadyGoods: 1,
+  allFabrics: [],
+  currentFabric: null,
+  editFabric: null,
 };
 
-const readyGoods = createSlice({
-  name: 'readyGoods',
+const fabrics = createSlice({
+  name: 'fabrics',
   initialState,
   reducers: {
-    setCurrentPageReadyGoods: (store, action) => {
-      store.currentPageReadyGoods = action.payload;
+    setCurrentFabric: (store, action) => {
+      store.currentFabric = action.payload;
     },
-    setCurrentReadyGood: (store, action) => {
-      store.currentReadyGood = action.payload;
+    clearCurrentFabric: store => {
+      store.currentFabric = null;
     },
-    clearCurrentReadyGood: store => {
-      store.currentReadyGood = null;
+    setEditFabric: (store, action) => {
+      store.editFabric = action.payload;
     },
-    setEditReadyGood: (store, action) => {
-      store.editReadyGood = action.payload;
+    clearEditFabric: store => {
+      store.editFabric = null;
     },
-    clearEditReadyGood: store => {
-      store.editReadyGood = null;
-    },
-    clearReadyGoodsError: store => {
+    clearFabricsError: store => {
       store.error = null;
     },
-    clearReadyGoodsMessage: store => {
+    clearFabricsMessage: store => {
       store.message = null;
     },
   },
   extraReducers: builder => {
     builder
-      // * CREATE Ready Good
-      .addCase(createReadyGood.pending, store => {
+      // * CREATE FABRIC
+      .addCase(createFabric.pending, store => {
         store.loading = true;
         store.error = null;
         store.message = null;
       })
-      .addCase(createReadyGood.fulfilled, (store, { payload }) => {
+      .addCase(createFabric.fulfilled, (store, { payload }) => {
         store.loading = false;
         store.message = payload.message;
       })
-      .addCase(createReadyGood.rejected, (store, { payload }) => {
+      .addCase(createFabric.rejected, (store, { payload }) => {
         store.loading = false;
         if (payload && payload.data && payload.data.message) {
           store.error = payload.data.message;
@@ -68,18 +61,18 @@ const readyGoods = createSlice({
           store.error = 'Oops, something went wrong, try again';
         }
       })
-      // * EDIT Ready Good
-      .addCase(editReadyGood.pending, store => {
+      // * EDIT FABRIC
+      .addCase(editFabric.pending, store => {
         store.loading = true;
         store.error = null;
         store.message = null;
       })
-      .addCase(editReadyGood.fulfilled, (store, { payload }) => {
+      .addCase(editFabric.fulfilled, (store, { payload }) => {
         store.loading = false;
         store.message = payload.message;
-        store.editReadyGood = null;
+        store.editFabric = null;
       })
-      .addCase(editReadyGood.rejected, (store, { payload }) => {
+      .addCase(editFabric.rejected, (store, { payload }) => {
         store.loading = false;
         if (payload && payload.data && payload.data.message) {
           store.error = payload.data.message;
@@ -89,19 +82,16 @@ const readyGoods = createSlice({
           store.error = 'Oops, something went wrong, try again';
         }
       })
-      // * GET Ready Goods
-      .addCase(getReadyGoods.pending, store => {
+      // * GET FABRICS
+      .addCase(getFabrics.pending, store => {
         store.loading = true;
         store.error = null;
       })
-      .addCase(getReadyGoods.fulfilled, (store, { payload }) => {
+      .addCase(getFabrics.fulfilled, (store, { payload }) => {
         store.loading = false;
-        store.readyGoods = payload.goods;
-        store.allReadyGoods = payload.allGoods;
-        store.totalPagesReadyGoods = payload.totalPages;
-        store.newestReadyGoods = payload.newestReadyGoods;
+        store.allFabrics = payload.allFabrics;
       })
-      .addCase(getReadyGoods.rejected, (store, { payload }) => {
+      .addCase(getFabrics.rejected, (store, { payload }) => {
         store.loading = false;
         if (payload && payload.data && payload.data.message) {
           store.error = payload.data.message;
@@ -111,16 +101,16 @@ const readyGoods = createSlice({
           store.error = 'Oops, something went wrong, try again';
         }
       })
-      // * GET Ready Good
-      .addCase(getReadyGood.pending, store => {
+      // * GET FABRIC
+      .addCase(getFabric.pending, store => {
         store.loading = true;
         store.error = null;
       })
-      .addCase(getReadyGood.fulfilled, (store, { payload }) => {
+      .addCase(getFabric.fulfilled, (store, { payload }) => {
         store.loading = false;
-        store.currentReadyGood = payload;
+        store.currentFabric = payload;
       })
-      .addCase(getReadyGood.rejected, (store, { payload }) => {
+      .addCase(getFabric.rejected, (store, { payload }) => {
         store.loading = false;
         if (payload && payload.data && payload.data.message) {
           store.error = payload.data.message;
@@ -130,17 +120,17 @@ const readyGoods = createSlice({
           store.error = 'Oops, something went wrong, try again';
         }
       })
-      // * DELETE Ready Good
-      .addCase(deleteReadyGood.pending, store => {
+      // * DELETE FABRIC
+      .addCase(deleteFabric.pending, store => {
         store.loading = true;
         store.error = null;
         store.message = null;
       })
-      .addCase(deleteReadyGood.fulfilled, (store, { payload }) => {
+      .addCase(deleteFabric.fulfilled, (store, { payload }) => {
         store.loading = false;
         store.message = payload.message;
       })
-      .addCase(deleteReadyGood.rejected, (store, { payload }) => {
+      .addCase(deleteFabric.rejected, (store, { payload }) => {
         store.loading = false;
         if (payload && payload.data && payload.data.message) {
           store.error = payload.data.message;
@@ -153,13 +143,12 @@ const readyGoods = createSlice({
   },
 });
 
-export default readyGoods.reducer;
+export default fabrics.reducer;
 export const {
-  setCurrentPageReadyGoods,
-  setCurrentReadyGood,
-  clearCurrentReadyGood,
-  clearReadyGoodsError,
-  clearReadyGoodsMessage,
-  setEditReadyGood,
-  clearEditReadyGood,
-} = readyGoods.actions;
+  setCurrentFabric,
+  clearCurrentFabric,
+  clearFabricsError,
+  clearFabricsMessage,
+  setEditFabric,
+  clearEditFabric,
+} = fabrics.actions;

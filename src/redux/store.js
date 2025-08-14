@@ -14,6 +14,7 @@ import technicalReducer from './technical/technical-slice';
 import storiesReducer from './stories/stories-slice';
 import readyGoodsReducer from './ready-goods/ready-goods-slice';
 import modelsReducer from './models/models-slice';
+import fabricsReducer from './fabrics/fabrics-slice';
 import { setupInterceptors } from '../api/auth';
 import logger from 'redux-logger';
 
@@ -46,6 +47,7 @@ export const store = configureStore({
     stories: storiesReducer,
     readyGoods: readyGoodsReducer,
     models: modelsReducer,
+    fabrics: fabricsReducer,
   },
   middleware: getDefaultMiddleware => {
     const middlewares = getDefaultMiddleware({

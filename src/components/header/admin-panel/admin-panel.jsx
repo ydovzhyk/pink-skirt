@@ -26,7 +26,7 @@ export const sections = [
     id: 'admin-fabrics',
     label: 'Admin Fabrics',
     offset: -85,
-    offsetLogin: -190,
+    offsetLogin: -148,
   },
   {
     id: 'admin-stories',

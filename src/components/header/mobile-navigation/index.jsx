@@ -6,6 +6,7 @@ import Text from '@/components/shared/text/text';
 import { getAllStories } from '@/redux/stories/stories-selectors';
 import { getAllReadyGoods } from '@/redux/ready-goods/ready-goods-selectors';
 import { getModelsList } from '@/redux/models/models-selectors';
+import { getAllFabrics } from '@/redux/fabrics/fabrics-selectors';
 import { getSections } from '@/components/header/navigation/navigation';
 
 const MobileNavigation = ({ onClose }) => {
@@ -13,12 +14,14 @@ const MobileNavigation = ({ onClose }) => {
   const stories = useSelector(getAllStories);
   const readyGoods = useSelector(getAllReadyGoods);
   const modelItems = useSelector(getModelsList);
+  const fabrics = useSelector(getAllFabrics);
 
   const hasStories = stories.length > 0;
   const hasReadyGoods = readyGoods.length > 0;
   const hasModels = modelItems.length > 0;
+  const hasFabrics = fabrics.length > 0;
 
-  const sections = getSections(hasReadyGoods, hasStories, hasModels);
+  const sections = getSections(hasReadyGoods, hasStories, hasModels, hasFabrics);
 
   const handleNavigate = id => {
     const section = sections.find(sec => sec.id === id);
