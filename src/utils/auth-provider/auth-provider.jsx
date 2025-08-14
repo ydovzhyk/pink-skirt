@@ -9,7 +9,6 @@ const AuthProvider = () => {
   const dispatch = useDispatch();
   const router = useRouter();
   const adminPassword = process.env.NEXT_PUBLIC_ADMIN_PASSWORD;
-  console.log(adminPassword);
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
