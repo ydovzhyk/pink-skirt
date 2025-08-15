@@ -69,10 +69,10 @@ const Text = ({
       isDesktop: 'text-[18px]',
     },
     extraSmall: {
-      isMobile: 'text-[12px]',
-      isTablet: 'text-[12px]',
-      isLaptop: 'text-[12px]',
-      isDesktop: 'text-[12px]',
+      isMobile: 'text-[14px]',
+      isTablet: 'text-[14px]',
+      isLaptop: 'text-[15px]',
+      isDesktop: 'text-[15px]',
     },
   };
 

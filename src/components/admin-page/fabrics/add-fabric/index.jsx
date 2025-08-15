@@ -8,8 +8,11 @@ import Text from '@/components/shared/text/text';
 import InputField from '@/components/shared/input-field';
 import FileUpload from '@/components/shared/file-upload';
 import SelectField from '@/components/shared/select-field/select-field';
+import TextareaField from '@/components/shared/textarea-field';
 import { toast } from 'react-toastify';
 import { createFabric, getFabrics } from '@/redux/fabrics/fabrics-operations';
+import SuggestedGarmentsField from '@/components/shared/suggested-garments-field/index';
+import { SUGGESTED_GARMENTS } from '@/components/shared/suggested-garments-field/index';
 
 const MAX_IMAGE_SIZE = 500 * 1024;
 
@@ -184,6 +187,11 @@ const AddFabric = () => {
       return;
     }
 
+    if (!data.suggestedGarments || data.suggestedGarments.length === 0) {
+      setError('Please select at least one suggested garment');
+      return;
+    }
+
     const formData = new FormData();
     formData.append('folderName', 'fabrics');
     formData.append('fabricId', fabricId);
@@ -224,7 +232,10 @@ const AddFabric = () => {
       const fabricData = {
         id: fabricId,
         name: selectedFabric.value,
+        shortDescription: data.shortDescription,
         description: data.description,
+        price: data.price || 0,
+        suggestedGarments: data.suggestedGarments,
         imageUrls: [
           uploadData.mainImageUrl,
           uploadData.additionalImageUrls?.[0] || '',
@@ -279,9 +290,34 @@ const AddFabric = () => {
 
           <InputField
             label="Short Description:"
+            name="shortDescription"
+            register={register}
+            required
+          />
+
+          <TextareaField
+            label="Description:"
             name="description"
             register={register}
             required
+          />
+
+          <InputField
+            label="Price (half-metre):"
+            name="price"
+            register={register}
+            required
+          />
+
+          <SuggestedGarmentsField
+            label="Suggested Garments"
+            name="suggestedGarments"
+            options={SUGGESTED_GARMENTS}
+            register={register}
+            required={false}
+            error={
+              error && error.toLowerCase().includes('garment') ? error : null
+            }
           />
 
           <FileUpload

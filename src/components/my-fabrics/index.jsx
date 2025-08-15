@@ -1,54 +1,56 @@
 'use client';
 
-import { useRef, useLayoutEffect, useState, useEffect } from 'react';
+import { useRef, useLayoutEffect, useState, useEffect, useMemo } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import { getAllFabrics } from '@/redux/fabrics/fabrics-selectors';
+import { getFabrics } from '@/redux/fabrics/fabrics-operations';
 import Text from '@/components/shared/text/text';
 import FabricCard from './fabric-card';
 import { IoIosArrowForward, IoIosArrowBack } from 'react-icons/io';
-import { getAllFabrics } from '@/redux/fabrics/fabrics-selectors';
-import { getFabrics } from '@/redux/fabrics/fabrics-operations';
 
 function MyFabrics() {
-  // const fabricsData = [
-  //   {
-  //     id: '1',
-  //     name: 'Viscose',
-  //     imageUrls: ['/images/fabrics/01.webp', '/images/fabrics/02.webp'],
-  //   },
-  //   {
-  //     id: '2',
-  //     name: 'Wool',
-  //     imageUrls: ['/images/fabrics/03.webp', '/images/fabrics/04.webp'],
-  //   },
-  //   {
-  //     id: '3',
-  //     name: 'Silk',
-  //     imageUrls: ['/images/fabrics/05.webp', '/images/fabrics/06.webp'],
-  //   },
-  //   {
-  //     id: '4',
-  //     name: 'Cotton',
-  //     imageUrls: ['/images/fabrics/07.webp', '/images/fabrics/08.webp'],
-  //   },
-  //   {
-  //     id: '5',
-  //     name: 'Linen',
-  //     imageUrls: ['/images/fabrics/09.webp', '/images/fabrics/010.webp'],
-  //   },
-  //   {
-  //     id: '6',
-  //     name: 'Polyester',
-  //     imageUrls: ['/images/fabrics/011.webp', '/images/fabrics/012.webp'],
-  //   },
-  //   {
-  //     id: '7',
-  //     name: 'Cashmere',
-  //     imageUrls: ['/images/fabrics/013.webp', '/images/fabrics/014.webp'],
-  //   },
-  // ];
-
   const dispatch = useDispatch();
   const fabricsData = useSelector(getAllFabrics);
+  const randomRepRef = useRef(new Map());
+
+  const groups = useMemo(() => {
+    const map = new Map();
+    for (const f of fabricsData) {
+      const normKey = (f?.name ?? '').trim().toLowerCase();
+      if (!normKey) continue;
+      if (!map.has(normKey)) {
+        map.set(normKey, { key: normKey, displayName: f.name, items: [f] });
+      } else {
+        map.get(normKey).items.push(f);
+      }
+    }
+
+    const result = [];
+    for (const g of map.values()) {
+      const cachedId = randomRepRef.current.get(g.key);
+      let representative = g.items.find(i => i.id === cachedId);
+
+      if (!representative) {
+        const withPhoto = g.items.filter(
+          i =>
+            Array.isArray(i.imageUrls) && i.imageUrls.filter(Boolean).length > 0
+        );
+        const pool = withPhoto.length ? withPhoto : g.items;
+        const pick = pool[Math.floor(Math.random() * pool.length)];
+        representative = pick;
+        randomRepRef.current.set(g.key, pick.id);
+      }
+
+      result.push({
+        key: g.key,
+        displayName: representative.name,
+        representative,
+        items: g.items,
+      });
+    }
+    return result;
+  }, [fabricsData]);
+
   const sliderRef = useRef(null);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(true);
@@ -59,17 +61,13 @@ function MyFabrics() {
     if (fabricsData.length === 0 && !isChecked) {
       dispatch(getFabrics());
       setIsChecked(true);
-    } else {
-      return;
     }
   }, [dispatch, isChecked, fabricsData]);
 
   const updateButtonVisibility = () => {
     const slider = sliderRef.current;
     if (!slider) return;
-
     const { scrollLeft, scrollWidth, clientWidth } = slider;
-
     setCanScrollLeft(scrollLeft > 0);
     setCanScrollRight(scrollLeft + clientWidth < scrollWidth - 1);
   };
@@ -80,7 +78,6 @@ function MyFabrics() {
         left: direction === 'left' ? -scrollByAmount : scrollByAmount,
         behavior: 'smooth',
       });
-
       setTimeout(updateButtonVisibility, 300);
     }
   };
@@ -92,15 +89,15 @@ function MyFabrics() {
     const checkImagesLoaded = () => {
       const allImages = [
         '/images/fabrics/landing.webp',
-        ...fabricsData.flatMap(fabric => fabric.imageUrls),
+        ...groups.flatMap(g =>
+          (g.representative?.imageUrls || []).filter(Boolean)
+        ),
       ];
-
       const loaded = allImages.every(src => {
         const img = new Image();
         img.src = src;
         return img.complete;
       });
-
       if (loaded) {
         updateButtonVisibility();
       } else {
@@ -109,7 +106,6 @@ function MyFabrics() {
     };
 
     checkImagesLoaded();
-
     const handleScrollEvent = () => updateButtonVisibility();
     slider.addEventListener('scroll', handleScrollEvent);
     window.addEventListener('resize', updateButtonVisibility);
@@ -118,7 +114,9 @@ function MyFabrics() {
       slider.removeEventListener('scroll', handleScrollEvent);
       window.removeEventListener('resize', updateButtonVisibility);
     };
-  }, [fabricsData]);
+  }, [groups]);
+
+  if (groups.length === 0) return null;
 
   return (
     <section
@@ -128,7 +126,6 @@ function MyFabrics() {
     >
       <div className="absolute inset-0 bg-white opacity-30 z-0 pointer-events-none" />
       <div className="container relative flex flex-col items-center mt-8 gap-12">
-        {/* Section title */}
         <div className="relative w-full flex items-center justify-start mb-6">
           <span className="w-full border-t border-gray-300"></span>
           <div className="bg-[var(--section-first)] absolute right-0 w-fit p-2 px-5 rounded-md border border-gray-400">
@@ -143,13 +140,11 @@ function MyFabrics() {
           </div>
         </div>
 
-        {/* Slider block */}
         <div className="relative w-full overflow-hidden">
           <div
             ref={sliderRef}
             className="flex gap-6 overflow-x-auto scroll-smooth no-scrollbar"
           >
-            {/* FIRST STATIC IMAGE */}
             <div className="min-w-[300px] flex-shrink-0 rounded-md overflow-hidden border border-gray-300">
               <div
                 className="w-full h-full bg-cover bg-center"
@@ -159,13 +154,13 @@ function MyFabrics() {
               />
             </div>
 
-            {fabricsData.map(fabric => (
-              <div key={fabric.id} className="min-w-[300px] flex-shrink-0">
+            {groups.map(g => (
+              <div key={g.key} className="min-w-[300px] flex-shrink-0">
                 <FabricCard
-                  id={fabric.id}
-                  title={fabric.name}
-                  imageUrls={fabric.imageUrls}
-                  fabric={fabric}
+                  id={g.representative.id}
+                  fabricCategory={g.representative.name}
+                  shortDescription={g.representative.shortDescription}
+                  imageUrls={g.representative.imageUrls}
                 />
               </div>
             ))}
@@ -205,3 +200,4 @@ function MyFabrics() {
 }
 
 export default MyFabrics;
+

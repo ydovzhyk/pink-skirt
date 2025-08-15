@@ -1,25 +1,21 @@
 'use client';
 
 import Text from '@/components/shared/text/text';
-import { usePathname, useRouter } from 'next/navigation';
-import { useDispatch } from 'react-redux';
+import { useRouter } from 'next/navigation';
 import { useState } from 'react';
-import { setEditFabric } from '@/redux/fabrics/fabrics-slice';
-import { deleteFabric, getFabrics } from '@/redux/fabrics/fabrics-operations';
 
-const FabricCard = ({ id, title, imageUrls, fabric }) => {
-  const dispatch = useDispatch();
+const FabricCard = ({
+  id,
+  fabricCategory,
+  shortDescription,
+  imageUrls,
+}) => {
   const [isHovered, setIsHovered] = useState(false);
-
   const mainImageUrl = imageUrls?.[0];
   const hoverImage = imageUrls?.[1] || mainImageUrl;
-
   const router = useRouter();
 
-  const pathname = usePathname();
-  const isAdmin = pathname.startsWith('/admin');
-
-  const formattedTitle = title
+  const formattedTitle = shortDescription
     .trim()
     .toLowerCase()
     .replace(/\s+/g, '-')
@@ -27,22 +23,8 @@ const FabricCard = ({ id, title, imageUrls, fabric }) => {
     .replace(/-+/g, '-');
 
   const handleNavigate = () => {
-    router.push(`/fabrics/${formattedTitle}/${id}`);
-  };
-
-  const handleEdit = () => {
-    dispatch(setEditFabric(fabric));
-        setTimeout(() => {
-          const editSection = document.getElementById('edit-fabric');
-          if (editSection) {
-            editSection.scrollIntoView({ behavior: 'smooth' });
-          }
-        }, 0);
-  };
-
-  const handleDelete = async () => {
-    await dispatch(deleteFabric(id)).unwrap();
-    await dispatch(getFabrics()).unwrap();
+    const categorySlug = String(fabricCategory).trim().toLowerCase();
+    router.push(`/fabrics/${categorySlug}/${formattedTitle}/${id}`);
   };
 
   return (
@@ -55,7 +37,7 @@ const FabricCard = ({ id, title, imageUrls, fabric }) => {
       {hoverImage && hoverImage !== mainImageUrl && (
         <img
           src={hoverImage}
-          alt={`Fabric ${title}`}
+          alt={`Fabric ${shortDescription}`}
           style={{ display: 'none' }}
           loading="eager"
           aria-hidden="true"
@@ -76,46 +58,9 @@ const FabricCard = ({ id, title, imageUrls, fabric }) => {
           fontWeight="normal"
           className="text-black text-left"
         >
-          {title}
+          {fabricCategory}
         </Text>
       </div>
-
-      {isAdmin && (
-        <div className="absolute top-[-15px] left-0 w-full flex flex-row gap-[80px] items-center justify-center mt-4 rounded-md bg-white shadow-lg p-2">
-          <button
-            className="border-b border-green-600 hover:border-black w-fit transition-colors duration-200"
-            onClick={e => {
-              e.stopPropagation();
-              handleEdit();
-            }}
-          >
-            <Text
-              type="extra-small"
-              as="p"
-              fontWeight="light"
-              className="text-green-900"
-            >
-              Edit
-            </Text>
-          </button>
-          <button
-            className="border-b border-red-600 hover:border-black w-fit transition-colors duration-200"
-            onClick={e => {
-              e.stopPropagation();
-              handleDelete();
-            }}
-          >
-            <Text
-              type="extra-small"
-              as="p"
-              fontWeight="light"
-              className="text-red-600"
-            >
-              Delete
-            </Text>
-          </button>
-        </div>
-      )}
     </div>
   );
 };

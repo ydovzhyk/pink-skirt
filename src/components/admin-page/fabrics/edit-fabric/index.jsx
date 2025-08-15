@@ -7,10 +7,13 @@ import Text from '@/components/shared/text/text';
 import InputField from '@/components/shared/input-field';
 import FileUpload from '@/components/shared/file-upload';
 import SelectField from '@/components/shared/select-field/select-field';
+import TextareaField from '@/components/shared/textarea-field';
 import { toast } from 'react-toastify';
 import { getEditFabric } from '@/redux/fabrics/fabrics-selectors';
 import { editFabric, getFabrics } from '@/redux/fabrics/fabrics-operations';
 import { clearEditFabric } from '@/redux/fabrics/fabrics-slice';
+import SuggestedGarmentsField from '@/components/shared/suggested-garments-field/index';
+import { SUGGESTED_GARMENTS } from '@/components/shared/suggested-garments-field/index';
 
 const MAX_IMAGE_SIZE = 500 * 1024;
 
@@ -171,7 +174,11 @@ const fabricTypes = [
 
 const EditFabric = () => {
   const dispatch = useDispatch();
-  const { register, handleSubmit, reset, control } = useForm();
+  const { register, handleSubmit, reset, control } = useForm({
+    defaultValues: {
+      suggestedGarments: [],
+    },
+  });
   const fabricData = useSelector(getEditFabric);
   const mainImageRef = useRef(null);
   const secondaryImageRef = useRef(null);
@@ -183,7 +190,10 @@ const EditFabric = () => {
       reset({
         fabricType:
           fabricTypes.find(type => type.value === fabricData.name) || null,
+        shortDescription: fabricData.shortDescription || '',
         description: fabricData.description || '',
+        price: fabricData.price || 0,
+        suggestedGarments: fabricData.suggestedGarments || [],
       });
     }
   }, [fabricData, reset]);
@@ -191,6 +201,11 @@ const EditFabric = () => {
   const onSubmit = async data => {
     if (!data.fabricType) {
       setError('Please select a fabric type');
+      return;
+    }
+
+    if (!data.suggestedGarments || data.suggestedGarments.length === 0) {
+      setError('Please select at least one suggested garment');
       return;
     }
 
@@ -226,7 +241,10 @@ const EditFabric = () => {
       const updatedFabric = {
         id: fabricData.id,
         name: data.fabricType.value,
+        shortDescription: data.shortDescription,
         description: data.description,
+        price: data.price || 0,
+        suggestedGarments: data.suggestedGarments,
         imageUrls: [
           uploadData.mainImageUrl || fabricData.imageUrls[0],
           uploadData.additionalImageUrls?.[0] || fabricData.imageUrls[1],
@@ -245,7 +263,10 @@ const EditFabric = () => {
 
       reset({
         fabricType: null,
+        shortDescription: '',
         description: '',
+        price: 0,
+        suggestedGarments: [],
       });
       mainImageRef.current.value = '';
       secondaryImageRef.current.value = '';
@@ -294,9 +315,34 @@ const EditFabric = () => {
 
           <InputField
             label="Short Description:"
+            name="shortDescription"
+            register={register}
+            required
+          />
+
+          <TextareaField
+            label="Description:"
             name="description"
             register={register}
             required
+          />
+
+          <InputField
+            label="Price (half-metre):"
+            name="price"
+            register={register}
+            required
+          />
+
+          <SuggestedGarmentsField
+            label="Suggested Garments"
+            name="suggestedGarments"
+            options={SUGGESTED_GARMENTS}
+            register={register}
+            required={false}
+            error={
+              error && error.toLowerCase().includes('garment') ? error : null
+            }
           />
 
           <FileUpload
