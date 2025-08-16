@@ -39,7 +39,7 @@ export async function GET() {
     }
   });
 
-  // Models (опціонально)
+  // Models
   const modelsSnap = await db.collection('models').get();
   modelsSnap.forEach(doc => {
     const data = doc.data();
@@ -51,6 +51,29 @@ export async function GET() {
         priority: 0.6,
       });
     }
+  });
+
+  // Fabrics
+  const fabricsSnap = await db.collection('fabrics').get();
+
+  fabricsSnap.forEach(doc => {
+    const d = doc.data() || {};
+    if (!d.id || !d.name) return;
+
+    const categorySlug = String(d.name).trim().toLowerCase();
+
+    const detailSlug = String(d.shortDescription || d.description || d.name)
+      .trim()
+      .toLowerCase()
+      .replace(/\s+/g, '-')
+      .replace(/[^a-z0-9-]/g, '')
+      .replace(/-+/g, '-');
+
+    urls.push({
+      loc: `${baseUrl}/fabrics/${categorySlug}/${detailSlug || d.id}/${d.id}`,
+      changefreq: 'monthly',
+      priority: 0.8,
+    });
   });
 
   // Формування XML
