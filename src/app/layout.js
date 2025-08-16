@@ -1,8 +1,9 @@
-import { GoogleTagManager } from '@next/third-parties/google';
+import Script from 'next/script';
 import { SpeedInsights } from '@vercel/speed-insights/next';
 import { StoreProvider } from '@/redux/store-provider';
 import { LanguageProvider } from '@/utils/translating/language-context';
 import ClientLayout from './client-layout';
+import GaPageviews from '@/utils/GaPageviews';
 import '../app/css/globals.css';
 
 export const metadata = {
@@ -80,10 +81,24 @@ export default function RootLayout({ children }) {
       <body className="antialiased">
         <StoreProvider>
           <LanguageProvider>
+            {/* gtag.js */}
+            <Script
+              src={`https://www.googletagmanager.com/gtag/js?id=${process.env.NEXT_PUBLIC_GA_ID}`}
+              strategy="afterInteractive"
+            />
+            <Script id="ga4-init" strategy="afterInteractive">
+              {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', '${process.env.NEXT_PUBLIC_GA_ID}', { send_page_view: false });
+          `}
+            </Script>
+            <GaPageviews />
+
             <ClientLayout>{children}</ClientLayout>
           </LanguageProvider>
         </StoreProvider>
-        <GoogleTagManager gtmId={process.env.NEXT_PUBLIC_GTM} />
         <SpeedInsights />
       </body>
     </html>

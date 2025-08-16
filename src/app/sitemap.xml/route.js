@@ -39,20 +39,6 @@ export async function GET() {
     }
   });
 
-  // Models
-  const modelsSnap = await db.collection('models').get();
-  modelsSnap.forEach(doc => {
-    const data = doc.data();
-    if (data?.title && data?.id) {
-      const slug = data.title.toLowerCase().replace(/\s+/g, '-');
-      urls.push({
-        loc: `${baseUrl}/models/${slug}/${data.id}`,
-        changefreq: 'monthly',
-        priority: 0.6,
-      });
-    }
-  });
-
   // Fabrics
   const fabricsSnap = await db.collection('fabrics').get();
 
