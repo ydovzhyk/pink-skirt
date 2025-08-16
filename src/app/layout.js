@@ -1,4 +1,5 @@
 import Script from 'next/script';
+import { Suspense } from 'react';
 import { SpeedInsights } from '@vercel/speed-insights/next';
 import { StoreProvider } from '@/redux/store-provider';
 import { LanguageProvider } from '@/utils/translating/language-context';
