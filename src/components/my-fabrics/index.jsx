@@ -86,33 +86,34 @@ function MyFabrics() {
     const slider = sliderRef.current;
     if (!slider) return;
 
-    const checkImagesLoaded = () => {
-      const allImages = [
-        '/images/fabrics/landing.webp',
-        ...groups.flatMap(g =>
-          (g.representative?.imageUrls || []).filter(Boolean)
-        ),
-      ];
-      const loaded = allImages.every(src => {
-        const img = new Image();
-        img.src = src;
-        return img.complete;
-      });
-      if (loaded) {
-        updateButtonVisibility();
-      } else {
-        setTimeout(checkImagesLoaded, 100);
-      }
+    const onResizeOrScroll = () => updateButtonVisibility();
+
+    const imgs = Array.from(slider.querySelectorAll('img'));
+    let remaining = imgs.length;
+
+    const done = () => {
+      remaining -= 1;
+      if (remaining <= 0) updateButtonVisibility();
     };
 
-    checkImagesLoaded();
-    const handleScrollEvent = () => updateButtonVisibility();
-    slider.addEventListener('scroll', handleScrollEvent);
-    window.addEventListener('resize', updateButtonVisibility);
+    if (imgs.length === 0) {
+      updateButtonVisibility();
+    } else {
+      imgs.forEach(img => {
+        if (img.complete) {
+          done();
+        } else {
+          img.addEventListener('load', done, { once: true });
+          img.addEventListener('error', done, { once: true });
+        }
+      });
+    }
 
+    slider.addEventListener('scroll', onResizeOrScroll);
+    window.addEventListener('resize', onResizeOrScroll);
     return () => {
-      slider.removeEventListener('scroll', handleScrollEvent);
-      window.removeEventListener('resize', updateButtonVisibility);
+      slider.removeEventListener('scroll', onResizeOrScroll);
+      window.removeEventListener('resize', onResizeOrScroll);
     };
   }, [groups]);
 

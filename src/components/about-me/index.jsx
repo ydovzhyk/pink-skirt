@@ -49,31 +49,33 @@ function AboutMe() {
     const slider = sliderRef.current;
     if (!slider) return;
 
-    const checkIfImagesLoaded = () => {
-      const allLoaded = images.every(src => {
-        const img = new Image();
-        img.src = src;
-        return img.complete;
-      });
+    let cancelled = false;
+    const uniques = [...new Set(images)];
 
-      if (allLoaded) {
-        updateButtonVisibility();
-      } else {
-        setTimeout(checkIfImagesLoaded, 100);
-      }
-    };
+    const preload = uniques.map(
+      src =>
+        new Promise(res => {
+          const img = new Image();
+          img.onload = img.onerror = () => res();
+          img.src = src; // лише один раз на src
+        })
+    );
 
-    checkIfImagesLoaded();
+    Promise.all(preload).then(() => {
+      if (!cancelled) updateButtonVisibility();
+    });
 
-    const handleScrollEvent = () => updateButtonVisibility();
-    slider.addEventListener('scroll', handleScrollEvent);
-    window.addEventListener('resize', updateButtonVisibility);
+    const onScrollOrResize = () => updateButtonVisibility();
+    slider.addEventListener('scroll', onScrollOrResize);
+    window.addEventListener('resize', onScrollOrResize);
 
     return () => {
-      slider.removeEventListener('scroll', handleScrollEvent);
-      window.removeEventListener('resize', updateButtonVisibility);
+      cancelled = true;
+      slider.removeEventListener('scroll', onScrollOrResize);
+      window.removeEventListener('resize', onScrollOrResize);
     };
-  }, []);
+  }, [images]);
+
   // End of mobile version horizontal slider
 
   // Desktop version vertical slider
