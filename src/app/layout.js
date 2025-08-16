@@ -94,7 +94,9 @@ export default function RootLayout({ children }) {
             gtag('config', '${process.env.NEXT_PUBLIC_GA_ID}', { send_page_view: false });
           `}
             </Script>
-            <GaPageviews />
+            <Suspense fallback={null}>
+              <GaPageviews />
+            </Suspense>
 
             <ClientLayout>{children}</ClientLayout>
           </LanguageProvider>
