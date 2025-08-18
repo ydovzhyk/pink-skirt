@@ -1,8 +1,8 @@
 'use client';
 
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { useForm } from 'react-hook-form';
+import { useForm, Controller } from 'react-hook-form';
 import { v4 as uuidv4 } from 'uuid';
 import Text from '@/components/shared/text/text';
 import InputField from '@/components/shared/input-field';
@@ -11,8 +11,8 @@ import SelectField from '@/components/shared/select-field/select-field';
 import TextareaField from '@/components/shared/textarea-field';
 import { toast } from 'react-toastify';
 import { createFabric, getFabrics } from '@/redux/fabrics/fabrics-operations';
-import SuggestedGarmentsField from '@/components/shared/suggested-garments-field/index';
-import { SUGGESTED_GARMENTS } from '@/components/shared/suggested-garments-field/index';
+import SuggestedGarmentsField from '@/components/shared/suggested-garments-field';
+import { SUGGESTED_GARMENTS } from '@/components/shared/suggested-garments-field';
 
 const MAX_IMAGE_SIZE = 500 * 1024;
 
@@ -171,69 +171,97 @@ const fabricTypes = [
   },
 ];
 
-const AddFabric = () => {
-  const { register, handleSubmit, reset } = useForm();
+export default function AddFabric() {
   const dispatch = useDispatch();
-  const fabricId = uuidv4();
   const mainImageRef = useRef(null);
   const secondaryImageRef = useRef(null);
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState('');
-  const [selectedFabric, setSelectedFabric] = useState(null);
+
+  const {
+    register,
+    handleSubmit,
+    reset,
+    control,
+    setValue,
+    formState: { errors, isSubmitting },
+  } = useForm({
+    mode: 'onChange',
+    defaultValues: {
+      fabricType: null,
+      shortDescription: '',
+      description: '',
+      color: '',
+      price: '',
+      suggestedGarments: [],
+      mainImage: null,
+      secondaryImage: null,
+    },
+  });
+
+  useEffect(() => {
+    const mainEl = document.getElementById('mainImage');
+    const secEl = document.getElementById('secondaryImage');
+
+    const onMain = e => {
+      const f = e.target.files?.[0] || null;
+      setValue('mainImage', f, { shouldValidate: true });
+    };
+    const onSec = e => {
+      const f = e.target.files?.[0] || null;
+      setValue('secondaryImage', f, { shouldValidate: true });
+    };
+
+    mainEl?.addEventListener('change', onMain);
+    secEl?.addEventListener('change', onSec);
+    return () => {
+      mainEl?.removeEventListener('change', onMain);
+      secEl?.removeEventListener('change', onSec);
+    };
+  }, [setValue]);
 
   const onSubmit = async data => {
-    if (!selectedFabric) {
-      setError('Please select a fabric type');
-      return;
-    }
-
-    if (!data.suggestedGarments || data.suggestedGarments.length === 0) {
-      setError('Please select at least one suggested garment');
-      return;
-    }
-
-    const formData = new FormData();
-    formData.append('folderName', 'fabrics');
-    formData.append('fabricId', fabricId);
-
-    const mainImageFile = mainImageRef.current?.files?.[0];
-    const secondaryImageFile = secondaryImageRef.current?.files?.[0];
-
-    if (!mainImageFile || !secondaryImageFile) {
-      setError('Please upload both main and secondary images');
-      return;
-    }
-
-    const oversized =
-      mainImageFile.size > MAX_IMAGE_SIZE ||
-      secondaryImageFile.size > MAX_IMAGE_SIZE;
-
-    if (oversized) {
-      setError('Each image must be smaller than 500KB');
-      return;
-    }
-
-    formData.append('images', mainImageFile);
-    formData.append('images', secondaryImageFile);
-    formData.append('mainFileName', mainImageFile.name);
-
     try {
+      const fabricId = uuidv4();
+
+      const mainImageFile = data.mainImage;
+      const secondaryImageFile = data.secondaryImage;
+
+      if (!mainImageFile || !secondaryImageFile) {
+        return;
+      }
+      if (
+        mainImageFile.size > MAX_IMAGE_SIZE ||
+        secondaryImageFile.size > MAX_IMAGE_SIZE
+      ) {
+        return;
+      }
+      if (!data.suggestedGarments || data.suggestedGarments.length === 0) {
+        toast.error('Please select at least one suggested garment');
+        return;
+      }
+
+      const formData = new FormData();
+      formData.append('folderName', 'fabrics');
+      formData.append('fabricId', fabricId);
+      formData.append('images', mainImageFile);
+      formData.append('images', secondaryImageFile);
+      formData.append('mainFileName', mainImageFile.name);
+
       setIsLoading(true);
-      setError('');
 
       const uploadRes = await fetch('/api/upload-images', {
         method: 'POST',
         body: formData,
       });
-
       const uploadData = await uploadRes.json();
-      if (!uploadRes.ok) throw new Error(uploadData.error);
+      if (!uploadRes.ok) throw new Error(uploadData?.error || 'Upload failed');
 
       const fabricData = {
         id: fabricId,
-        name: selectedFabric.value,
+        name: data.fabricType.value,
         shortDescription: data.shortDescription,
         description: data.description,
+        color: data.color || '',
         price: data.price || 0,
         suggestedGarments: data.suggestedGarments,
         imageUrls: [
@@ -247,7 +275,6 @@ const AddFabric = () => {
       await dispatch(getFabrics()).unwrap();
 
       reset();
-      setSelectedFabric(null);
       if (mainImageRef.current) mainImageRef.current.value = '';
       if (secondaryImageRef.current) secondaryImageRef.current.value = '';
 
@@ -274,70 +301,131 @@ const AddFabric = () => {
 
         <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
           <div className="w-full flex flex-row align-center justify-center">
-            <SelectField
+            <Controller
               name="fabricType"
-              value={selectedFabric}
-              handleChange={setSelectedFabric}
-              placeholder="Fabric Name"
-              required={true}
-              options={fabricTypes}
-              width="100%"
-              topPlaceholder={false}
-              textColor="black"
-              textAlign="left"
+              control={control}
+              rules={{ required: 'Please select a fabric type' }}
+              render={({ field }) => (
+                <SelectField
+                  name="fabricType"
+                  value={field.value}
+                  handleChange={field.onChange}
+                  placeholder="Fabric Name"
+                  required
+                  options={fabricTypes}
+                  width="100%"
+                  topPlaceholder={false}
+                  textColor="black"
+                  textAlign="left"
+                />
+              )}
             />
           </div>
+          {errors.fabricType && (
+            <p className="text-red-500 text-sm">{errors.fabricType.message}</p>
+          )}
 
           <InputField
             label="Short Description:"
             name="shortDescription"
             register={register}
-            required
+            required={{ value: true, message: 'Short description is required' }}
           />
+          {errors.shortDescription && (
+            <p className="text-red-500 text-sm">
+              {errors.shortDescription.message}
+            </p>
+          )}
 
           <TextareaField
             label="Description:"
             name="description"
             register={register}
-            required
+            required={{ value: true, message: 'Description is required' }}
           />
+          {errors.description && (
+            <p className="text-red-500 text-sm">{errors.description.message}</p>
+          )}
+
+          <InputField
+            label="Color:"
+            name="color"
+            register={register}
+            required={{ value: true, message: 'Color is required' }}
+          />
+          {errors.color && (
+            <p className="text-red-500 text-sm">{errors.color.message}</p>
+          )}
 
           <InputField
             label="Price (half-metre):"
             name="price"
             register={register}
-            required
+            required={{ value: true, message: 'Price is required' }}
           />
+          {errors.price && (
+            <p className="text-red-500 text-sm">{errors.price.message}</p>
+          )}
 
           <SuggestedGarmentsField
             label="Suggested Garments"
             name="suggestedGarments"
             options={SUGGESTED_GARMENTS}
             register={register}
-            required={false}
-            error={
-              error && error.toLowerCase().includes('garment') ? error : null
-            }
+            required
           />
 
           <FileUpload
             label="Upload Main Image (≤ 500KB):"
             id="mainImage"
             inputRef={mainImageRef}
-            single={true}
+            single
           />
+          {errors.mainImage && (
+            <p className="text-red-500 text-sm">{errors.mainImage.message}</p>
+          )}
 
           <FileUpload
             label="Upload Secondary Image (≤ 500KB):"
             id="secondaryImage"
             inputRef={secondaryImageRef}
-            single={true}
+            single
+          />
+          {errors.secondaryImage && (
+            <p className="text-red-500 text-sm">
+              {errors.secondaryImage.message}
+            </p>
+          )}
+
+          <input
+            type="hidden"
+            {...register('mainImage', {
+              validate: f => {
+                if (!f) return 'Main image is required';
+                if (f.size > MAX_IMAGE_SIZE)
+                  return 'Main image must be ≤ 500KB';
+                return true;
+              },
+            })}
+          />
+          <input
+            type="hidden"
+            {...register('secondaryImage', {
+              validate: f => {
+                if (!f) return 'Secondary image is required';
+                if (f.size > MAX_IMAGE_SIZE)
+                  return 'Secondary image must be ≤ 500KB';
+                return true;
+              },
+            })}
           />
 
-          {error && <p className="text-red-500 text-sm">{error}</p>}
-
           <div className="flex justify-center mt-4">
-            <button type="submit" className="group" disabled={isLoading}>
+            <button
+              type="submit"
+              className="group"
+              disabled={isLoading || isSubmitting}
+            >
               <div
                 style={{ borderWidth: '0.5px' }}
                 className="w-fit flex items-center justify-center gap-1 group-hover:gap-3 px-6 py-3 md:px-8 md:py-4 rounded-md border-gray-400 transition-all duration-300 ease-out bg-transparent group-hover:bg-[#F8F1F1] group-hover:border-[#F8F1F1] group-hover:shadow-md btn-shine uppercase"
@@ -357,6 +445,5 @@ const AddFabric = () => {
       </div>
     </section>
   );
-};
+}
 
-export default AddFabric;

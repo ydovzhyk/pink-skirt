@@ -89,7 +89,7 @@ const StoryDetail = ({
         <div className="w-full">
           {activeImage && (
             <div
-              className="relative w-full aspect-[27/40]  bg-cover bg-center rounded-md"
+              className="relative w-full aspect-[27/40] bg-cover bg-center rounded-md"
               style={{ backgroundImage: `url(${activeImage})` }}
             >
             </div>
@@ -102,7 +102,7 @@ const StoryDetail = ({
                   <div
                     key={i}
                     onClick={() => setActiveImage(img)}
-                    className={`min-w-[32%] aspect-[27/40]  flex-shrink-0 bg-cover bg-center cursor-pointer rounded-md ${
+                    className={`min-w-[32%] aspect-[27/40] flex-shrink-0 bg-cover bg-center cursor-pointer rounded-md ${
                       activeImage === img
                         ? 'border-[var(--accent)] border-2'
                         : 'border-transparent'

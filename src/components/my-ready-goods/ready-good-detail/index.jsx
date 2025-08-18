@@ -126,19 +126,19 @@ const ReadyGoodsDetail = ({
           )}
 
           {additionalImageUrls.length > 0 && (
-            <div className="w-[35%] h-full overflow-y-auto scroll-smooth thin-scrollbar pr-2 flex flex-col gap-4">
+            <div className="w-[35%] h-full overflow-y-auto scroll-smooth thin-scrollbar pr-2 flex flex-col gap-4 overflow-hidden transition-all duration-200">
               {[mainImageUrl, ...additionalImageUrls].map((img, i) => (
                 <div
                   key={i}
                   onClick={() => setActiveImage(img)}
-                  className={`flex-none w-full bg-cover bg-center cursor-pointer rounded-md shadow-lg border-[1.5px] ${
+                  className={`flex-none w-full bg-cover bg-center cursor-pointer rounded-md shadow-lg border my-[1px] mx-[1px] ${
                     activeImage === img
-                      ? 'border-[var(--accent)]'
-                      : 'border-transparent'
+                      ? 'border-[var(--accent)] ring-1 ring-[var(--accent)]'
+                      : 'border-gray-300 hover:border-[var(--accent)]'
                   }`}
                   style={{
                     backgroundImage: `url(${img})`,
-                    height: 'calc(50% - 0.5rem)',
+                    height: 'calc(50% - 0.65rem)',
                   }}
                 />
               ))}

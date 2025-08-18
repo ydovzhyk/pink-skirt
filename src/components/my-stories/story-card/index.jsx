@@ -55,7 +55,7 @@ const StoryCard = ({ id, title, date, content, mainImageUrl, story }) => {
   return (
     <div className="relative flex flex-col lg:flex-row lg:items-center">
       <div
-        className="relative w-full lg:w-[60%] aspect-[27/40]  rounded-t-md lg:rounded-md bg-cover bg-center"
+        className="relative w-full lg:w-[60%] aspect-[27/40] rounded-t-md lg:rounded-md bg-cover bg-center"
         style={{ backgroundImage: `url(${mainImageUrl})` }}
       ></div>
 

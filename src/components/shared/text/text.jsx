@@ -46,7 +46,7 @@ const Text = ({
     },
     normal: {
       isMobile: 'text-[22px]',
-      isTablet: 'text-[24px]',
+      isTablet: 'text-[22px]',
       isLaptop: 'text-[24px]',
       isDesktop: 'text-[24px]',
     },
@@ -57,16 +57,16 @@ const Text = ({
       isDesktop: 'text-[22px]',
     },
     tiny: {
-      isMobile: 'text-[18px]',
-      isTablet: 'text-[18px]',
-      isLaptop: 'text-[20px]',
-      isDesktop: 'text-[20px]',
-    },
-    small: {
       isMobile: 'text-[17px]',
       isTablet: 'text-[17px]',
-      isLaptop: 'text-[18px]',
-      isDesktop: 'text-[18px]',
+      isLaptop: 'text-[19px]',
+      isDesktop: 'text-[19px]',
+    },
+    small: {
+      isMobile: 'text-[16px]',
+      isTablet: 'text-[16px]',
+      isLaptop: 'text-[17px]',
+      isDesktop: 'text-[17px]',
     },
     extraSmall: {
       isMobile: 'text-[14px]',
