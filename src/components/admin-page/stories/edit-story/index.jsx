@@ -145,14 +145,12 @@ const EditStory = () => {
             defaultValue={new Date().toISOString().split('T')[0]}
             required
           />
-
           <FileUpload
             label="Upload Main Image (≤ 500KB):"
             id="mainImage-edit"
             inputRef={mainImageRef}
             single={true}
           />
-
           <FileUpload
             label={`Upload Additional Images (Max ${MAX_IMAGES}, ≤ 500KB each):`}
             id="images-edit"

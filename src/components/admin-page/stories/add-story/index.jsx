@@ -118,14 +118,12 @@ const AddStory = () => {
             register={register}
             required
           />
-
           <TextareaField
             label="Content:"
             name="content"
             register={register}
             required
           />
-
           <InputField
             label="Date:"
             name="date"
@@ -134,14 +132,12 @@ const AddStory = () => {
             defaultValue={new Date().toISOString().split('T')[0]}
             required
           />
-
           <FileUpload
             label="Upload Main Image (≤ 500KB):"
             id="mainImage"
             inputRef={mainImageRef}
             single={true}
           />
-
           <FileUpload
             label={`Upload Additional Images (Max ${MAX_IMAGES}, ≤ 500KB each):`}
             id="images"

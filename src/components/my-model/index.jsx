@@ -9,7 +9,7 @@ import ModelCard from './model-card';
 import { IoIosArrowForward, IoIosArrowBack } from 'react-icons/io';
 import { getScreenType } from '@/redux/technical/technical-selectors';
 
-function MyModel() {
+const MyModel = () => {
   const [startIndex, setStartIndex] = useState(0);
   const [cardsToShow, setCardsToShow] = useState(3);
   const intervalRef = useRef(null);
@@ -21,18 +21,6 @@ function MyModel() {
   useEffect(() => {
     dispatch(getModels());
   }, [dispatch]);
-
-  // useEffect(() => {
-  //   const updateCards = () => {
-  //     if (window.innerWidth < 640) setCardsToShow(1);
-  //     else if (window.innerWidth < 1024) setCardsToShow(2);
-  //     else setCardsToShow(3);
-  //   };
-
-  //   updateCards();
-  //   window.addEventListener('resize', updateCards);
-  //   return () => window.removeEventListener('resize', updateCards);
-  // }, []);
 
   useEffect(() => {
     switch (screenType) {
@@ -154,43 +142,7 @@ function MyModel() {
           </div>
         </div>
       </section>
-  );
-}
+    );
+  };
 
 export default MyModel;
-
-// const modelItems = [
-//   {
-//     id: 'model-1',
-//     title: 'Flamingo Fantasy',
-//     media: [
-//       '/images/model/art.space.pavlova-0001.jpg',
-//       '/images/model/art.space.pavlova-0002.jpg',
-//       '/images/model/art.space.pavlova-0003.mp4',
-//     ],
-//     description:
-//       'An elegant flamingo dress inspired by the refined world of haute couture fashion.',
-//   },
-//   {
-//     id: 'model-2',
-//     title: 'Velvet Garden',
-//     media: [
-//       '/images/model/art.space.pavlova-0005.jpg',
-//       '/images/model/art.space.pavlova-0006.jpg',
-//       '/images/model/art.space.pavlova-0007.jpg',
-//       '/images/model/art.space.pavlova-0004.mp4',
-//     ],
-//     description:
-//       'Soft velvet combined with floral elegance for a graceful, timeless look',
-//   },
-//   {
-//     id: 'model-3',
-//     title: 'Monochrome Vibes',
-//     media: [
-//       '/images/model/art.space.pavlova-0008.jpg',
-//       '/images/model/art.space.pavlova-0009.jpg',
-//       '/images/model/art.space.pavlova--00010.mp4',
-//     ],
-//     description: 'Minimalistic and sharp look.',
-//   },
-// ];

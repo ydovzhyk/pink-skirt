@@ -5,8 +5,8 @@ import { setCurrentPageStories } from '@/redux/stories/stories-slice';
 import { getCurrentPageStories } from '@/redux/stories/stories-selectors';
 import { setCurrentPageReadyGoods } from '@/redux/ready-goods/ready-goods-slice';
 import { getCurrentPageReadyGoods } from '@/redux/ready-goods/ready-goods-selectors';
-import Text from '../text/text';
 import { getIsLoginPanel } from '@/redux/auth/auth-selectors';
+import Text from '../text/text';
 
 const Pagination = ({
   totalPages,

@@ -4,7 +4,8 @@ import { useSelector } from 'react-redux';
 import { getScreenType } from '@/redux/technical/technical-selectors';
 import Text from '../shared/text/text';
 import ContactForm from './contact-form';
-function ContactSection() {
+
+const ContactSection = () => {
   const screenType = useSelector(getScreenType);
 
   return (

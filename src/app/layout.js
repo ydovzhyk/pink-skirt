@@ -98,7 +98,6 @@ export default function RootLayout({ children }) {
             <Suspense fallback={null}>
               <GaPageviews />
             </Suspense>
-
             <ClientLayout>{children}</ClientLayout>
           </LanguageProvider>
         </StoreProvider>

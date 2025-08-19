@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useRouter, usePathname } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { useSelector } from 'react-redux';
 import { getIsLoginPanel } from '@/redux/auth/auth-selectors';
 import { getAllStories } from '@/redux/stories/stories-selectors';
@@ -12,8 +12,6 @@ import Text from '@/components/shared/text/text';
 
 const FooterNavigation = () => {
   const router = useRouter();
-  const pathname = usePathname();
-
   const isLoginPanel = useSelector(getIsLoginPanel);
   const stories = useSelector(getAllStories);
   const readyGoods = useSelector(getAllReadyGoods);

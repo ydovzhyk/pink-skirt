@@ -5,7 +5,8 @@ import { getScreenType } from '@/redux/technical/technical-selectors';
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { IoIosArrowBack, IoIosArrowForward } from 'react-icons/io';
 import { useSelector } from 'react-redux';
-function AboutMe() {
+
+const AboutMe = () => {
   const screenType = useSelector(getScreenType);
   const images = [
     '/images/about-slider/01.webp',
@@ -57,7 +58,7 @@ function AboutMe() {
         new Promise(res => {
           const img = new Image();
           img.onload = img.onerror = () => res();
-          img.src = src; // лише один раз на src
+          img.src = src;
         })
     );
 
@@ -75,7 +76,6 @@ function AboutMe() {
       window.removeEventListener('resize', onScrollOrResize);
     };
   }, [images]);
-
   // End of mobile version horizontal slider
 
   // Desktop version vertical slider
@@ -271,9 +271,7 @@ function AboutMe() {
               </Text>
             </div>
 
-            {/* HORIZONTAL SLIDER */}
             <div className="relative w-full">
-              {/* LEFT SCROLL BUTTON */}
               {canScrollLeft && (
                 <button
                   className="group absolute top-1/2 left-5 transform -translate-y-1/2 z-10"
@@ -288,7 +286,6 @@ function AboutMe() {
                 </button>
               )}
 
-              {/* RIGHT SCROLL BUTTON */}
               {canScrollRight && (
                 <button
                   className="group absolute top-1/2 right-5 transform -translate-y-1/2 z-10"
@@ -303,7 +300,6 @@ function AboutMe() {
                 </button>
               )}
 
-              {/* Image Scroll Area */}
               <div
                 ref={sliderRef}
                 className="flex gap-6 overflow-x-auto scroll-smooth no-scrollbar"

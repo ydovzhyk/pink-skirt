@@ -1,6 +1,7 @@
 'use client';
 
 import { useRef, useLayoutEffect, useState, useEffect, useMemo } from 'react';
+import { usePathname } from 'next/navigation';
 import { useSelector, useDispatch } from 'react-redux';
 import { getAllFabrics } from '@/redux/fabrics/fabrics-selectors';
 import { getFabrics } from '@/redux/fabrics/fabrics-operations';
@@ -8,10 +9,13 @@ import Text from '@/components/shared/text/text';
 import FabricCard from './fabric-card';
 import { IoIosArrowForward, IoIosArrowBack } from 'react-icons/io';
 
-function MyFabrics() {
+const MyFabrics = () => {
   const dispatch = useDispatch();
   const fabricsData = useSelector(getAllFabrics);
   const randomRepRef = useRef(new Map());
+
+  const pathname = usePathname();
+  const isAdmin = pathname.startsWith('/admin');
 
   const groups = useMemo(() => {
     const map = new Map();
@@ -117,7 +121,7 @@ function MyFabrics() {
     };
   }, [groups]);
 
-  if (groups.length === 0) return null;
+  if (!isAdmin && groups.length === 0) return null;
 
   return (
     <section
@@ -155,16 +159,30 @@ function MyFabrics() {
               />
             </div>
 
-            {groups.map(g => (
-              <div key={g.key} className="min-w-[300px] flex-shrink-0">
-                <FabricCard
-                  id={g.representative.id}
-                  fabricCategory={g.representative.name}
-                  shortDescription={g.representative.shortDescription}
-                  imageUrls={g.representative.imageUrls}
-                />
-              </div>
-            ))}
+            {!isAdmin &&
+              groups.map(g => (
+                <div key={g.key} className="w-[300px] flex-none">
+                  <FabricCard
+                    id={g.representative.id}
+                    fabricCategory={g.representative.name}
+                    shortDescription={g.representative.shortDescription}
+                    imageUrls={g.representative.imageUrls}
+                  />
+                </div>
+              ))}
+
+            {isAdmin &&
+              fabricsData.map(g => (
+                <div key={g.id} className="w-[300px] flex-none">
+                  <FabricCard
+                    id={g.id}
+                    fabricCategory={g.name}
+                    shortDescription={g.shortDescription}
+                    imageUrls={g.imageUrls}
+                    fabric={g}
+                  />
+                </div>
+              ))}
           </div>
 
           {canScrollLeft && (
@@ -198,7 +216,7 @@ function MyFabrics() {
       </div>
     </section>
   );
-}
+};
 
 export default MyFabrics;
 

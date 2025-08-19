@@ -8,7 +8,6 @@ const SelectField = ({
   placeholder,
   required,
   options,
-  className,
   defaultValue,
   width,
   showLabelWithValue = false,

@@ -171,7 +171,7 @@ const fabricTypes = [
   },
 ];
 
-export default function AddFabric() {
+const AddFabric = () => {
   const dispatch = useDispatch();
   const mainImageRef = useRef(null);
   const secondaryImageRef = useRef(null);
@@ -324,7 +324,6 @@ export default function AddFabric() {
           {errors.fabricType && (
             <p className="text-red-500 text-sm">{errors.fabricType.message}</p>
           )}
-
           <InputField
             label="Short Description:"
             name="shortDescription"
@@ -336,7 +335,6 @@ export default function AddFabric() {
               {errors.shortDescription.message}
             </p>
           )}
-
           <TextareaField
             label="Description:"
             name="description"
@@ -346,7 +344,6 @@ export default function AddFabric() {
           {errors.description && (
             <p className="text-red-500 text-sm">{errors.description.message}</p>
           )}
-
           <InputField
             label="Color:"
             name="color"
@@ -356,7 +353,6 @@ export default function AddFabric() {
           {errors.color && (
             <p className="text-red-500 text-sm">{errors.color.message}</p>
           )}
-
           <InputField
             label="Price (half-metre):"
             name="price"
@@ -366,7 +362,6 @@ export default function AddFabric() {
           {errors.price && (
             <p className="text-red-500 text-sm">{errors.price.message}</p>
           )}
-
           <SuggestedGarmentsField
             label="Suggested Garments"
             name="suggestedGarments"
@@ -374,7 +369,6 @@ export default function AddFabric() {
             register={register}
             required
           />
-
           <FileUpload
             label="Upload Main Image (≤ 500KB):"
             id="mainImage"
@@ -384,7 +378,6 @@ export default function AddFabric() {
           {errors.mainImage && (
             <p className="text-red-500 text-sm">{errors.mainImage.message}</p>
           )}
-
           <FileUpload
             label="Upload Secondary Image (≤ 500KB):"
             id="secondaryImage"
@@ -396,7 +389,6 @@ export default function AddFabric() {
               {errors.secondaryImage.message}
             </p>
           )}
-
           <input
             type="hidden"
             {...register('mainImage', {
@@ -419,7 +411,6 @@ export default function AddFabric() {
               },
             })}
           />
-
           <div className="flex justify-center mt-4">
             <button
               type="submit"
@@ -445,5 +436,6 @@ export default function AddFabric() {
       </div>
     </section>
   );
-}
+};
 
+export default AddFabric;

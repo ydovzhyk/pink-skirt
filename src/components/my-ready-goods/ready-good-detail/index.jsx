@@ -24,14 +24,11 @@ const ReadyGoodsDetail = ({
   const allReadyGoods = useSelector(getAllReadyGoods);
   const router = useRouter();
   const screenType = useSelector(getScreenType);
-
   const currentIndex = allReadyGoods.findIndex(item => item.id === id);
   const hasPrevious = currentIndex > 0;
   const hasNext = currentIndex < allReadyGoods.length - 1;
-
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalIndex, setModalIndex] = useState(0);
-
   const imagesAll = [mainImageUrl, ...(additionalImageUrls || [])];
 
   const handleNavigate = (title, id) => {

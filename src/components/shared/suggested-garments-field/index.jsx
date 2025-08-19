@@ -1,15 +1,28 @@
 'use client';
 
+import { useId, useMemo } from 'react';
 import Text from '@/components/shared/text/text';
 
 export default function SuggestedGarmentsField({
   label = 'Suggested Garments',
-  name,
-  options,
+  name = 'suggestedGarments',
+  options = [],
   register,
   required = false,
   error,
 }) {
+  const uid = useId();
+
+  const items = useMemo(
+    () =>
+      options.map(o =>
+        typeof o === 'string'
+          ? { value: o, label: o }
+          : { value: o.value, label: o.label }
+      ),
+    [options]
+  );
+
   return (
     <div className="flex flex-col gap-2">
       <label>
@@ -27,16 +40,16 @@ export default function SuggestedGarmentsField({
         role="group"
         className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 gap-2"
       >
-        {options.map(opt => {
-          const id = `${name}-${opt.value}`;
+        {items.map(opt => {
+          const inputId = `${uid}-${name}-${opt.value}`;
           return (
             <label
-              key={opt.value}
-              htmlFor={id}
+              key={inputId}
+              htmlFor={inputId}
               className="flex items-center gap-2 rounded-md border-2 border-gray-300 bg-white px-3 py-2 hover:border-[var(--accent)] cursor-pointer"
             >
               <input
-                id={id}
+                id={inputId}
                 type="checkbox"
                 value={opt.value}
                 {...register(name, { required })}

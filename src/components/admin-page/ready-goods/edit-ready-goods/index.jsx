@@ -231,7 +231,6 @@ const EditReadyGood = () => {
             required
           />
           <InputField label="Size:" name="size" register={register} required />
-
           <div className="flex flex-col gap-2">
             <Text
               type="tiny"
@@ -262,7 +261,6 @@ const EditReadyGood = () => {
               </label>
             </div>
           </div>
-
           <SelectField
             name="clothingType"
             value={selectedType}
@@ -275,14 +273,12 @@ const EditReadyGood = () => {
             textColor="black"
             textAlign="left"
           />
-
           <FileUpload
             label="Upload Main Image (≤ 500KB):"
             id="mainImage-editReadyGood"
             inputRef={mainImageRef}
             single={true}
           />
-
           <FileUpload
             label={`Upload Additional Images (Max ${MAX_IMAGES}, ≤ 500KB each):`}
             id="images-editReadyGood"

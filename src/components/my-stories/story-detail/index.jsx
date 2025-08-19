@@ -20,7 +20,6 @@ const StoryDetail = ({
   const allStories = useSelector(getAllStories);
   const screenType = useSelector(getScreenType);
   const router = useRouter();
-
   const currentIndex = allStories.findIndex(story => story.id === id);
   const hasPrevious = currentIndex > 0;
   const hasNext = currentIndex < allStories.length - 1;

@@ -13,7 +13,6 @@ const StoryCard = ({ id, title, date, content, mainImageUrl, story }) => {
   const dispatch = useDispatch();
   const currentPage = useSelector(getCurrentPageStories);
   const screenType = useSelector(getScreenType);
-
   const pathname = usePathname();
   const isAdmin = pathname.startsWith('/admin');
 

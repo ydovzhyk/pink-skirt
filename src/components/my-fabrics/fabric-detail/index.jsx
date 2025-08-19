@@ -353,11 +353,11 @@ const FabricDetail = ({
                 type="tiny"
                 as="p"
                 fontWeight="light"
-                className="text-[var(--text-title)] mb-2"
+                className="text-[var(--text-title)] mb-4 text-center"
               >
                 SUGGESTED GARMENTS:
               </Text>
-              <div className="flex flex-wrap items-center gap-3">
+              <div className="flex flex-wrap items-center justify-center gap-3">
                 {suggestedGarments.map(key => (
                   <div
                     key={key}

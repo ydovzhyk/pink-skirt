@@ -15,7 +15,7 @@ export default function ActiveSectionObserver({ setActiveSection }) {
         });
       },
       {
-        threshold: 0.25, // видно хоча б 25% секції
+        threshold: 0.25,
       }
     );
 
@@ -30,7 +30,7 @@ export default function ActiveSectionObserver({ setActiveSection }) {
         });
       },
       {
-        threshold: 0.57, // більшість заголовку видно
+        threshold: 0.57,
       }
     );
 

@@ -57,7 +57,6 @@ export const getSections = (
   return sections;
 };
 
-
 const Navigation = ({ textColor = '#444444' }) => {
   const pathname = usePathname();
   const router = useRouter();
