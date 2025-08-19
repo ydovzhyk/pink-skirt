@@ -3,8 +3,8 @@
 import Text from '@/components/shared/text/text';
 import { getScreenType } from '@/redux/technical/technical-selectors';
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
-import { IoIosArrowBack, IoIosArrowForward } from 'react-icons/io';
 import { useSelector } from 'react-redux';
+import { IoIosArrowBack, IoIosArrowForward } from 'react-icons/io';
 
 const AboutMe = () => {
   const screenType = useSelector(getScreenType);
