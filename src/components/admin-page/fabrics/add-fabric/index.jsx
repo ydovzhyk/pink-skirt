@@ -13,6 +13,7 @@ import { toast } from 'react-toastify';
 import { createFabric, getFabrics } from '@/redux/fabrics/fabrics-operations';
 import SuggestedGarmentsField from '@/components/shared/suggested-garments-field';
 import { SUGGESTED_GARMENTS } from '@/components/shared/suggested-garments-field';
+import FormErrorMessage from '@/components/shared/form-error-message';
 
 const MAX_IMAGE_SIZE = 500 * 1024;
 
@@ -262,7 +263,7 @@ const AddFabric = () => {
         shortDescription: data.shortDescription,
         description: data.description,
         color: data.color || '',
-        price: data.price || 0,
+        price: Number(data.price) || 0,
         suggestedGarments: data.suggestedGarments,
         imageUrls: [
           uploadData.mainImageUrl,
@@ -322,7 +323,7 @@ const AddFabric = () => {
             />
           </div>
           {errors.fabricType && (
-            <p className="text-red-500 text-sm">{errors.fabricType.message}</p>
+            <FormErrorMessage message={errors.fabricType?.message} />
           )}
           <InputField
             label="Short Description:"
@@ -331,9 +332,7 @@ const AddFabric = () => {
             required={{ value: true, message: 'Short description is required' }}
           />
           {errors.shortDescription && (
-            <p className="text-red-500 text-sm">
-              {errors.shortDescription.message}
-            </p>
+            <FormErrorMessage message={errors.shortDescription?.message} />
           )}
           <TextareaField
             label="Description:"
@@ -342,7 +341,7 @@ const AddFabric = () => {
             required={{ value: true, message: 'Description is required' }}
           />
           {errors.description && (
-            <p className="text-red-500 text-sm">{errors.description.message}</p>
+            <FormErrorMessage message={errors.description?.message} />
           )}
           <InputField
             label="Color:"
@@ -350,24 +349,25 @@ const AddFabric = () => {
             register={register}
             required={{ value: true, message: 'Color is required' }}
           />
-          {errors.color && (
-            <p className="text-red-500 text-sm">{errors.color.message}</p>
-          )}
+          {errors.color && <FormErrorMessage message={errors.color?.message} />}
           <InputField
             label="Price (half-metre):"
             name="price"
             register={register}
             required={{ value: true, message: 'Price is required' }}
           />
-          {errors.price && (
-            <p className="text-red-500 text-sm">{errors.price.message}</p>
-          )}
+          {errors.price && <FormErrorMessage message={errors.price?.message} />}
           <SuggestedGarmentsField
             label="Suggested Garments"
             name="suggestedGarments"
             options={SUGGESTED_GARMENTS}
             register={register}
-            required
+            rules={{
+              validate: vals =>
+                (Array.isArray(vals) && vals.length > 0) ||
+                'Please select at least one suggested garment',
+            }}
+            error={errors.suggestedGarments?.message}
           />
           <FileUpload
             label="Upload Main Image (≤ 500KB):"
@@ -375,20 +375,12 @@ const AddFabric = () => {
             inputRef={mainImageRef}
             single
           />
-          {errors.mainImage && (
-            <p className="text-red-500 text-sm">{errors.mainImage.message}</p>
-          )}
           <FileUpload
             label="Upload Secondary Image (≤ 500KB):"
             id="secondaryImage"
             inputRef={secondaryImageRef}
             single
           />
-          {errors.secondaryImage && (
-            <p className="text-red-500 text-sm">
-              {errors.secondaryImage.message}
-            </p>
-          )}
           <input
             type="hidden"
             {...register('mainImage', {

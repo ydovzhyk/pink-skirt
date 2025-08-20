@@ -2,13 +2,14 @@
 
 import { useId, useMemo } from 'react';
 import Text from '@/components/shared/text/text';
+import FormErrorMessage from '../form-error-message';
 
 export default function SuggestedGarmentsField({
   label = 'Suggested Garments',
   name = 'suggestedGarments',
   options = [],
   register,
-  required = false,
+  rules,
   error,
 }) {
   const uid = useId();
@@ -52,18 +53,18 @@ export default function SuggestedGarmentsField({
                 id={inputId}
                 type="checkbox"
                 value={opt.value}
-                {...register(name, { required })}
+                {...register(name, rules)}
                 className="h-4 w-4"
               />
-              <span className="text-[var(--text-title)] text-sm">
+              <Text type="extraSmall" as="span" fontWeight="light" className="text-[var(--text-title)]">
                 {opt.label}
-              </span>
+              </Text>
             </label>
           );
         })}
       </div>
 
-      {error ? <p className="text-xs text-red-500 mt-1">{error}</p> : null}
+      <FormErrorMessage message={error} />
     </div>
   );
 }

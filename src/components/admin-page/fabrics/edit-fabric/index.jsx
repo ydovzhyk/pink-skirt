@@ -14,6 +14,7 @@ import { editFabric, getFabrics } from '@/redux/fabrics/fabrics-operations';
 import { clearEditFabric } from '@/redux/fabrics/fabrics-slice';
 import SuggestedGarmentsField from '@/components/shared/suggested-garments-field';
 import { SUGGESTED_GARMENTS } from '@/components/shared/suggested-garments-field';
+import FormErrorMessage from '@/components/shared/form-error-message';
 
 const MAX_IMAGE_SIZE = 500 * 1024;
 
@@ -181,6 +182,8 @@ const EditFabric = () => {
     handleSubmit,
     reset,
     control,
+    setError,
+    clearErrors,
     formState: { errors, isSubmitting },
   } = useForm({
     defaultValues: {
@@ -197,7 +200,6 @@ const EditFabric = () => {
   const mainImageRef = useRef(null);
   const secondaryImageRef = useRef(null);
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState('');
 
   useEffect(() => {
     if (fabricData) {
@@ -213,35 +215,28 @@ const EditFabric = () => {
   }, [fabricData, reset]);
 
   const onSubmit = async data => {
-    if (!data.fabricType) {
-      setError('Please select a fabric type');
-      return;
-    }
-    if (!data.suggestedGarments || data.suggestedGarments.length === 0) {
-      setError('Please select at least one suggested garment');
+    clearErrors('root');
+    const mainImageFile = mainImageRef.current?.files?.[0];
+    const secondaryImageFile = secondaryImageRef.current?.files?.[0];
+    const allFiles = [mainImageFile, secondaryImageFile].filter(Boolean);
+
+    if (allFiles.some(file => file.size > MAX_IMAGE_SIZE)) {
+      setError('root', {
+        type: 'manual',
+        message: 'Each image must be smaller than 500KB',
+      });
       return;
     }
 
     const formData = new FormData();
     formData.append('folderName', 'fabrics');
     formData.append('fabricId', fabricData.id);
-
-    const mainImageFile = mainImageRef.current?.files?.[0];
-    const secondaryImageFile = secondaryImageRef.current?.files?.[0];
-
-    const allFiles = [mainImageFile, secondaryImageFile].filter(Boolean);
-    const oversized = allFiles.some(file => file.size > MAX_IMAGE_SIZE);
-    if (oversized) {
-      setError('Each image must be smaller than 500KB');
-      return;
-    }
     allFiles.forEach(file => formData.append('images', file));
     if (mainImageFile?.name)
       formData.append('mainFileName', mainImageFile.name);
 
     try {
       setIsLoading(true);
-      setError('');
 
       let uploadData = {};
       if (allFiles.length > 0) {
@@ -259,7 +254,7 @@ const EditFabric = () => {
         shortDescription: data.shortDescription,
         description: data.description,
         color: data.color || '',
-        price: data.price || 0,
+        price: Number(data.price) || 0,
         suggestedGarments: data.suggestedGarments,
         imageUrls: [
           uploadData.mainImageUrl || fabricData.imageUrls[0],
@@ -273,8 +268,9 @@ const EditFabric = () => {
       dispatch(clearEditFabric());
 
       setTimeout(() => {
-        const el = document.getElementById('admin-fabrics');
-        if (el) el.scrollIntoView({ behavior: 'smooth' });
+        document
+          .getElementById('admin-fabrics')
+          ?.scrollIntoView({ behavior: 'smooth' });
       }, 100);
 
       reset({
@@ -291,6 +287,7 @@ const EditFabric = () => {
       toast.success('Fabric updated successfully');
     } catch (err) {
       console.error(err);
+      setError('root', { type: 'manual', message: 'Failed to update fabric' });
       toast.error('Failed to update fabric');
     } finally {
       setIsLoading(false);
@@ -320,7 +317,6 @@ const EditFabric = () => {
                 value={field.value}
                 handleChange={field.onChange}
                 placeholder="Fabric Name"
-                required
                 options={fabricTypes}
                 width="100%"
                 topPlaceholder={false}
@@ -330,8 +326,9 @@ const EditFabric = () => {
             )}
           />
           {errors.fabricType && (
-            <p className="text-red-500 text-sm">{errors.fabricType.message}</p>
+            <FormErrorMessage message={errors.fabricType?.message} />
           )}
+
           <InputField
             label="Short Description:"
             name="shortDescription"
@@ -339,10 +336,9 @@ const EditFabric = () => {
             required={{ value: true, message: 'Short description is required' }}
           />
           {errors.shortDescription && (
-            <p className="text-red-500 text-sm">
-              {errors.shortDescription.message}
-            </p>
+            <FormErrorMessage message={errors.shortDescription?.message} />
           )}
+
           <TextareaField
             label="Description:"
             name="description"
@@ -350,36 +346,38 @@ const EditFabric = () => {
             required={{ value: true, message: 'Description is required' }}
           />
           {errors.description && (
-            <p className="text-red-500 text-sm">{errors.description.message}</p>
+            <FormErrorMessage message={errors.description?.message} />
           )}
+
           <InputField
             label="Color:"
             name="color"
             register={register}
             required={{ value: true, message: 'Color is required' }}
           />
-          {errors.color && (
-            <p className="text-red-500 text-sm">{errors.color.message}</p>
-          )}
+          {errors.color && <FormErrorMessage message={errors.color?.message} />}
+
           <InputField
             label="Price (half-metre):"
             name="price"
             register={register}
             required={{ value: true, message: 'Price is required' }}
           />
-          {errors.price && (
-            <p className="text-red-500 text-sm">{errors.price.message}</p>
-          )}
+          {errors.price && <FormErrorMessage message={errors.price?.message} />}
+
           <SuggestedGarmentsField
             label="Suggested Garments"
             name="suggestedGarments"
             options={SUGGESTED_GARMENTS}
             register={register}
-            required={false}
-            error={
-              error && error.toLowerCase().includes('garment') ? error : null
-            }
+            rules={{
+              validate: vals =>
+                (Array.isArray(vals) && vals.length > 0) ||
+                'Please select at least one suggested garment',
+            }}
+            error={errors.suggestedGarments?.message}
           />
+
           <FileUpload
             label="Upload Main Image (≤ 500KB):"
             id="mainImage-edit"
@@ -393,7 +391,9 @@ const EditFabric = () => {
             single
           />
 
-          {error && <p className="text-red-500 text-sm">{error}</p>}
+          {errors.root?.message && (
+            <FormErrorMessage message={errors.root.message} />
+          )}
 
           <div className="flex justify-center mt-4">
             <button
