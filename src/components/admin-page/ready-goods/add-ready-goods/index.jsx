@@ -19,10 +19,6 @@ import { v4 as uuidv4 } from 'uuid';
 const MAX_IMAGES = 6;
 const MAX_IMAGE_SIZE = 500 * 1024;
 
-const generateItemId = () => {
-  return uuidv4();
-};
-
 const AddReadyGoods = () => {
   const clothingTypes = [
     {
@@ -123,7 +119,7 @@ const AddReadyGoods = () => {
   const mainImageRef = useRef(null);
   const imagesRef = useRef(null);
   const dispatch = useDispatch();
-  const itemId = generateItemId();
+  const itemId = uuidv4();
 
   const handleChange = selectedOption => {
     setSelectedClothingType(selectedOption);

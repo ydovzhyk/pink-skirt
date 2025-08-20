@@ -15,8 +15,6 @@ import { v4 as uuidv4 } from 'uuid';
 const MAX_IMAGES = 6;
 const MAX_IMAGE_SIZE = 500 * 1024;
 
-const generateStoryId = () => uuidv4();
-
 const AddStory = () => {
   const { register, handleSubmit, reset } = useForm();
   const currentPage = useSelector(getCurrentPageStories);
@@ -25,7 +23,7 @@ const AddStory = () => {
   const mainImageRef = useRef(null);
   const imagesRef = useRef(null);
   const dispatch = useDispatch();
-  const storyId = generateStoryId();
+  const storyId = uuidv4();
 
   const onSubmit = async data => {
     const formData = new FormData();
