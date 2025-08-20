@@ -12,6 +12,7 @@ import { editStory, getStories } from '@/redux/stories/stories-operations';
 import { getEditStory } from '@/redux/stories/stories-selectors';
 import { clearEditStory } from '@/redux/stories/stories-slice';
 import { getCurrentPageStories } from '@/redux/stories/stories-selectors';
+import FormErrorMessage from '@/components/shared/form-error-message';
 
 const MAX_IMAGES = 6;
 const MAX_IMAGE_SIZE = 500 * 1024;
@@ -47,7 +48,14 @@ const EditStory = () => {
     if (mainImageFile) allFiles.push(mainImageFile);
     const oversized = allFiles.some(file => file.size > MAX_IMAGE_SIZE);
     if (oversized) {
-      setError('Each image must be smaller than 500KB');
+      setError('mainMedia', {
+        type: 'validate',
+        message: 'Main media must be ≤ 500KB',
+      });
+      setError('additionalMedia', {
+        type: 'validate',
+        message: 'Each additional file must be ≤ 500KB',
+      });
       return;
     }
 
@@ -158,7 +166,7 @@ const EditStory = () => {
             max={MAX_IMAGES}
           />
 
-          {error && <p className="text-red-500 text-sm">{error}</p>}
+          {error && <FormErrorMessage message={error} />}
 
           <div className="flex justify-center mt-4">
             <button type="submit" className="group" disabled={isLoading}>

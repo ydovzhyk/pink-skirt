@@ -278,8 +278,6 @@ const AddFabric = () => {
       reset();
       if (mainImageRef.current) mainImageRef.current.value = '';
       if (secondaryImageRef.current) secondaryImageRef.current.value = '';
-
-      toast.success('Fabric created successfully');
     } catch (err) {
       console.error(err);
       toast.error('Failed to create fabric');
@@ -325,15 +323,20 @@ const AddFabric = () => {
           {errors.fabricType && (
             <FormErrorMessage message={errors.fabricType?.message} />
           )}
+
           <InputField
             label="Short Description:"
             name="shortDescription"
             register={register}
             required={{ value: true, message: 'Short description is required' }}
+            validation={{
+              minLength: { value: 2, message: 'At least 2 characters' },
+            }}
           />
           {errors.shortDescription && (
             <FormErrorMessage message={errors.shortDescription?.message} />
           )}
+
           <TextareaField
             label="Description:"
             name="description"
@@ -343,6 +346,7 @@ const AddFabric = () => {
           {errors.description && (
             <FormErrorMessage message={errors.description?.message} />
           )}
+
           <InputField
             label="Color:"
             name="color"
@@ -350,6 +354,7 @@ const AddFabric = () => {
             required={{ value: true, message: 'Color is required' }}
           />
           {errors.color && <FormErrorMessage message={errors.color?.message} />}
+
           <InputField
             label="Price (half-metre):"
             name="price"
@@ -357,6 +362,7 @@ const AddFabric = () => {
             required={{ value: true, message: 'Price is required' }}
           />
           {errors.price && <FormErrorMessage message={errors.price?.message} />}
+
           <SuggestedGarmentsField
             label="Suggested Garments"
             name="suggestedGarments"
@@ -369,18 +375,21 @@ const AddFabric = () => {
             }}
             error={errors.suggestedGarments?.message}
           />
+
           <FileUpload
             label="Upload Main Image (≤ 500KB):"
             id="mainImage"
             inputRef={mainImageRef}
             single
           />
+
           <FileUpload
             label="Upload Secondary Image (≤ 500KB):"
             id="secondaryImage"
             inputRef={secondaryImageRef}
             single
           />
+
           <input
             type="hidden"
             {...register('mainImage', {
@@ -392,6 +401,7 @@ const AddFabric = () => {
               },
             })}
           />
+
           <input
             type="hidden"
             {...register('secondaryImage', {
@@ -403,6 +413,7 @@ const AddFabric = () => {
               },
             })}
           />
+
           <div className="flex justify-center mt-4">
             <button
               type="submit"

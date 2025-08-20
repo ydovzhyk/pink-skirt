@@ -11,6 +11,7 @@ import { toast } from 'react-toastify';
 import { createStory, getStories } from '@/redux/stories/stories-operations';
 import { getCurrentPageStories } from '@/redux/stories/stories-selectors';
 import { v4 as uuidv4 } from 'uuid';
+import FormErrorMessage from '@/components/shared/form-error-message';
 
 const MAX_IMAGES = 6;
 const MAX_IMAGE_SIZE = 500 * 1024;
@@ -143,7 +144,7 @@ const AddStory = () => {
             max={MAX_IMAGES}
           />
 
-          {error && <p className="text-red-500 text-sm">{error}</p>}
+          {error && <FormErrorMessage message={error} />}
 
           <div className="flex justify-center mt-4">
             <button type="submit" className="group" disabled={isLoading}>

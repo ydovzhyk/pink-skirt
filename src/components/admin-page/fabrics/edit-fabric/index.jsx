@@ -283,8 +283,6 @@ const EditFabric = () => {
       });
       if (mainImageRef.current) mainImageRef.current.value = '';
       if (secondaryImageRef.current) secondaryImageRef.current.value = '';
-
-      toast.success('Fabric updated successfully');
     } catch (err) {
       console.error(err);
       setError('root', { type: 'manual', message: 'Failed to update fabric' });
@@ -334,6 +332,9 @@ const EditFabric = () => {
             name="shortDescription"
             register={register}
             required={{ value: true, message: 'Short description is required' }}
+            validation={{
+              minLength: { value: 2, message: 'At least 2 characters' },
+            }}
           />
           {errors.shortDescription && (
             <FormErrorMessage message={errors.shortDescription?.message} />

@@ -15,6 +15,7 @@ import {
 } from '@/redux/ready-goods/ready-goods-operations';
 import { getCurrentPageReadyGoods } from '@/redux/ready-goods/ready-goods-selectors';
 import { v4 as uuidv4 } from 'uuid';
+import FormErrorMessage from '@/components/shared/form-error-message';
 
 const MAX_IMAGES = 6;
 const MAX_IMAGE_SIZE = 500 * 1024;
@@ -320,7 +321,7 @@ const AddReadyGoods = () => {
             max={MAX_IMAGES}
           />
 
-          {error && <p className="text-red-500 text-sm">{error}</p>}
+          {error && <FormErrorMessage message={error} />}
 
           <div className="flex justify-center mt-4">
             <button type="submit" className="group" disabled={isLoading}>

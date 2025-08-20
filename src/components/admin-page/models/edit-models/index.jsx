@@ -10,28 +10,69 @@ import FileUpload from '@/components/shared/file-upload/index.jsx';
 import { toast } from 'react-toastify';
 import { editModel, getModels } from '@/redux/models/models-operations';
 import { getEditModel } from '@/redux/models/models-selectors';
+import { clearEditModel } from '@/redux/models/models-slice';
+import FormErrorMessage from '@/components/shared/form-error-message';
 
 const MAX_IMAGES = 6;
 const MAX_IMAGE_SIZE = 5 * 1024 * 1024;
 
 const EditModels = () => {
-  const { register, handleSubmit, reset } = useForm();
   const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState('');
   const mainImageRef = useRef(null);
   const imagesRef = useRef(null);
   const editModelData = useSelector(getEditModel);
 
+  const {
+      register,
+      handleSubmit,
+      reset,
+      setValue,
+      setError,
+      formState: { errors, isSubmitting },
+    } = useForm({
+      mode: 'onChange',
+      defaultValues: {
+        title: '',
+        description: '',
+        date: new Date().toISOString().split('T')[0],
+        mainMedia: null,
+        additionalMedia: [],
+      },
+    });
+
   useEffect(() => {
-      if (editModelData) {
-        reset({
-          title: editModelData.title || '',
-          description: editModelData.description || '',
-          date: editModelData.date || new Date().toISOString().split('T')[0],
-        });
-      }
-    }, [editModelData, reset]);
+    if (editModelData) {
+      reset({
+        title: editModelData.title || '',
+        description: editModelData.description || '',
+        date: editModelData.date || new Date().toISOString().split('T')[0],
+        mainMedia: null,
+        additionalMedia: [],
+      });
+    }
+  }, [editModelData, reset]);
+
+  useEffect(() => {
+    const mainEl = document.getElementById('mainImage-editModel');
+    const listEl = document.getElementById('images-editModel');
+
+    const onMain = e => {
+      const f = e.target.files?.[0] || null;
+      setValue('mainMedia', f, { shouldValidate: true });
+    };
+    const onList = e => {
+      const arr = Array.from(e.target.files || []);
+      setValue('additionalMedia', arr, { shouldValidate: true });
+    };
+
+    mainEl?.addEventListener('change', onMain);
+    listEl?.addEventListener('change', onList);
+    return () => {
+      mainEl?.removeEventListener('change', onMain);
+      listEl?.removeEventListener('change', onList);
+    };
+  }, [setValue]);
 
   const onSubmit = async data => {
     const formData = new FormData();
@@ -45,7 +86,14 @@ const EditModels = () => {
 
     const oversized = allFiles.some(file => file.size > MAX_IMAGE_SIZE);
     if (oversized) {
-      setError('Each image must be smaller than 500KB');
+      setError('mainMedia', {
+        type: 'validate',
+        message: 'Main media must be ≤ 5MB',
+      });
+      setError('additionalMedia', {
+        type: 'validate',
+        message: 'Each additional file must be ≤ 5MB',
+      });
       return;
     }
 
@@ -69,29 +117,43 @@ const EditModels = () => {
         return;
       }
 
-      const imageUploadRes = await fetch('/api/upload-images', {
-        method: 'POST',
-        body: formData,
-      });
+      const hasNewMain = !!mainImageFile;
+      const hasNewAdditional = additionalImages.length > 0;
 
-      const imageUploadData = await imageUploadRes.json();
-      if (!imageUploadRes.ok) throw new Error(imageUploadData.error);
+      let imageUploadData = {};
+      if (hasNewMain || hasNewAdditional) {
+        const imageUploadRes = await fetch('/api/upload-images', {
+          method: 'POST',
+          body: formData,
+        });
+
+        imageUploadData = await imageUploadRes.json();
+        if (!imageUploadRes.ok) throw new Error(imageUploadData.error);
+      }
+
+      const nextMain = hasNewMain
+        ? imageUploadData.mainImageUrl
+          ? [imageUploadData.mainImageUrl]
+          : [editModelData?.media?.[0]].filter(Boolean)
+        : [editModelData?.media?.[0]].filter(Boolean);
+
+      const nextAdditional = hasNewAdditional
+        ? Array.isArray(imageUploadData.additionalImageUrls)
+          ? imageUploadData.additionalImageUrls
+          : []
+        : editModelData?.media?.slice(1) || [];
 
       const itemData = {
         id: editModelData.id,
         title: data.title || editModelData.title,
         description: data.description || editModelData.description,
         date: data.date || editModelData.date,
-        media: [
-          ...(imageUploadData.mainImageUrl
-            ? [imageUploadData.mainImageUrl]
-            : [editModelData.media[0]]),
-          ...(imageUploadData.additionalImageUrls ? imageUploadData.additionalImageUrls : editModelData.media.slice(1)),
-        ],
+        media: [...nextMain, ...nextAdditional],
       };
 
       await dispatch(editModel(itemData)).unwrap();
       await dispatch(getModels()).unwrap();
+      dispatch(clearEditModel());
 
       setTimeout(() => {
         const el = document.getElementById('admin-models');
@@ -99,10 +161,15 @@ const EditModels = () => {
       }, 100);
 
       reset({
+        title: '',
+        description: '',
         date: new Date().toISOString().split('T')[0],
+        mainMedia: null,
+        additionalMedia: [],
       });
-      mainImageRef.current.value = '';
-      imagesRef.current.value = '';
+
+      if (mainImageRef.current) mainImageRef.current.value = '';
+      if (imagesRef.current) imagesRef.current.value = '';
     } catch (err) {
       console.error(err);
       toast.error('Failed to submit model.');
@@ -128,15 +195,24 @@ const EditModels = () => {
             label="Title:"
             name="title"
             register={register}
-            required
+            required={{ value: true, message: 'Title is required' }}
+            validation={{
+              minLength: { value: 2, message: 'At least 2 characters' },
+            }}
           />
+          {errors.title && <FormErrorMessage message={errors.title.message} />}
+
           <TextareaField
             label="Description:"
             name="description"
             register={register}
-            required
+            required={{ value: true, message: 'Description is required' }}
             validation={{ maxLength: 130 }}
           />
+          {errors.description && (
+            <FormErrorMessage message={errors.description.message} />
+          )}
+
           <InputField
             label="Date:"
             name="date"
@@ -145,6 +221,7 @@ const EditModels = () => {
             defaultValue={new Date().toISOString().split('T')[0]}
             required
           />
+
           <FileUpload
             label="Upload Media (≤ 5MB):"
             id="mainImage-editModel"
@@ -153,6 +230,7 @@ const EditModels = () => {
             max={1}
             maxFileSize={MAX_IMAGE_SIZE}
           />
+
           <FileUpload
             label={`Upload Additional Media (Max ${MAX_IMAGES}, ≤ 5MB each):`}
             id="images-editModel"
@@ -162,10 +240,43 @@ const EditModels = () => {
             maxFileSize={MAX_IMAGE_SIZE}
           />
 
-          {error && <p className="text-red-500 text-sm">{error}</p>}
+          <input
+            type="hidden"
+            {...register('mainMedia', {
+              validate: f => {
+                if (!f) return true;
+                if (f.size > MAX_IMAGE_SIZE) return 'Main media must be ≤ 5MB';
+                return true;
+              },
+            })}
+          />
+          {errors.mainMedia && (
+            <FormErrorMessage message={errors.mainMedia.message} />
+          )}
+
+          <input
+            type="hidden"
+            {...register('additionalMedia', {
+              validate: arr => {
+                if (!Array.isArray(arr)) return true;
+                if (arr.length > MAX_IMAGES)
+                  return `Maximum ${MAX_IMAGES} additional files`;
+                const tooBig = arr.find(f => f.size > MAX_IMAGE_SIZE);
+                if (tooBig) return 'Each additional file must be ≤ 5MB';
+                return true;
+              },
+            })}
+          />
+          {errors.additionalMedia && (
+            <FormErrorMessage message={errors.additionalMedia.message} />
+          )}
 
           <div className="flex justify-center mt-4">
-            <button type="submit" className="group" disabled={isLoading}>
+            <button
+              type="submit"
+              className="group"
+              disabled={isLoading || isSubmitting}
+            >
               <div
                 style={{ borderWidth: '0.5px' }}
                 className="w-fit flex items-center justify-center gap-1 group-hover:gap-3 px-6 py-3 md:px-8 md:py-4 rounded-md border-gray-400 transition-all duration-300 ease-out bg-transparent group-hover:bg-[#F8F1F1] group-hover:border-[#F8F1F1] group-hover:shadow-md btn-shine uppercase"
