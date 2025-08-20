@@ -14,10 +14,6 @@ import { v4 as uuidv4 } from 'uuid';
 const MAX_IMAGES = 6;
 const MAX_IMAGE_SIZE = 5 * 1024 * 1024;
 
-const generateItemId = () => {
-  return uuidv4();
-};
-
 const AddModels = () => {
   const { register, handleSubmit, reset } = useForm();
   const [isLoading, setIsLoading] = useState(false);
@@ -25,7 +21,7 @@ const AddModels = () => {
   const mainImageRef = useRef(null);
   const imagesRef = useRef(null);
   const dispatch = useDispatch();
-  const itemId = generateItemId();
+  const itemId = uuidv4();
 
   const onSubmit = async data => {
     const formData = new FormData();
