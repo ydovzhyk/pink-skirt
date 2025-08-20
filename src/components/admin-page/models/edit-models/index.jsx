@@ -270,7 +270,6 @@ const EditModels = () => {
           {errors.additionalMedia && (
             <FormErrorMessage message={errors.additionalMedia.message} />
           )}
-
           <div className="flex justify-center mt-4">
             <button
               type="submit"
