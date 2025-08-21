@@ -1,12 +1,12 @@
 'use client';
 
-import { useRef, useState } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useForm } from 'react-hook-form';
 import Text from '@/components/shared/text/text';
-import InputField from '@/components/shared/input-field/index.jsx';
-import TextareaField from '@/components/shared/textarea-field/index.jsx';
-import FileUpload from '@/components/shared/file-upload/index.jsx';
+import InputField from '@/components/shared/input-field';
+import TextareaField from '@/components/shared/textarea-field';
+import FileUpload from '@/components/shared/file-upload';
 import SelectField from '@/components/shared/select-field/select-field';
 import { toast } from 'react-toastify';
 import {
@@ -112,34 +112,93 @@ const AddReadyGoods = () => {
     },
   ];
 
-  const { register, handleSubmit, reset } = useForm();
+  const currentPage = useSelector(getCurrentPageReadyGoods);
   const [isLoading, setIsLoading] = useState(false);
   const [selectedClothingType, setSelectedClothingType] = useState(null);
-  const currentPage = useSelector(getCurrentPageReadyGoods);
-  const [error, setError] = useState('');
   const mainImageRef = useRef(null);
   const imagesRef = useRef(null);
   const dispatch = useDispatch();
   const itemId = uuidv4();
 
+  const {
+    register,
+    handleSubmit,
+    reset,
+    setValue,
+    setError,
+    clearErrors,
+    formState: { errors, isSubmitting },
+  } = useForm({
+    mode: 'onChange',
+    defaultValues: {
+      title: '',
+      shortDescription: '',
+      description: '',
+      fabrication: '',
+      colourway: '',
+      size: '',
+      date: new Date().toISOString().split('T')[0],
+      isNewest: 'no',
+      clothingType: '',
+      mainImage: null,
+      images: [],
+    },
+  });
+
   const handleChange = selectedOption => {
     setSelectedClothingType(selectedOption);
+    setValue('clothingType', selectedOption?.value || '', {
+      shouldValidate: true,
+    });
   };
+
+  useEffect(() => {
+    const mainEl = document.getElementById('mainImage-addReadyGood');
+    const listEl = document.getElementById('images-addReadyGood');
+
+    const onMain = e => {
+      const f = e.target.files?.[0] || null;
+      setValue('mainImage', f, { shouldValidate: true, shouldDirty: true });
+      if (f) clearErrors('mainImage');
+    };
+    const onList = e => {
+      const arr = Array.from(e.target.files || []);
+      setValue('images', arr, { shouldValidate: true, shouldDirty: true });
+      if (arr.length) clearErrors('images');
+    };
+
+    mainEl?.addEventListener('change', onMain);
+    listEl?.addEventListener('change', onList);
+    return () => {
+      mainEl?.removeEventListener('change', onMain);
+      listEl?.removeEventListener('change', onList);
+    };
+  }, [setValue, clearErrors]);
 
   const onSubmit = async data => {
     const formData = new FormData();
     formData.append('folderName', 'ready-goods');
     formData.append('itemId', itemId);
 
-    const mainImageFile = mainImageRef.current?.files?.[0];
-    const additionalImages = Array.from(imagesRef.current?.files || []);
-
+    const mainImageFile = data.mainImage;
+    const additionalImages = data.images || [];
     const allFiles = [...additionalImages];
     if (mainImageFile) allFiles.push(mainImageFile);
 
     const oversized = allFiles.some(file => file.size > MAX_IMAGE_SIZE);
     if (oversized) {
-      setError('Each image must be smaller than 500KB');
+      if (mainImageFile?.size > MAX_IMAGE_SIZE) {
+        setError('mainImage', {
+          type: 'validate',
+          message: 'Main image must be ≤ 500KB',
+        });
+      }
+      if (additionalImages.some(f => f.size > MAX_IMAGE_SIZE)) {
+        setError('images', {
+          type: 'validate',
+          message: 'Each additional image must be ≤ 500KB',
+        });
+      }
       return;
     }
 
@@ -150,7 +209,6 @@ const AddReadyGoods = () => {
 
     try {
       setIsLoading(true);
-      setError('');
 
       const hasPendingFiles = [
         ...(mainImageRef.current?.files || []),
@@ -183,9 +241,9 @@ const AddReadyGoods = () => {
           size: data.size,
         },
         isNewest: data.isNewest === 'yes',
-        clothingType: selectedClothingType?.value || '',
+        clothingType: data.clothingType,
         mainImageUrl: imageUploadData.mainImageUrl,
-        additionalImageUrls: imageUploadData.additionalImageUrls,
+        additionalImageUrls: imageUploadData.additionalImageUrls || [],
       };
 
       await dispatch(createReadyGood(itemData)).unwrap();
@@ -197,8 +255,17 @@ const AddReadyGoods = () => {
       }, 100);
 
       reset({
-        isNewest: 'no',
+        title: '',
+        shortDescription: '',
+        description: '',
+        fabrication: '',
+        colourway: '',
+        size: '',
         date: new Date().toISOString().split('T')[0],
+        isNewest: 'no',
+        clothingType: '',
+        mainImage: null,
+        images: [],
       });
       setSelectedClothingType(null);
       mainImageRef.current.value = '';
@@ -228,20 +295,37 @@ const AddReadyGoods = () => {
             label="Title:"
             name="title"
             register={register}
-            required
+            required={{ value: true, message: 'Title is required' }}
+            validation={{
+              minLength: { value: 2, message: 'At least 2 characters' },
+            }}
           />
+          {errors.title && <FormErrorMessage message={errors.title.message} />}
+
           <InputField
             label="Short Description:"
             name="shortDescription"
             register={register}
-            required
+            required={{ value: true, message: 'Title is required' }}
+            validation={{
+              minLength: { value: 2, message: 'At least 2 characters' },
+            }}
           />
+          {errors.shortDescription && (
+            <FormErrorMessage message={errors.shortDescription.message} />
+          )}
+
           <TextareaField
             label="Description:"
             name="description"
             register={register}
-            required
+            required={{ value: true, message: 'Description is required' }}
+            validation={{ maxLength: 1000 }}
           />
+          {errors.description && (
+            <FormErrorMessage message={errors.description.message} />
+          )}
+
           <InputField
             label="Date:"
             name="date"
@@ -250,19 +334,46 @@ const AddReadyGoods = () => {
             defaultValue={new Date().toISOString().split('T')[0]}
             required
           />
+
           <InputField
             label="Fabrication:"
             name="fabrication"
             register={register}
-            required
+            required={{ value: true, message: 'Fabrication is required' }}
+            validation={{
+              minLength: { value: 2, message: 'At least 2 characters' },
+            }}
           />
+          {errors.fabrication && (
+            <FormErrorMessage message={errors.fabrication.message} />
+          )}
+
           <InputField
             label="Colourway:"
             name="colourway"
             register={register}
-            required
+            required={{ value: true, message: 'Colourway is required' }}
+            validation={{
+              minLength: { value: 2, message: 'At least 2 characters' },
+            }}
           />
-          <InputField label="Size:" name="size" register={register} required />
+          {errors.colourway && (
+            <FormErrorMessage message={errors.colourway.message} />
+          )}
+
+          <InputField
+            label="Size:"
+            name="size"
+            register={register}
+            required={{ value: true, message: 'Size is required' }}
+            validation={{
+              minLength: { value: 2, message: 'At least 2 characters' },
+            }}
+          />
+          {errors.size && (
+            <FormErrorMessage message={errors.size.message} />
+          )}
+
           <div className="flex flex-col gap-2">
             <Text
               type="tiny"
@@ -294,6 +405,7 @@ const AddReadyGoods = () => {
               </label>
             </div>
           </div>
+
           <div className="w-full flex flex-row align-center justify-center">
             <SelectField
               name="clothingType"
@@ -308,23 +420,59 @@ const AddReadyGoods = () => {
               textAlign="left"
             />
           </div>
+
           <FileUpload
             label="Upload Main Image (≤ 500KB):"
             id="mainImage-addReadyGood"
             inputRef={mainImageRef}
             single={true}
           />
+          {errors.mainImage && (
+            <FormErrorMessage message={errors.mainImage.message} />
+          )}
+
           <FileUpload
             label={`Upload Additional Images (Max ${MAX_IMAGES}, ≤ 500KB each):`}
             id="images-addReadyGood"
             inputRef={imagesRef}
             max={MAX_IMAGES}
           />
+          {errors.images && (
+            <FormErrorMessage message={errors.images.message} />
+          )}
 
-          {error && <FormErrorMessage message={error} />}
+          <input
+            type="hidden"
+            {...register('mainImage', {
+              validate: f => {
+                if (!f) return 'Main image is required';
+                if (f.size > MAX_IMAGE_SIZE)
+                  return 'Main image must be ≤ 500KB';
+                return true;
+              },
+            })}
+          />
+
+          <input
+            type="hidden"
+            {...register('images', {
+              validate: arr => {
+                if (!Array.isArray(arr)) return true;
+                if (arr.length > MAX_IMAGES)
+                  return `Maximum ${MAX_IMAGES} additional images`;
+                const tooBig = arr.find(f => f.size > MAX_IMAGE_SIZE);
+                if (tooBig) return 'Each additional image must be ≤ 500KB';
+                return true;
+              },
+            })}
+          />
 
           <div className="flex justify-center mt-4">
-            <button type="submit" className="group" disabled={isLoading}>
+            <button
+              type="submit"
+              className="group"
+              disabled={isLoading || isSubmitting}
+            >
               <div
                 style={{ borderWidth: '0.5px' }}
                 className="w-fit flex items-center justify-center gap-1 group-hover:gap-3 px-6 py-3 md:px-8 md:py-4 rounded-md border-gray-400 transition-all duration-300 ease-out bg-transparent group-hover:bg-[#F8F1F1] group-hover:border-[#F8F1F1] group-hover:shadow-md btn-shine uppercase"
@@ -347,3 +495,4 @@ const AddReadyGoods = () => {
 };
 
 export default AddReadyGoods;
+

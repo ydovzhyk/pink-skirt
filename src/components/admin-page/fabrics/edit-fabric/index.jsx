@@ -12,8 +12,9 @@ import { toast } from 'react-toastify';
 import { getEditFabric } from '@/redux/fabrics/fabrics-selectors';
 import { editFabric, getFabrics } from '@/redux/fabrics/fabrics-operations';
 import { clearEditFabric } from '@/redux/fabrics/fabrics-slice';
-import SuggestedGarmentsField from '@/components/shared/suggested-garments-field';
-import { SUGGESTED_GARMENTS } from '@/components/shared/suggested-garments-field';
+import SuggestedGarmentsField, {
+  SUGGESTED_GARMENTS,
+} from '@/components/shared/suggested-garments-field';
 import FormErrorMessage from '@/components/shared/form-error-message';
 
 const MAX_IMAGE_SIZE = 500 * 1024;
@@ -176,12 +177,16 @@ const fabricTypes = [
 const EditFabric = () => {
   const dispatch = useDispatch();
   const fabricData = useSelector(getEditFabric);
+  const mainImageRef = useRef(null);
+  const secondaryImageRef = useRef(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   const {
     register,
     handleSubmit,
     reset,
     control,
+    setValue,
     setError,
     clearErrors,
     formState: { errors, isSubmitting },
@@ -193,13 +198,11 @@ const EditFabric = () => {
       color: '',
       price: '',
       suggestedGarments: [],
+      mainImage: null,
+      secondaryImage: null,
     },
     mode: 'onChange',
   });
-
-  const mainImageRef = useRef(null);
-  const secondaryImageRef = useRef(null);
-  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     if (fabricData) {
@@ -210,36 +213,78 @@ const EditFabric = () => {
         color: fabricData.color || '',
         price: fabricData.price ?? '',
         suggestedGarments: fabricData.suggestedGarments || [],
+        mainImage: null,
+        secondaryImage: null,
       });
     }
   }, [fabricData, reset]);
 
-  const onSubmit = async data => {
-    clearErrors('root');
-    const mainImageFile = mainImageRef.current?.files?.[0];
-    const secondaryImageFile = secondaryImageRef.current?.files?.[0];
-    const allFiles = [mainImageFile, secondaryImageFile].filter(Boolean);
+  useEffect(() => {
+    const mainEl = document.getElementById('mainImage-edit');
+    const secEl = document.getElementById('secondaryImage-edit');
 
-    if (allFiles.some(file => file.size > MAX_IMAGE_SIZE)) {
-      setError('root', {
-        type: 'manual',
-        message: 'Each image must be smaller than 500KB',
+    const onMain = e => {
+      const f = e.target.files?.[0] || null;
+      setValue('mainImage', f, { shouldValidate: true, shouldDirty: true });
+      if (f) clearErrors('mainImage');
+    };
+    const onSec = e => {
+      const f = e.target.files?.[0] || null;
+      setValue('secondaryImage', f, {
+        shouldValidate: true,
+        shouldDirty: true,
       });
-      return;
-    }
+      if (f) clearErrors('secondaryImage');
+    };
 
-    const formData = new FormData();
-    formData.append('folderName', 'fabrics');
-    formData.append('fabricId', fabricData.id);
-    allFiles.forEach(file => formData.append('images', file));
-    if (mainImageFile?.name)
-      formData.append('mainFileName', mainImageFile.name);
+    mainEl?.addEventListener('change', onMain);
+    secEl?.addEventListener('change', onSec);
+    return () => {
+      mainEl?.removeEventListener('change', onMain);
+      secEl?.removeEventListener('change', onSec);
+    };
+  }, [setValue, clearErrors]);
 
+  const onSubmit = async data => {
     try {
-      setIsLoading(true);
+      const mainImageFile = data.mainImage;
+      const secondaryImageFile = data.secondaryImage;
 
+      if (
+        (mainImageFile && mainImageFile.size > MAX_IMAGE_SIZE) ||
+        (secondaryImageFile && secondaryImageFile.size > MAX_IMAGE_SIZE)
+      ) {
+        if (mainImageFile?.size > MAX_IMAGE_SIZE) {
+          setError('mainImage', {
+            type: 'validate',
+            message: 'Main image must be ≤ 500KB',
+          });
+        }
+        if (secondaryImageFile?.size > MAX_IMAGE_SIZE) {
+          setError('secondaryImage', {
+            type: 'validate',
+            message: 'Secondary image must be ≤ 500KB',
+          });
+        }
+        return;
+      }
+
+      const formData = new FormData();
+      formData.append('folderName', 'fabrics');
+      formData.append('fabricId', fabricData.id);
+
+      if (mainImageFile) {
+        formData.append('images', mainImageFile);
+        formData.append('mainFileName', mainImageFile.name);
+      }
+      if (secondaryImageFile) {
+        formData.append('images', secondaryImageFile);
+      }
+
+      setIsLoading(true);
+      
       let uploadData = {};
-      if (allFiles.length > 0) {
+      if (mainImageFile || secondaryImageFile) {
         const uploadRes = await fetch('/api/upload-images', {
           method: 'POST',
           body: formData,
@@ -273,19 +318,22 @@ const EditFabric = () => {
           ?.scrollIntoView({ behavior: 'smooth' });
       }, 100);
 
-      reset({
-        fabricType: null,
-        shortDescription: '',
-        description: '',
-        color: '',
-        price: '',
-        suggestedGarments: [],
-      });
+      reset(
+        {
+          fabricType: null,
+          shortDescription: '',
+          description: '',
+          color: '',
+          price: '',
+          suggestedGarments: [],
+          mainImage: null,
+          secondaryImage: null,
+        },
+      );
       if (mainImageRef.current) mainImageRef.current.value = '';
       if (secondaryImageRef.current) secondaryImageRef.current.value = '';
     } catch (err) {
       console.error(err);
-      setError('root', { type: 'manual', message: 'Failed to update fabric' });
       toast.error('Failed to update fabric');
     } finally {
       setIsLoading(false);
@@ -345,6 +393,7 @@ const EditFabric = () => {
             name="description"
             register={register}
             required={{ value: true, message: 'Description is required' }}
+            validation={{ maxLength: 1500 }}
           />
           {errors.description && (
             <FormErrorMessage message={errors.description?.message} />
@@ -385,16 +434,40 @@ const EditFabric = () => {
             inputRef={mainImageRef}
             single
           />
+          {errors.mainImage && (
+            <FormErrorMessage message={errors.mainImage.message} />
+          )}
+
           <FileUpload
             label="Upload Secondary Image (≤ 500KB):"
             id="secondaryImage-edit"
             inputRef={secondaryImageRef}
             single
           />
-
-          {errors.root?.message && (
-            <FormErrorMessage message={errors.root.message} />
+          {errors.secondaryImage && (
+            <FormErrorMessage message={errors.secondaryImage.message} />
           )}
+
+          <input
+            type="hidden"
+            {...register('mainImage', {
+              validate: f => {
+                if (f && f.size > MAX_IMAGE_SIZE)
+                  return 'Main image must be ≤ 500KB';
+                return true;
+              },
+            })}
+          />
+          <input
+            type="hidden"
+            {...register('secondaryImage', {
+              validate: f => {
+                if (f && f.size > MAX_IMAGE_SIZE)
+                  return 'Secondary image must be ≤ 500KB';
+                return true;
+              },
+            })}
+          />
 
           <div className="flex justify-center mt-4">
             <button
@@ -424,3 +497,4 @@ const EditFabric = () => {
 };
 
 export default EditFabric;
+

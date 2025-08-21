@@ -24,22 +24,23 @@ const EditModels = () => {
   const editModelData = useSelector(getEditModel);
 
   const {
-      register,
-      handleSubmit,
-      reset,
-      setValue,
-      setError,
-      formState: { errors, isSubmitting },
-    } = useForm({
-      mode: 'onChange',
-      defaultValues: {
-        title: '',
-        description: '',
-        date: new Date().toISOString().split('T')[0],
-        mainMedia: null,
-        additionalMedia: [],
-      },
-    });
+    register,
+    handleSubmit,
+    reset,
+    setValue,
+    setError,
+    clearErrors,
+    formState: { errors, isSubmitting },
+  } = useForm({
+    mode: 'onChange',
+    defaultValues: {
+      title: '',
+      description: '',
+      date: new Date().toISOString().split('T')[0],
+      mainMedia: null,
+      additionalMedia: [],
+    },
+  });
 
   useEffect(() => {
     if (editModelData) {
@@ -59,11 +60,16 @@ const EditModels = () => {
 
     const onMain = e => {
       const f = e.target.files?.[0] || null;
-      setValue('mainMedia', f, { shouldValidate: true });
+      setValue('mainMedia', f, { shouldValidate: true, shouldDirty: true });
+      if (f) clearErrors('mainMedia');
     };
     const onList = e => {
       const arr = Array.from(e.target.files || []);
-      setValue('additionalMedia', arr, { shouldValidate: true });
+      setValue('additionalMedia', arr, {
+        shouldValidate: true,
+        shouldDirty: true,
+      });
+      if (arr.length) clearErrors('additionalMedia');
     };
 
     mainEl?.addEventListener('change', onMain);
@@ -72,39 +78,47 @@ const EditModels = () => {
       mainEl?.removeEventListener('change', onMain);
       listEl?.removeEventListener('change', onList);
     };
-  }, [setValue]);
+  }, [setValue, clearErrors]);
 
   const onSubmit = async data => {
     const formData = new FormData();
     formData.append('folderName', 'models');
 
-    const mainImageFile = mainImageRef.current?.files?.[0];
-    const additionalImages = Array.from(imagesRef.current?.files || []);
+    const mainImageFile = data.mainMedia;
+    const additionalImages = Array.isArray(data.additionalMedia)
+      ? data.additionalMedia
+      : [];
 
-    const allFiles = [...additionalImages];
-    if (mainImageFile) allFiles.push(mainImageFile);
+    const tooBigMain = mainImageFile && mainImageFile.size > MAX_IMAGE_SIZE;
+    const tooBigExtra = additionalImages.find(f => f.size > MAX_IMAGE_SIZE);
 
-    const oversized = allFiles.some(file => file.size > MAX_IMAGE_SIZE);
-    if (oversized) {
-      setError('mainMedia', {
-        type: 'validate',
-        message: 'Main media must be ≤ 5MB',
-      });
-      setError('additionalMedia', {
-        type: 'validate',
-        message: 'Each additional file must be ≤ 5MB',
-      });
+    if (tooBigMain || tooBigExtra) {
+      if (tooBigMain) {
+        setError('mainMedia', {
+          type: 'validate',
+          message: 'Main media must be ≤ 5MB',
+        });
+      }
+      if (tooBigExtra) {
+        setError('additionalMedia', {
+          type: 'validate',
+          message: 'Each additional file must be ≤ 5MB',
+        });
+      }
       return;
     }
 
+    const hasNewMain = !!mainImageFile;
+    const hasNewAdditional = additionalImages.length > 0;
+
+    if (hasNewMain) formData.append('images', mainImageFile);
     additionalImages.forEach(file => formData.append('images', file));
-    if (mainImageFile) formData.append('images', mainImageFile);
-    if (mainImageFile?.name)
+    if (hasNewMain && mainImageFile?.name) {
       formData.append('mainFileName', mainImageFile.name);
+    }
 
     try {
       setIsLoading(true);
-      setError('');
 
       const hasPendingFiles = [
         ...(mainImageRef.current?.files || []),
@@ -117,16 +131,12 @@ const EditModels = () => {
         return;
       }
 
-      const hasNewMain = !!mainImageFile;
-      const hasNewAdditional = additionalImages.length > 0;
-
       let imageUploadData = {};
       if (hasNewMain || hasNewAdditional) {
         const imageUploadRes = await fetch('/api/upload-images', {
           method: 'POST',
           body: formData,
         });
-
         imageUploadData = await imageUploadRes.json();
         if (!imageUploadRes.ok) throw new Error(imageUploadData.error);
       }
@@ -230,6 +240,9 @@ const EditModels = () => {
             max={1}
             maxFileSize={MAX_IMAGE_SIZE}
           />
+          {errors.mainMedia && (
+            <FormErrorMessage message={errors.mainMedia.message} />
+          )}
 
           <FileUpload
             label={`Upload Additional Media (Max ${MAX_IMAGES}, ≤ 5MB each):`}
@@ -239,6 +252,9 @@ const EditModels = () => {
             max={MAX_IMAGES}
             maxFileSize={MAX_IMAGE_SIZE}
           />
+          {errors.additionalMedia && (
+            <FormErrorMessage message={errors.additionalMedia.message} />
+          )}
 
           <input
             type="hidden"
@@ -250,9 +266,6 @@ const EditModels = () => {
               },
             })}
           />
-          {errors.mainMedia && (
-            <FormErrorMessage message={errors.mainMedia.message} />
-          )}
 
           <input
             type="hidden"
@@ -267,9 +280,7 @@ const EditModels = () => {
               },
             })}
           />
-          {errors.additionalMedia && (
-            <FormErrorMessage message={errors.additionalMedia.message} />
-          )}
+
           <div className="flex justify-center mt-4">
             <button
               type="submit"

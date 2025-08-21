@@ -11,8 +11,9 @@ import SelectField from '@/components/shared/select-field/select-field';
 import TextareaField from '@/components/shared/textarea-field';
 import { toast } from 'react-toastify';
 import { createFabric, getFabrics } from '@/redux/fabrics/fabrics-operations';
-import SuggestedGarmentsField from '@/components/shared/suggested-garments-field';
-import { SUGGESTED_GARMENTS } from '@/components/shared/suggested-garments-field';
+import SuggestedGarmentsField, {
+  SUGGESTED_GARMENTS,
+} from '@/components/shared/suggested-garments-field';
 import FormErrorMessage from '@/components/shared/form-error-message';
 
 const MAX_IMAGE_SIZE = 500 * 1024;
@@ -184,6 +185,8 @@ const AddFabric = () => {
     reset,
     control,
     setValue,
+    setError,
+    clearErrors,
     formState: { errors, isSubmitting },
   } = useForm({
     mode: 'onChange',
@@ -205,11 +208,16 @@ const AddFabric = () => {
 
     const onMain = e => {
       const f = e.target.files?.[0] || null;
-      setValue('mainImage', f, { shouldValidate: true });
+      setValue('mainImage', f, { shouldValidate: true, shouldDirty: true });
+      if (f) clearErrors('mainImage');
     };
     const onSec = e => {
       const f = e.target.files?.[0] || null;
-      setValue('secondaryImage', f, { shouldValidate: true });
+      setValue('secondaryImage', f, {
+        shouldValidate: true,
+        shouldDirty: true,
+      });
+      if (f) clearErrors('secondaryImage');
     };
 
     mainEl?.addEventListener('change', onMain);
@@ -218,7 +226,7 @@ const AddFabric = () => {
       mainEl?.removeEventListener('change', onMain);
       secEl?.removeEventListener('change', onSec);
     };
-  }, [setValue]);
+  }, [setValue, clearErrors]);
 
   const onSubmit = async data => {
     try {
@@ -228,14 +236,40 @@ const AddFabric = () => {
       const secondaryImageFile = data.secondaryImage;
 
       if (!mainImageFile || !secondaryImageFile) {
+        if (!mainImageFile) {
+          setError('mainImage', {
+            type: 'validate',
+            message: 'Main image is required',
+          });
+        }
+        if (!secondaryImageFile) {
+          setError('secondaryImage', {
+            type: 'validate',
+            message: 'Secondary image is required',
+          });
+        }
         return;
       }
+
       if (
         mainImageFile.size > MAX_IMAGE_SIZE ||
         secondaryImageFile.size > MAX_IMAGE_SIZE
       ) {
+        if (mainImageFile.size > MAX_IMAGE_SIZE) {
+          setError('mainImage', {
+            type: 'validate',
+            message: 'Main image must be ≤ 500KB',
+          });
+        }
+        if (secondaryImageFile.size > MAX_IMAGE_SIZE) {
+          setError('secondaryImage', {
+            type: 'validate',
+            message: 'Secondary image must be ≤ 500KB',
+          });
+        }
         return;
       }
+
       if (!data.suggestedGarments || data.suggestedGarments.length === 0) {
         toast.error('Please select at least one suggested garment');
         return;
@@ -274,6 +308,12 @@ const AddFabric = () => {
 
       await dispatch(createFabric(fabricData)).unwrap();
       await dispatch(getFabrics()).unwrap();
+
+      setTimeout(() => {
+        document
+          .getElementById('admin-fabrics')
+          ?.scrollIntoView({ behavior: 'smooth' });
+      }, 100);
 
       reset();
       if (mainImageRef.current) mainImageRef.current.value = '';
@@ -342,6 +382,7 @@ const AddFabric = () => {
             name="description"
             register={register}
             required={{ value: true, message: 'Description is required' }}
+            validation={{ maxLength: 1500 }}
           />
           {errors.description && (
             <FormErrorMessage message={errors.description?.message} />
@@ -382,6 +423,9 @@ const AddFabric = () => {
             inputRef={mainImageRef}
             single
           />
+          {errors.mainImage && (
+            <FormErrorMessage message={errors.mainImage.message} />
+          )}
 
           <FileUpload
             label="Upload Secondary Image (≤ 500KB):"
@@ -389,6 +433,9 @@ const AddFabric = () => {
             inputRef={secondaryImageRef}
             single
           />
+          {errors.secondaryImage && (
+            <FormErrorMessage message={errors.secondaryImage.message} />
+          )}
 
           <input
             type="hidden"
@@ -401,7 +448,6 @@ const AddFabric = () => {
               },
             })}
           />
-
           <input
             type="hidden"
             {...register('secondaryImage', {
@@ -442,3 +488,4 @@ const AddFabric = () => {
 };
 
 export default AddFabric;
+

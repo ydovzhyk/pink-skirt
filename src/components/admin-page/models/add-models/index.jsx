@@ -28,6 +28,7 @@ const AddModels = () => {
     reset,
     setValue,
     setError,
+    clearErrors,
     formState: { errors, isSubmitting },
   } = useForm({
     mode: 'onChange',
@@ -46,11 +47,16 @@ const AddModels = () => {
 
     const onMain = e => {
       const f = e.target.files?.[0] || null;
-      setValue('mainMedia', f, { shouldValidate: true });
+      setValue('mainMedia', f, { shouldValidate: true, shouldDirty: true });
+      if (f) clearErrors('mainMedia');
     };
     const onList = e => {
       const arr = Array.from(e.target.files || []);
-      setValue('additionalMedia', arr, { shouldValidate: true });
+      setValue('additionalMedia', arr, {
+        shouldValidate: true,
+        shouldDirty: true,
+      });
+      if (arr.length) clearErrors('additionalMedia');
     };
 
     mainEl?.addEventListener('change', onMain);
@@ -59,23 +65,37 @@ const AddModels = () => {
       mainEl?.removeEventListener('change', onMain);
       listEl?.removeEventListener('change', onList);
     };
-  }, [setValue]);
-
+  }, [setValue, clearErrors]);
 
   const onSubmit = async data => {
     const formData = new FormData();
     formData.append('folderName', 'models');
     formData.append('itemId', itemId);
 
-    const mainImageFile = mainImageRef.current?.files?.[0];
-    const additionalImages = Array.from(imagesRef.current?.files || []);
+    const mainImageFile = data.mainMedia;
+    const additionalImages = Array.isArray(data.additionalMedia)
+      ? data.additionalMedia
+      : [];
 
     const allFiles = [...additionalImages];
     if (mainImageFile) allFiles.push(mainImageFile);
 
-    const oversized = allFiles.some(file => file.size > MAX_IMAGE_SIZE);
-    if (oversized) {
-      setError('Each image must be smaller than 500KB');
+    const tooBigMain = mainImageFile && mainImageFile.size > MAX_IMAGE_SIZE;
+    const tooBigExtra = additionalImages.find(f => f.size > MAX_IMAGE_SIZE);
+
+    if (tooBigMain || tooBigExtra) {
+      if (tooBigMain) {
+        setError('mainMedia', {
+          type: 'validate',
+          message: 'Main media must be ≤ 5MB',
+        });
+      }
+      if (tooBigExtra) {
+        setError('additionalMedia', {
+          type: 'validate',
+          message: 'Each additional file must be ≤ 5MB',
+        });
+      }
       return;
     }
 
@@ -86,7 +106,6 @@ const AddModels = () => {
 
     try {
       setIsLoading(true);
-      setError('');
 
       const hasPendingFiles = [
         ...(mainImageRef.current?.files || []),
@@ -128,16 +147,10 @@ const AddModels = () => {
         if (el) el.scrollIntoView({ behavior: 'smooth' });
       }, 100);
 
-      reset({
-        title: '',
-        description: '',
-        date: new Date().toISOString().split('T')[0],
-        mainMedia: null,
-        additionalMedia: [],
-      });
-
-      mainImageRef.current.value = '';
-      imagesRef.current.value = '';
+      reset();
+      if (mainImageRef.current) mainImageRef.current.value = '';
+      if (imagesRef.current) imagesRef.current.value = '';
+      toast.success('Model created successfully');
     } catch (err) {
       console.error(err);
       toast.error('Failed to submit model.');
@@ -198,6 +211,10 @@ const AddModels = () => {
             max={1}
             maxFileSize={MAX_IMAGE_SIZE}
           />
+          {errors.mainMedia && (
+            <FormErrorMessage message={errors.mainMedia.message} />
+          )}
+
           <FileUpload
             label={`Upload Additional Media (Max ${MAX_IMAGES}, ≤ 5MB each):`}
             id="images-addModel"
@@ -206,6 +223,9 @@ const AddModels = () => {
             max={MAX_IMAGES}
             maxFileSize={MAX_IMAGE_SIZE}
           />
+          {errors.additionalMedia && (
+            <FormErrorMessage message={errors.additionalMedia.message} />
+          )}
 
           <input
             type="hidden"
@@ -217,9 +237,6 @@ const AddModels = () => {
               },
             })}
           />
-          {errors.mainMedia && (
-            <FormErrorMessage message={errors.mainMedia.message} />
-          )}
 
           <input
             type="hidden"
@@ -234,9 +251,6 @@ const AddModels = () => {
               },
             })}
           />
-          {errors.additionalMedia && (
-            <FormErrorMessage message={errors.additionalMedia.message} />
-          )}
 
           <div className="flex justify-center mt-4">
             <button

@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef, useState } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useForm } from 'react-hook-form';
 import Text from '@/components/shared/text/text';
@@ -17,28 +17,74 @@ const MAX_IMAGES = 6;
 const MAX_IMAGE_SIZE = 500 * 1024;
 
 const AddStory = () => {
-  const { register, handleSubmit, reset } = useForm();
   const currentPage = useSelector(getCurrentPageStories);
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState('');
   const mainImageRef = useRef(null);
   const imagesRef = useRef(null);
   const dispatch = useDispatch();
   const storyId = uuidv4();
+
+  const {
+    register,
+    handleSubmit,
+    reset,
+    setValue,
+    setError,
+    clearErrors,
+    formState: { errors, isSubmitting },
+  } = useForm({
+    mode: 'onChange',
+    defaultValues: {
+      title: '',
+      content: '',
+      date: new Date().toISOString().split('T')[0],
+      mainImage: null,
+      images: [],
+    },
+  });
+
+  useEffect(() => {
+    const mainEl = document.getElementById('mainImage');
+    const listEl = document.getElementById('images');
+
+    const onMain = e => {
+      const f = e.target.files?.[0] || null;
+      setValue('mainImage', f, { shouldValidate: true, shouldDirty: true });
+      if (f) clearErrors('mainImage');
+    };
+    const onList = e => {
+      const arr = Array.from(e.target.files || []);
+      setValue('images', arr, { shouldValidate: true });
+    };
+
+    mainEl?.addEventListener('change', onMain);
+    listEl?.addEventListener('change', onList);
+    return () => {
+      mainEl?.removeEventListener('change', onMain);
+      listEl?.removeEventListener('change', onList);
+    };
+  }, [setValue]);
 
   const onSubmit = async data => {
     const formData = new FormData();
     formData.append('folderName', 'stories');
     formData.append('storyId', storyId);
 
-    const mainImageFile = mainImageRef.current?.files?.[0];
-    const additionalImages = Array.from(imagesRef.current?.files || []);
+    const mainImageFile = data.mainImage;
+    const additionalImages = data.images || [];
     const allFiles = [...additionalImages];
     if (mainImageFile) allFiles.push(mainImageFile);
 
     const oversized = allFiles.some(file => file.size > MAX_IMAGE_SIZE);
     if (oversized) {
-      setError('Each image must be smaller than 500KB');
+      setError('mainImage', {
+        type: 'validate',
+        message: 'Main image must be ≤ 500KB',
+      });
+      setError('images', {
+        type: 'validate',
+        message: 'Each additional image must be ≤ 500KB',
+      });
       return;
     }
 
@@ -76,7 +122,7 @@ const AddStory = () => {
         content: data.content,
         date: data.date,
         mainImageUrl: imageUploadData.mainImageUrl,
-        additionalImageUrls: imageUploadData.additionalImageUrls,
+        additionalImageUrls: imageUploadData.additionalImageUrls || [],
       };
 
       await dispatch(createStory(storyData)).unwrap();
@@ -87,7 +133,14 @@ const AddStory = () => {
         if (el) el.scrollIntoView({ behavior: 'smooth' });
       }, 100);
 
-      reset();
+      reset({
+        title: '',
+        content: '',
+        date: new Date().toISOString().split('T')[0],
+        mainImage: null,
+        images: [],
+      });
+
       mainImageRef.current.value = '';
       imagesRef.current.value = '';
     } catch (err) {
@@ -115,14 +168,24 @@ const AddStory = () => {
             label="Title:"
             name="title"
             register={register}
-            required
+            required={{ value: true, message: 'Title is required' }}
+            validation={{
+              minLength: { value: 2, message: 'At least 2 characters' },
+            }}
           />
+          {errors.title && <FormErrorMessage message={errors.title.message} />}
+
           <TextareaField
             label="Content:"
             name="content"
             register={register}
-            required
+            required={{ value: true, message: 'Content is required' }}
+            validation={{ maxLength: 1000 }}
           />
+          {errors.content && (
+            <FormErrorMessage message={errors.content.message} />
+          )}
+
           <InputField
             label="Date:"
             name="date"
@@ -131,12 +194,14 @@ const AddStory = () => {
             defaultValue={new Date().toISOString().split('T')[0]}
             required
           />
+
           <FileUpload
             label="Upload Main Image (≤ 500KB):"
             id="mainImage"
             inputRef={mainImageRef}
             single={true}
           />
+
           <FileUpload
             label={`Upload Additional Images (Max ${MAX_IMAGES}, ≤ 500KB each):`}
             id="images"
@@ -144,10 +209,44 @@ const AddStory = () => {
             max={MAX_IMAGES}
           />
 
-          {error && <FormErrorMessage message={error} />}
+          <input
+            type="hidden"
+            {...register('mainImage', {
+              validate: f => {
+                if (!f) return 'Main image is required';
+                if (f.size > MAX_IMAGE_SIZE)
+                  return 'Main image must be ≤ 500KB';
+                return true;
+              },
+            })}
+          />
+          {errors.mainImage && (
+            <FormErrorMessage message={errors.mainImage.message} />
+          )}
+
+          <input
+            type="hidden"
+            {...register('images', {
+              validate: arr => {
+                if (!Array.isArray(arr)) return true;
+                if (arr.length > MAX_IMAGES)
+                  return `Maximum ${MAX_IMAGES} additional images`;
+                const tooBig = arr.find(f => f.size > MAX_IMAGE_SIZE);
+                if (tooBig) return 'Each additional image must be ≤ 500KB';
+                return true;
+              },
+            })}
+          />
+          {errors.images && (
+            <FormErrorMessage message={errors.images.message} />
+          )}
 
           <div className="flex justify-center mt-4">
-            <button type="submit" className="group" disabled={isLoading}>
+            <button
+              type="submit"
+              className="group"
+              disabled={isLoading || isSubmitting}
+            >
               <div
                 style={{ borderWidth: '0.5px' }}
                 className="w-fit flex items-center justify-center gap-1 group-hover:gap-3 px-6 py-3 md:px-8 md:py-4 rounded-md border-gray-400 transition-all duration-300 ease-out bg-transparent group-hover:bg-[#F8F1F1] group-hover:border-[#F8F1F1] group-hover:shadow-md btn-shine uppercase"
