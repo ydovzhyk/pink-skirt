@@ -11,7 +11,7 @@ import { BsEscape } from 'react-icons/bs';
 
 export const sections = [
   {
-    id: 'admin-collection',
+    id: 'admin-ready-goods',
     label: 'Admin Collection',
     offset: -105,
     offsetLogin: -190,
