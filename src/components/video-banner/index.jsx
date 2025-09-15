@@ -190,6 +190,7 @@ const VideoBanner = ({
 
 export default VideoBanner;
 
+
 // 'use client';
 
 // import Text from '../shared/text/text';
