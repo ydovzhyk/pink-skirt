@@ -167,6 +167,79 @@
   }
 }
 
+/* Тонкий слайдер (input type="range") гучність відео */
+.thin-range {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  background: transparent;
+  height: 16px;           /* зона взаємодії (хіта) */
+  cursor: pointer;
+}
+
+/* --- WebKit (Chrome/Edge/Safari) --- */
+.thin-range::-webkit-slider-runnable-track {
+  height: 5px;
+  border-radius: 8px;
+  border: 0.5px solid #ffffff;
+
+  background: linear-gradient(
+    to right,
+    var(--volume-fill) 0%,
+    var(--volume-fill) calc(var(--val, 25) * 1%),
+    var(--track-base) calc(var(--val, 25) * 1%),
+    var(--track-base) 100%
+  );
+}
+.thin-range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  margin-top: -6px;
+  width: 16px;
+  height: 16px;
+  border-radius: 9999px;
+  background: var(--volume-fill);
+  border: 0.5px solid #ffffff;
+}
+
+/* --- Firefox --- */
+.thin-range::-moz-range-track {
+  height: 5px;
+  border-radius: 8px;
+  border: 0.5px solid #ffffff;
+  background: var(--track-base);
+}
+.thin-range::-moz-range-progress {
+  height: 5px;
+  border-radius: 8px;
+  background: var(--volume-fill);
+}
+.thin-range::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  border-radius: 9999px;
+  background: var(--volume-fill);
+  border: 0.5px solid #ffffff;
+}
+
+/* --- IE/Edge legacy (fallback) --- */
+.thin-range::-ms-track {
+  height: 5px;
+  background: transparent;
+  border-color: transparent;
+  color: transparent;
+}
+.thin-range::-ms-fill-lower { background: var(--volume-fill); }
+.thin-range::-ms-fill-upper {
+  background: var(--track-base);
+  border: 0.5px solid #ffffff;
+  border-radius: 8px;
+}
+.thin-range::-ms-thumb {
+  width: 16px; height: 16px; border-radius: 9999px;
+  background: var(--volume-fill); border: 0.5px solid #ffffff;
+}
+
 :root {
   --accent: #e83894;
   --accent-transparent: rgba(232, 56, 148, 0.7);
@@ -180,6 +253,9 @@
   --link: #00f;
   --background: #ffffff;
   --foreground: #000000;
+
+  --volume-fill: #e83894;   /* колір рівня гучності */
+  --track-base: rgba(255,255,255,0.35);     /* білий для незаповненої частини */
 }
 
 body {
