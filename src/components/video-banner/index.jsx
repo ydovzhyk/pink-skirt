@@ -191,7 +191,6 @@ const VideoBanner = ({
 export default VideoBanner;
 
 // 'use client';
-
 // import Text from '../shared/text/text';
 // import { useSelector } from 'react-redux';
 // import { getScreenType } from '@/redux/technical/technical-selectors';
