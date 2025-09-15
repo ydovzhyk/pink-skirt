@@ -1,83 +1,3 @@
-// 'use client';
-
-// import Text from '../shared/text/text';
-// import { useSelector } from 'react-redux';
-// import { getScreenType } from '@/redux/technical/technical-selectors';
-
-// const VideoBanner = ({ type = 'top', id }) => {
-//   const screenType = useSelector(getScreenType);
-//   const videoSrc =
-//     type === 'top' ? '/video/banner-top.mp4' : '/video/banner-bottom.mp4';
-//   const heightClasses =
-//     type === 'top'
-//       ? 'h-[580px] sm:h-[550px] md:h-[580px]'
-//       : 'h-[580px] sm:h-[500px] md:h-[500px]';
-
-//   return (
-//     <section
-//       id={id}
-//       className={`w-full ${heightClasses} overflow-hidden relative`}
-//     >
-//       <video
-//         className="w-full h-full object-cover"
-//         src={videoSrc}
-//         autoPlay
-//         loop
-//         muted
-//         playsInline
-//       />
-//       {type === 'top' && (
-//         <div className="absolute inset-0">
-//           <div
-//             className="absolute left-1/2 -translate-x-1/2 w-full max-w-[1280px] px-4 flex flex-col gap-4"
-//             style={{
-//               bottom:
-//                 screenType === 'isDesktop'
-//                   ? '100px'
-//                   : '85px'
-//             }}
-//           >
-//             <Text
-//               type="tiny"
-//               as="p"
-//               fontWeight="light"
-//               className="text-[#FAFCFF]"
-//               textShadow="black"
-//             >
-//               Explore my collection
-//             </Text>
-//             <div
-//               style={{
-//                 width:
-//                   screenType === 'isMobile'
-//                     ? '80%'
-//                     : screenType === 'isTablet'
-//                       ? '65%'
-//                       : screenType === 'isLaptop'
-//                         ? '50%'
-//                         : '45%',
-//               }}
-//             >
-//               <Text
-//                 type="banner"
-//                 as="h1"
-//                 fontWeight="light"
-//                 className="text-[#FAFCFF]"
-//                 textShadow="black"
-//               >
-//                 Relaxed simplicity, timeless appeal and a touch of modern
-//                 whimsy.
-//               </Text>
-//             </div>
-//           </div>
-//         </div>
-//       )}
-//     </section>
-//   );
-// };
-
-// export default VideoBanner;
-
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
@@ -189,7 +109,6 @@ const VideoBanner = ({
         }}
       />
 
-      {/* аудіо-контроли тільки за пропом */}
       {showAudioControls && (
         <div className="absolute top-4 right-4 z-10 flex items-center gap-3">
           <button
@@ -271,4 +190,83 @@ const VideoBanner = ({
 
 export default VideoBanner;
 
+// 'use client';
+
+// import Text from '../shared/text/text';
+// import { useSelector } from 'react-redux';
+// import { getScreenType } from '@/redux/technical/technical-selectors';
+
+// const VideoBanner = ({ type = 'top', id }) => {
+//   const screenType = useSelector(getScreenType);
+//   const videoSrc =
+//     type === 'top' ? '/video/banner-top.mp4' : '/video/banner-bottom.mp4';
+//   const heightClasses =
+//     type === 'top'
+//       ? 'h-[580px] sm:h-[550px] md:h-[580px]'
+//       : 'h-[580px] sm:h-[500px] md:h-[500px]';
+
+//   return (
+//     <section
+//       id={id}
+//       className={`w-full ${heightClasses} overflow-hidden relative`}
+//     >
+//       <video
+//         className="w-full h-full object-cover"
+//         src={videoSrc}
+//         autoPlay
+//         loop
+//         muted
+//         playsInline
+//       />
+//       {type === 'top' && (
+//         <div className="absolute inset-0">
+//           <div
+//             className="absolute left-1/2 -translate-x-1/2 w-full max-w-[1280px] px-4 flex flex-col gap-4"
+//             style={{
+//               bottom:
+//                 screenType === 'isDesktop'
+//                   ? '100px'
+//                   : '85px'
+//             }}
+//           >
+//             <Text
+//               type="tiny"
+//               as="p"
+//               fontWeight="light"
+//               className="text-[#FAFCFF]"
+//               textShadow="black"
+//             >
+//               Explore my collection
+//             </Text>
+//             <div
+//               style={{
+//                 width:
+//                   screenType === 'isMobile'
+//                     ? '80%'
+//                     : screenType === 'isTablet'
+//                       ? '65%'
+//                       : screenType === 'isLaptop'
+//                         ? '50%'
+//                         : '45%',
+//               }}
+//             >
+//               <Text
+//                 type="banner"
+//                 as="h1"
+//                 fontWeight="light"
+//                 className="text-[#FAFCFF]"
+//                 textShadow="black"
+//               >
+//                 Relaxed simplicity, timeless appeal and a touch of modern
+//                 whimsy.
+//               </Text>
+//             </div>
+//           </div>
+//         </div>
+//       )}
+//     </section>
+//   );
+// };
+
+// export default VideoBanner;
 
