@@ -15,7 +15,7 @@ export default function Home() {
         id="top-banner"
         showAudioControls
         capToVideoAspect
-        fallbackAspect={3/2}
+        fallbackAspect={3 / 2}
       />
       <div className="w-full first-letter:flex flex-col items-center justify-center min-h-screen">
         <MyReadyGoods />

@@ -10,18 +10,18 @@ import { HiOutlineSpeakerWave, HiOutlineSpeakerXMark } from 'react-icons/hi2';
 const clamp01 = n => Math.min(1, Math.max(0, n));
 
 /**
- * VideoBanner props:
- * - type: 'top' | 'bottom' (визначає джерело відео)
- * - id: string
+ * props:
+ * - type: 'top' | 'bottom'
+ * - id?: string
  * - showAudioControls?: boolean
- * - storageKey?: string (ключ для локального збереження гучності)
- * - defaultVolume?: number (0..1), дефолт 0.15
- * - headerSelector?: string (CSS селектор хедера, який віднімаємо)
- * - mobileLandscapeHeight?: number (фіксована висота для мобільного в landscape), дефолт 500
- * - smallDeviceMinSide?: number (поріг «малого» девайса за меншою стороною), дефолт 480
- * - capToVideoAspect?: boolean (обмежити висоту аспектом відео), дефолт false
- * - fallbackAspect?: number (аспект за замовчуванням, поки не зчитали metadata), дефолт 16/9
- * - objectFit?: 'cover' | 'contain', дефолт 'cover'
+ * - storageKey?: string
+ * - defaultVolume?: number (0..1)
+ * - headerSelector?: string (CSS селектор хедера)
+ * - mobileLandscapeHeight?: number (фіксована висота для мобільного landscape)
+ * - smallDeviceMinSide?: number (поріг «малого» девайса за меншою стороною)
+ * - capToVideoAspect?: boolean (ліміт по аспекту лише в landscape)
+ * - fallbackAspect?: number (аспект до onLoadedMetadata)
+ * - objectFit?: 'cover' | 'contain'
  */
 const VideoBanner = ({
   type = 'top',
@@ -33,7 +33,7 @@ const VideoBanner = ({
   mobileLandscapeHeight = 500,
   smallDeviceMinSide = 480,
   capToVideoAspect = false,
-  fallbackAspect = 16/9,
+  fallbackAspect = 16 / 9,
   objectFit = 'cover',
 }) => {
   const screenType = useSelector(getScreenType);
@@ -46,15 +46,13 @@ const VideoBanner = ({
   const playLockRef = useRef(false);
 
   const [sectionH, setSectionH] = useState(null);
-
-  const [isMuted, setIsMuted] = useState(true); // autoplay-friendly стартуємо muted
+  const [isMuted, setIsMuted] = useState(true);
   const [volume, setVolume] = useState(clamp01(defaultVolume));
   const KEY_VOLUME = `${storageKey}Volume`;
 
-  // Реальний аспект відео (після onLoadedMetadata)
-  const [videoAR, setVideoAR] = useState(null); // width/height
+  const [videoAR, setVideoAR] = useState(null); // реальний аспект (w/h)
 
-  // Зчитуємо збережену гучність (muted ніколи не відновлюємо автоматом)
+  // відновлюємо тільки гучність
   useEffect(() => {
     try {
       const savedVol = localStorage.getItem(KEY_VOLUME);
@@ -63,7 +61,7 @@ const VideoBanner = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [KEY_VOLUME]);
 
-  // Обчислення висоти секції
+  // розрахунок висоти
   useEffect(() => {
     const measure = () => {
       const vv = window.visualViewport;
@@ -82,20 +80,19 @@ const VideoBanner = ({
       const fallbackHeaderH = isLoginPanel ? 148 : 85;
       const headerH = Math.round(rawHeaderH || fallbackHeaderH);
 
+      // базова висота
       let h;
-      // мобільний landscape → фіксована висота
       if (isLandscape && isSmallDevice) {
-        h = mobileLandscapeHeight;
+        h = mobileLandscapeHeight; // для мобільного landscape
       } else {
-        // звичайний режим: viewport - header
-        h = Math.max(0, Math.round(vpH - headerH));
+        h = Math.max(0, Math.round(vpH - headerH)); // портрет та інше: viewport - header
       }
 
-      // опційний ліміт по аспекту відео (щоб не переростало)
-      if (capToVideoAspect) {
+      // ліміт по аспекту — лише в landscape і лише якщо це справді зменшує висоту
+      if (capToVideoAspect && isLandscape && !isSmallDevice) {
         const ar = videoAR || fallbackAspect;
         const aspectCap = Math.round(vpW / ar);
-        h = Math.min(h, aspectCap);
+        if (aspectCap < h) h = aspectCap;
       }
 
       setSectionH(h);
@@ -132,10 +129,10 @@ const VideoBanner = ({
     smallDeviceMinSide,
     capToVideoAspect,
     fallbackAspect,
-    videoAR, // коли з’явиться реальний аспект — перевиміряємо
+    videoAR,
   ]);
 
-  // Синхронізація відео з mute/volume + м’яке відновлення autoplay
+  // sync видео + м’яке autoplay
   useEffect(() => {
     const el = videoRef.current;
     if (!el) return;
@@ -162,9 +159,7 @@ const VideoBanner = ({
     const next = !isMuted;
     setIsMuted(next);
     el.muted = next;
-    if (!next) {
-      el.play().catch(() => {});
-    }
+    if (!next) el.play().catch(() => {});
   };
 
   const onVolumeChange = e => {
@@ -218,7 +213,7 @@ const VideoBanner = ({
             type="button"
             onClick={toggleMute}
             aria-label={isMuted ? 'Unmute video' : 'Mute video'}
-            className="rounded-full w-[35px] h-[35px] flex items-center justify-center bg-white/10 hover:bg-white/25 backdrop-blur-[1px]border-[0.5px] border-white/40 transition focus:outline-none focus:ring-[0.5px] focus:ring-white/70"
+            className="rounded-full w-[35px] h-[35px] flex items-center justify-center bg-white/10 hover:bg-white/25 backdrop-blur-[1px] border-[0.5px] border-white/40 transition focus:outline-none focus:ring-[0.5px] focus:ring-white/70"
             title={isMuted ? 'Unmute' : 'Mute'}
           >
             {isMuted ? (
