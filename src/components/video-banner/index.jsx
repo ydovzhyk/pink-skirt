@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from 'react';
 import Text from '../shared/text/text';
 import { useSelector } from 'react-redux';
 import { getScreenType } from '@/redux/technical/technical-selectors';
+import { getIsLoginPanel } from '@/redux/auth/auth-selectors';
 import { HiOutlineSpeakerWave, HiOutlineSpeakerXMark } from 'react-icons/hi2';
 
 const clamp01 = n => Math.min(1, Math.max(0, n));
@@ -14,17 +15,20 @@ const VideoBanner = ({
   showAudioControls = false,
   storageKey = 'banner',
   defaultVolume = 0.15,
+  headerSelector = '#site-header',
+  mobileLandscapeHeight = 500,
+  smallDeviceMinSide = 480,
 }) => {
   const screenType = useSelector(getScreenType);
+  const isLoginPanel = useSelector(getIsLoginPanel);
+
   const videoSrc =
     type === 'top' ? '/video/banner-top.mp4' : '/video/banner-bottom.mp4';
-  const heightClasses =
-    type === 'top'
-      ? 'h-[580px] sm:h-[550px] md:h-[580px]'
-      : 'h-[580px] sm:h-[500px] md:h-[500px]';
 
   const videoRef = useRef(null);
   const playLockRef = useRef(false);
+
+  const [sectionH, setSectionH] = useState(null);
   const [isMuted, setIsMuted] = useState(true);
   const [volume, setVolume] = useState(clamp01(defaultVolume));
 
@@ -39,18 +43,66 @@ const VideoBanner = ({
   }, [KEY_VOLUME]);
 
   useEffect(() => {
+    const measure = () => {
+      const vv = window.visualViewport;
+      const vpH = vv?.height || window.innerHeight;
+      const vpW = vv?.width || window.innerWidth;
+
+      const isLandscape = vpW > vpH;
+      const minSide = Math.min(vpW, vpH);
+      const isSmallDevice = minSide <= smallDeviceMinSide;
+
+      const headerEl =
+        document.querySelector(headerSelector) ||
+        document.querySelector('header');
+      const rawHeaderH = headerEl?.getBoundingClientRect().height ?? 0;
+      const fallbackHeaderH = isLoginPanel ? 148 : 85;
+      const headerH = Math.round(rawHeaderH || fallbackHeaderH);
+
+      if (isLandscape && isSmallDevice) {
+        setSectionH(mobileLandscapeHeight);
+      } else {
+        const h = Math.max(0, Math.round(vpH - headerH));
+        setSectionH(h);
+      }
+    };
+
+    measure();
+
+    const onResize = () => measure();
+    window.addEventListener('resize', onResize, { passive: true });
+    window.addEventListener('orientationchange', onResize, { passive: true });
+    window.visualViewport?.addEventListener('resize', onResize);
+    window.visualViewport?.addEventListener('scroll', onResize);
+
+    let ro;
+    const headerEl =
+      document.querySelector(headerSelector) ||
+      document.querySelector('header');
+    if (headerEl && 'ResizeObserver' in window) {
+      ro = new ResizeObserver(onResize);
+      ro.observe(headerEl);
+    }
+
+    return () => {
+      window.removeEventListener('resize', onResize);
+      window.removeEventListener('orientationchange', onResize);
+      window.visualViewport?.removeEventListener('resize', onResize);
+      window.visualViewport?.removeEventListener('scroll', onResize);
+      ro?.disconnect();
+    };
+  }, [headerSelector, isLoginPanel, mobileLandscapeHeight, smallDeviceMinSide]);
+
+  useEffect(() => {
     const el = videoRef.current;
     if (!el) return;
-
     el.muted = isMuted;
     try {
       el.volume = clamp01(volume);
     } catch {}
-
     try {
       localStorage.setItem(KEY_VOLUME, String(clamp01(volume)));
     } catch {}
-
     if (el.paused && isMuted && !playLockRef.current) {
       playLockRef.current = true;
       el.play()
@@ -67,9 +119,7 @@ const VideoBanner = ({
     const next = !isMuted;
     setIsMuted(next);
     el.muted = next;
-    if (!next) {
-      el.play().catch(() => {});
-    }
+    if (!next) el.play().catch(() => {});
   };
 
   const onVolumeChange = e => {
@@ -85,7 +135,8 @@ const VideoBanner = ({
   return (
     <section
       id={id}
-      className={`w-full ${heightClasses} overflow-hidden relative`}
+      className="w-full overflow-hidden relative"
+      style={sectionH != null ? { height: `${sectionH}px` } : undefined}
     >
       <video
         ref={videoRef}
@@ -115,14 +166,19 @@ const VideoBanner = ({
             type="button"
             onClick={toggleMute}
             aria-label={isMuted ? 'Unmute video' : 'Mute video'}
-            className="rounded-full w-[35px] h-[35px] flex items-center justify-center bg-white/10 hover:bg-white/25 backdrop-blur-[1px] border-[0.5px] border-white/40 transition focus:outline-none focus:ring-[0.5px] focus:ring-white/70"
+            className="rounded-full w-[35px] h-[35px] flex items-center justify-center bg-white/10 hover:bg-white/25 backdrop-blur-[1px]border-[0.5px] border-white/40 transition focus:outline-none focus:ring-[0.5px] focus:ring-white/70"
             title={isMuted ? 'Unmute' : 'Mute'}
           >
-            {!isMuted && <HiOutlineSpeakerWave color="white" />}
-            {isMuted && <HiOutlineSpeakerXMark color="white" />}
+            {isMuted ? (
+              <HiOutlineSpeakerXMark color="white" />
+            ) : (
+              <HiOutlineSpeakerWave color="white" />
+            )}
           </button>
 
-          <div className="hidden sm:flex items-center gap-2 px-3 py-2 rounded-full bg-white/10 backdrop-blur-[1px] border border-white/30">
+          <div
+            className="hidden sm:flex items-center gap-2 px-3 py-2 rounded-full bg-white/10 backdrop-blur-[1px] border border-white/30"
+          >
             <input
               type="range"
               min="0"
@@ -269,4 +325,3 @@ export default VideoBanner;
 // };
 
 // export default VideoBanner;
-
