@@ -10,7 +10,13 @@ import MyFabrics from '../components/my-fabrics';
 export default function Home() {
   return (
     <div className="font-[family-name:var(--font-geist-sans)]">
-      <VideoBanner type="top" id="top-banner" showAudioControls={true} />
+      <VideoBanner
+        type="top"
+        id="top-banner"
+        showAudioControls
+        capToVideoAspect
+        fallbackAspect={3/2}
+      />
       <div className="w-full first-letter:flex flex-col items-center justify-center min-h-screen">
         <MyReadyGoods />
         <ImageBanner />
