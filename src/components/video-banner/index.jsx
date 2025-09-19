@@ -11,7 +11,7 @@ const clamp01 = n => Math.min(1, Math.max(0, n));
 
 /**
  * props:
- * - type: 'top' | 'bottom'
+ * - type: 'top' | 'middle' | 'bottom'
  * - id?: string
  * - showAudioControls?: boolean
  * - storageKey?: string
@@ -40,7 +40,7 @@ const VideoBanner = ({
   const isLoginPanel = useSelector(getIsLoginPanel);
 
   const videoSrc =
-    type === 'top' ? '/video/banner-top.mp4' : '/video/banner-bottom.mp4';
+    type === 'top' ? '/video/banner-top.mp4' : type === 'middle' ? '/video/banner-middle.mp4' : '/video/banner-bottom.mp4';
 
   const videoRef = useRef(null);
   const playLockRef = useRef(false);
