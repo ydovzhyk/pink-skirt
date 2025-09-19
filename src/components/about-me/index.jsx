@@ -158,15 +158,7 @@ const AboutMe = () => {
                   world.
                 </Text>
                 <Text
-                  type={
-                    screenType === 'isDesktop'
-                      ? 'tiny'
-                      : screenType === 'isTablet'
-                        ? 'small'
-                        : screenType === 'isMobile'
-                          ? 'tiny'
-                          : 'normal'
-                  }
+                  type="regular"
                   as="p"
                   fontWeight="light"
                   lineHeight="normal"
