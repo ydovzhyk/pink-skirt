@@ -36,7 +36,7 @@ export default function NotFound() {
         backgroundImage: 'url(/images/404-bg.webp)',
       }}
     >
-      <div className="absolute inset-0 bg-white/10 backdrop-blur-[2px]" />
+      {/* <div className="absolute inset-0 bg-white/10 backdrop-blur-[2px]" /> */}
       <div className="absolute inset-0 flex flex-row items-center justify-center">
         <div className="container relative flex flex-col gap-12 items-center">
           <div className="flex flex-col items-center gap-5">
