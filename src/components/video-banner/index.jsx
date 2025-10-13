@@ -254,7 +254,7 @@ const VideoBanner = ({
               style={{
                 width:
                   screenType === 'isMobile'
-                    ? '80%'
+                    ? '90%'
                     : screenType === 'isTablet'
                       ? '65%'
                       : screenType === 'isLaptop'
