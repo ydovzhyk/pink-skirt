@@ -263,9 +263,11 @@ const VideoBanner = ({
               }}
             >
               <Text
-                type="banner"
+                type="normal"
                 as="h1"
                 fontWeight="light"
+                lineHeight="loose"
+                fontFamily="fraunces"
                 className="text-[#FAFCFF] whitespace-pre-line"
                 textShadow="black"
               >
@@ -274,15 +276,6 @@ const VideoBanner = ({
                 }
               </Text>
             </div>
-            <Text
-              type="tiny"
-              as="p"
-              fontWeight="light"
-              className="text-[#FAFCFF]"
-              textShadow="black"
-            >
-              Explore my collection
-            </Text>
           </div>
         </div>
       )}

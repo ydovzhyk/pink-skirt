@@ -129,7 +129,7 @@ const MyFabrics = () => {
       className="relative pt-12 pb-16 border border-transparent bg-cover bg-center"
       style={{ backgroundImage: "url('/images/fabrics/fabric-bg.webp')" }}
     >
-      <div className="absolute inset-0 bg-white opacity-30 z-0 pointer-events-none" />
+      <div className="absolute inset-0 bg-white opacity-0 z-0 pointer-events-none" />
       <div className="container relative flex flex-col items-center mt-8 gap-12">
         <div className="relative w-full flex items-center justify-start mb-6">
           <span className="w-full border-t border-gray-300"></span>
