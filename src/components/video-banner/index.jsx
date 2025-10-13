@@ -223,9 +223,7 @@ const VideoBanner = ({
             )}
           </button>
 
-          <div
-            className="hidden sm:flex items-center gap-2 px-3 py-2 rounded-full bg-white/10 backdrop-blur-[1px] border border-white/30"
-          >
+          <div className="hidden sm:flex items-center gap-2 px-3 py-2 rounded-full bg-white/10 backdrop-blur-[1px] border border-white/30">
             <input
               type="range"
               min="0"
@@ -252,15 +250,6 @@ const VideoBanner = ({
             className="absolute left-1/2 -translate-x-1/2 w-full max-w-[1280px] px-4 flex flex-col gap-4"
             style={{ bottom: screenType === 'isDesktop' ? '100px' : '85px' }}
           >
-            <Text
-              type="tiny"
-              as="p"
-              fontWeight="light"
-              className="text-[#FAFCFF]"
-              textShadow="black"
-            >
-              Explore my collection
-            </Text>
             <div
               style={{
                 width:
@@ -277,13 +266,23 @@ const VideoBanner = ({
                 type="banner"
                 as="h1"
                 fontWeight="light"
-                className="text-[#FAFCFF]"
+                className="text-[#FAFCFF] whitespace-pre-line"
                 textShadow="black"
               >
-                Relaxed simplicity, timeless appeal and a touch of modern
-                whimsy.
+                {
+                  'Pink is my language.\nMy filter for the world.\nMy Pink Skirt.'
+                }
               </Text>
             </div>
+            <Text
+              type="tiny"
+              as="p"
+              fontWeight="light"
+              className="text-[#FAFCFF]"
+              textShadow="black"
+            >
+              Explore my collection
+            </Text>
           </div>
         </div>
       )}
