@@ -248,7 +248,7 @@ const VideoBanner = ({
         <div className="absolute inset-0">
           <div
             className="absolute left-1/2 -translate-x-1/2 w-full max-w-[1280px] px-4 flex flex-col gap-4"
-            style={{ bottom: screenType === 'isDesktop' ? '100px' : '85px' }}
+            style={{ bottom: screenType === 'isDesktop' ? '50px' : '50px' }}
           >
             <div
               style={{
@@ -267,7 +267,6 @@ const VideoBanner = ({
                 as="h1"
                 fontWeight="light"
                 lineHeight="loose"
-                fontFamily="fraunces"
                 className="text-[#FAFCFF] whitespace-pre-line"
                 textShadow="black"
               >
