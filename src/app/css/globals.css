@@ -6,6 +6,7 @@
   font-family: 'Oblik';
   src: url('../../../public/fonts/Oblik-Bold.otf') format('opentype');
   font-weight: bold;
+  font-display: swap;
 }
 
 @font-face {
@@ -14,6 +15,7 @@
     format('truetype');
   font-weight: 100 900;
   font-style: normal;
+  font-display: swap;
 }
 
 @font-face {
@@ -22,6 +24,7 @@
     format('truetype');
   font-weight: 100 900;
   font-style: italic;
+  font-display: swap;
 }
 
 @font-face {
@@ -30,6 +33,7 @@
     format('truetype');
   font-weight: 100 900;
   font-style: normal;
+  font-display: swap;
 }
 
 @font-face {
@@ -38,6 +42,7 @@
     format('truetype');
   font-weight: 100 900;
   font-style: italic;
+  font-display: swap;
 }
 
 .hover-transition {
