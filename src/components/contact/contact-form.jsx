@@ -1,18 +1,18 @@
-"use client";
+'use client';
 
-import { isValidEmail } from "@/utils/check-email";
-import axios from "axios";
-import { useState } from "react";
-import { toast } from "react-toastify";
+import { isValidEmail } from '@/utils/check-email';
+import axios from 'axios';
+import { useState } from 'react';
+import { toast } from 'react-toastify';
 import Text from '../shared/text/text';
 
 function ContactForm() {
   const [error, setError] = useState({ email: false, required: false });
   const [isLoading, setIsLoading] = useState(false);
   const [userInput, setUserInput] = useState({
-    name: "",
-    email: "",
-    message: "",
+    name: '',
+    email: '',
+    message: '',
   });
 
   const checkRequired = () => {
@@ -21,7 +21,7 @@ function ContactForm() {
     }
   };
 
-  const handleSendMail = async (e) => {
+  const handleSendMail = async e => {
     e.preventDefault();
 
     if (!userInput.email || !userInput.message || !userInput.name) {
@@ -31,34 +31,36 @@ function ContactForm() {
       return;
     } else {
       setError({ ...error, required: false });
-    };
+    }
 
     try {
-      const origin = typeof window !== 'undefined' ? window.location.origin : ''
+      const origin =
+        typeof window !== 'undefined' ? window.location.origin : '';
       setIsLoading(true);
       await axios.post(`${origin}/api/contact`, {
         ...userInput,
         origin,
       });
 
-      toast.success("Message sent successfully!");
+      toast.success('Message sent successfully!');
       setUserInput({
-        name: "",
-        email: "",
-        message: "",
+        name: '',
+        email: '',
+        message: '',
       });
     } catch (error) {
       toast.error(error?.response?.data?.message);
     } finally {
       setIsLoading(false);
-    };
+    }
   };
 
   return (
     <div className="max-w-3xl text-white rounded-md border border-[#464c6a] p-3 lg:p-5">
-      <div className="flex flex-col gap-4">
+      <form className="flex flex-col gap-4" onSubmit={handleSendMail}>
+        {/* Name */}
         <div className="flex flex-col gap-2">
-          <label className="text-base">
+          <label htmlFor="contact-name" className="text-base">
             <Text
               type="samll"
               as="h3"
@@ -69,18 +71,21 @@ function ContactForm() {
             </Text>
           </label>
           <input
+            id="contact-name"
+            name="name"
             className="bg-white w-full rounded-md border-2 border-gray-300 outline-none ring-0 focus:border-[var(--accent)] focus:ring-[var(--accent)] transition-all duration-300 px-3 py-2 text-[var(--text-title)]"
             type="text"
             maxLength="100"
-            required={true}
+            required
             onChange={e => setUserInput({ ...userInput, name: e.target.value })}
             onBlur={checkRequired}
             value={userInput.name}
           />
         </div>
 
+        {/* Email */}
         <div className="flex flex-col gap-2">
-          <label>
+          <label htmlFor="contact-email">
             <Text
               type="small"
               as="h3"
@@ -91,6 +96,8 @@ function ContactForm() {
             </Text>
           </label>
           <input
+            id="contact-email"
+            name="email"
             className="bg-white w-full rounded-md border-2 border-gray-300 outline-none ring-0 focus:border-[var(--accent)] focus:ring-[var(--accent)] transition-all duration-300 px-3 py-2 text-[var(--text-title)]"
             type="email"
             maxLength="100"
@@ -104,10 +111,13 @@ function ContactForm() {
               checkRequired();
               setError({ ...error, email: !isValidEmail(userInput.email) });
             }}
+            aria-invalid={error.email ? 'true' : 'false'}
+            aria-describedby={error.email ? 'contact-email-error' : undefined}
           />
 
           {error.email && (
             <Text
+              id="contact-email-error"
               type="small"
               as="p"
               fontWeight="normal"
@@ -118,8 +128,9 @@ function ContactForm() {
           )}
         </div>
 
+        {/* Message */}
         <div className="flex flex-col gap-2">
-          <label>
+          <label htmlFor="contact-message">
             <Text
               type="small"
               as="h3"
@@ -130,10 +141,11 @@ function ContactForm() {
             </Text>
           </label>
           <textarea
+            id="contact-message"
+            name="message"
             className="bg-white w-full rounded-md border-2 border-gray-300 outline-none ring-0 focus:border-[var(--accent)] focus:ring-[var(--accent)] transition-all duration-300 px-3 py-2 text-[var(--text-title)]"
             maxLength="500"
-            name="message"
-            required={true}
+            required
             onChange={e =>
               setUserInput({ ...userInput, message: e.target.value })
             }
@@ -142,6 +154,7 @@ function ContactForm() {
             value={userInput.message}
           />
         </div>
+
         <div className="flex flex-col items-center gap-3">
           {error.required && (
             <Text
@@ -150,13 +163,12 @@ function ContactForm() {
               fontWeight="normal"
               className="text-red-400"
             >
-              All fiels are required!
+              All fields are required!
             </Text>
           )}
           <button
             className="group"
-            role="button"
-            onClick={handleSendMail}
+            type="submit"
             disabled={isLoading}
           >
             <div
@@ -185,9 +197,9 @@ function ContactForm() {
             </div>
           </button>
         </div>
-      </div>
+      </form>
     </div>
   );
-};
+}
 
 export default ContactForm;

@@ -267,6 +267,7 @@ const AboutMe = () => {
               {canScrollLeft && (
                 <button
                   className="group absolute top-1/2 left-5 transform -translate-y-1/2 z-10"
+                  aria-label="Scroll left"
                   onClick={() => handleScroll('left')}
                 >
                   <div
@@ -281,6 +282,7 @@ const AboutMe = () => {
               {canScrollRight && (
                 <button
                   className="group absolute top-1/2 right-5 transform -translate-y-1/2 z-10"
+                  aria-label="Scroll right"
                   onClick={() => handleScroll('right')}
                 >
                   <div

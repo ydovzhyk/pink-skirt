@@ -79,7 +79,7 @@ const ReadyGoodCard = ({
       <div className="min-h-[60px] px-3 py-2 flex flex-row items-center justify-center rounded-b-md">
         <Text
           type="tiny"
-          as="h3"
+          as="h2"
           fontWeight="light"
           className="text-[var(--text-title)] text-center"
         >
