@@ -1,5 +1,29 @@
-import Select from 'react-select';
+import Select, { components } from 'react-select';
 import Text from '../text/text';
+
+const LanguageOption = props => {
+  const { data } = props;
+  return (
+    <components.Option {...props}>
+      <span className="inline-flex items-center justify-center w-full">
+        <span className="md:hidden">{String(data.code).toUpperCase()}</span>
+        <span className="hidden md:inline">{data.lang}</span>
+      </span>
+    </components.Option>
+  );
+};
+
+const LanguageSingleValue = props => {
+  const { data } = props;
+  return (
+    <components.SingleValue {...props}>
+      <span className="inline-flex items-center justify-center w-full">
+        <span className="md:hidden">{String(data.code).toUpperCase()}</span>
+        <span className="hidden md:inline">{data.lang}</span>
+      </span>
+    </components.SingleValue>
+  );
+};
 
 const SelectField = ({
   name,
@@ -9,16 +33,17 @@ const SelectField = ({
   required,
   options,
   defaultValue,
-  width,
-  showLabelWithValue = false,
+  containerClassName = '',
   topPlaceholder = false,
   textAlign = 'center',
   textColor = 'black',
+  isSearchable = true,
+  variant = 'default',
 }) => {
   const customStyles = {
     container: provided => ({
       ...provided,
-      width: width,
+      width: '100%',
     }),
     control: (provided, state) => ({
       ...provided,
@@ -73,8 +98,15 @@ const SelectField = ({
   const valueId = `select-${name}`;
   const dynamicValue = textAlign === 'center' ? 'center' : 'flex-start';
 
+  const customComponents =
+    variant === 'language'
+      ? { Option: LanguageOption, SingleValue: LanguageSingleValue }
+      : undefined;
+
   return (
-    <label className="relative w-full flex flex-col items-center gap-[0px]">
+    <label
+      className={`relative flex flex-col items-center gap-[0px] ${containerClassName}`}
+    >
       {topPlaceholder && (
         <div
           className="absolute top-[-23px] left-0 w-full flex items-center"
@@ -90,6 +122,7 @@ const SelectField = ({
           </Text>
         </div>
       )}
+
       <Select
         id={valueId}
         instanceId={valueId}
@@ -101,11 +134,10 @@ const SelectField = ({
         options={options}
         styles={customStyles}
         defaultValue={defaultValue}
-        formatOptionLabel={option =>
-          showLabelWithValue
-            ? `${option.value} - ${option.label}`
-            : option.label
-        }
+        isSearchable={isSearchable}
+        components={customComponents}
+        getOptionValue={opt => opt.value}
+        getOptionLabel={opt => opt.label}
         theme={theme => ({
           ...theme,
           borderRadius: 5,

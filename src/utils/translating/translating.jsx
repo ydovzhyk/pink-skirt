@@ -1,34 +1,41 @@
-'use client'
+'use client';
 
-import { useEffect, useState } from 'react'
-import { useSelector } from 'react-redux';
-import translate from 'translate'
-import languagesAndCodes from './languagesAndCodes'
-import SelectField from '@/components/shared/select-field/select-field'
-import { useLanguage } from './language-context'
-import { getScreenType } from '@/redux/technical/technical-selectors'
+import { useEffect, useMemo, useState } from 'react';
+import translate from 'translate';
+import languagesAndCodes from './languagesAndCodes';
+import SelectField from '@/components/shared/select-field/select-field';
+import { useLanguage } from './language-context';
 
-translate.key = process.env.NEXT_PUBLIC_TRANSLATE_API_KEY || ''
+translate.key = process.env.NEXT_PUBLIC_TRANSLATE_API_KEY || '';
 
 export default function TranslateMe({ textColor = 'black' }) {
   const { updateLanguageIndex } = useLanguage();
   const [languageIndex, setLanguageIndex] = useState(0);
-  const screenType = useSelector(getScreenType);
 
   useEffect(() => {
-    const savedIndex = localStorage.getItem('mental-health.languageIndex');
-    if (Number(savedIndex) !== Number(languageIndex)) {
-      setLanguageIndex(Number(savedIndex));
-      updateLanguageIndex(Number(savedIndex));
+    const savedRaw = localStorage.getItem('mental-health.languageIndex');
+    const saved = Number(savedRaw);
+
+    if (!Number.isNaN(saved) && saved >= 0) {
+      setLanguageIndex(saved);
+      updateLanguageIndex(saved);
+    } else {
+      setLanguageIndex(0);
+      updateLanguageIndex(0);
     }
-  }, [languageIndex, updateLanguageIndex]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
-  const options = languagesAndCodes.languages.map((language, index) => ({
-    value: index.toString(),
-    label: screenType !== 'isDesktop' ? language.code.toUpperCase() : language.lang,
-  }));
+  const options = useMemo(() => {
+    return languagesAndCodes.languages.map((l, index) => ({
+      value: index.toString(),
+      label: l.lang,
+      code: l.code,
+      lang: l.lang,
+    }));
+  }, []);
 
-  const handleChange = async selectedOption => {
+  const handleChange = selectedOption => {
     const selectedIndex = Number(selectedOption.value);
     setLanguageIndex(selectedIndex);
     updateLanguageIndex(selectedIndex);
@@ -39,44 +46,44 @@ export default function TranslateMe({ textColor = 'black' }) {
   };
 
   return (
-    <div>
-      <SelectField
-        name="language"
-        value={options[languageIndex]}
-        handleChange={handleChange}
-        placeholder="Language"
-        required={true}
-        options={options}
-        width={screenType !== 'isDesktop' ? 80 : 125}
-        topPlaceholder={false}
-        textColor={textColor}
-      />
-    </div>
+    <SelectField
+      name="language"
+      value={options[languageIndex]}
+      handleChange={handleChange}
+      placeholder="Language"
+      required={true}
+      options={options}
+      topPlaceholder={false}
+      textColor={textColor}
+      isSearchable={false}
+      containerClassName="w-[80px] md:w-[125px]"
+      variant="language"
+    />
   );
 }
 
 export async function translateMyText(text = '', languageIndex) {
-  const { languages } = languagesAndCodes
-  const lang = languages[languageIndex]
+  const { languages } = languagesAndCodes;
+  const lang = languages[languageIndex];
 
   if (lang) {
-    const result = await translate(text, lang.code)
-    return result
+    const result = await translate(text, lang.code);
+    return result;
   } else {
-    throw new Error('Language not found')
+    throw new Error('Language not found');
   }
 }
 
 export const useTranslate = text => {
-  const [translatedText, setTranslatedText] = useState(text)
-  const { languageIndex } = useLanguage()
+  const [translatedText, setTranslatedText] = useState(text);
+  const { languageIndex } = useLanguage();
 
   const normalizeCase = text => {
     if (typeof text === 'string') {
       return text.replace(
         /(^|\.\s+)([a-z])/g,
         (_, prefix, letter) => prefix + letter.toUpperCase()
-      )
+      );
     }
 
     if (Array.isArray(text)) {
@@ -85,29 +92,29 @@ export const useTranslate = text => {
         .replace(
           /(^|\.\s+)([a-z])/g,
           (_, prefix, letter) => prefix + letter.toUpperCase()
-        )
+        );
     }
 
-    return ''
-  }
+    return '';
+  };
 
   useEffect(() => {
     translateMyText(text, languageIndex)
       .then(res => {
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (emailRegex.test(res)) {
-          setTranslatedText(res)
+          setTranslatedText(res);
         } else {
-          setTranslatedText(normalizeCase(res))
+          setTranslatedText(normalizeCase(res));
         }
       })
-      .catch(err => console.error(err))
-  }, [text, languageIndex])
+      .catch(err => console.error(err));
+  }, [text, languageIndex]);
 
-  return translatedText
-}
+  return translatedText;
+};
 
 export const TranslatedText = ({ text }) => {
-  const translatedText = useTranslate(text)
-  return <>{translatedText}</>
-}
+  const translatedText = useTranslate(text);
+  return <>{translatedText}</>;
+};

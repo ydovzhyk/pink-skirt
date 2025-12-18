@@ -21,17 +21,34 @@ const VideoBanner = ({
   capToVideoAspect = false,
   fallbackAspect = 16 / 9,
   objectFit = 'cover',
+
+  // early preload distance for middle/bottom
+  preloadRootMargin = '1400px 0px 1400px 0px',
+  // attach/play distance (your old 300px default)
+  playRootMargin = '300px 0px 300px 0px',
+
+  // optional posters (recommend setting at least topPoster)
+  topPoster = '/images/banner-top-poster.jpg',
+  middlePoster = undefined,
+  bottomPoster = undefined,
 }) => {
   const screenType = useSelector(getScreenType);
   const isLoginPanel = useSelector(getIsLoginPanel);
 
-  // реальні шляхи
+  // real sources
   const realVideoSrc =
     type === 'top'
       ? '/video/banner-top.mp4'
       : type === 'middle'
         ? '/video/banner-middle.mp4'
         : '/video/banner-bottom.mp4';
+
+  const posterSrc =
+    type === 'top'
+      ? topPoster
+      : type === 'middle'
+        ? middlePoster
+        : bottomPoster;
 
   const sectionRef = useRef(null);
   const videoRef = useRef(null);
@@ -44,11 +61,13 @@ const VideoBanner = ({
 
   const [videoAR, setVideoAR] = useState(null);
 
-  // головне: чи в viewport
-  // top-банер майже завжди у вʼюпорті, тому одразу true
-  const [isInView, setIsInView] = useState(type === 'top');
+  // Two-stage loading:
+  // - shouldPreload: start loading earlier
+  // - shouldPlay: start autoplay when close/in view
+  const [shouldPreload, setShouldPreload] = useState(type === 'top');
+  const [shouldPlay, setShouldPlay] = useState(type === 'top');
 
-  // відновлюємо гучність
+  // restore volume
   useEffect(() => {
     try {
       const savedVol = localStorage.getItem(KEY_VOLUME);
@@ -56,39 +75,59 @@ const VideoBanner = ({
     } catch {}
   }, [KEY_VOLUME]);
 
-  // IntersectionObserver
+  // Observer 1: preload earlier (middle/bottom)
   useEffect(() => {
-    // top уже true — нічого не дивимось
-    if (isInView) return;
+    if (type === 'top') return; // top: always true
+    if (shouldPreload) return;
     if (!sectionRef.current) return;
 
     const el = sectionRef.current;
     const observer = new IntersectionObserver(
       entries => {
-        entries.forEach(entry => {
+        for (const entry of entries) {
           if (entry.isIntersecting) {
-            setIsInView(true);
+            setShouldPreload(true);
             observer.disconnect();
+            break;
           }
-        });
+        }
       },
-      {
-        root: null,
-        // підвантажуємо заздалегідь, десь за 300px до появи
-        rootMargin: '300px 0px 300px 0px',
-        threshold: 0,
-      }
+      { root: null, rootMargin: preloadRootMargin, threshold: 0 }
     );
 
     observer.observe(el);
+    return () => observer.disconnect();
+  }, [type, shouldPreload, preloadRootMargin]);
 
-    return () => {
-      observer.disconnect();
-    };
-  }, [isInView]);
-
-  // розрахунок висоти як у тебе
+  // Observer 2: start play closer/in view (middle/bottom)
   useEffect(() => {
+    if (type === 'top') return;
+    if (shouldPlay) return;
+    if (!sectionRef.current) return;
+
+    const el = sectionRef.current;
+    const observer = new IntersectionObserver(
+      entries => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) {
+            setShouldPlay(true);
+            observer.disconnect();
+            break;
+          }
+        }
+      },
+      { root: null, rootMargin: playRootMargin, threshold: 0 }
+    );
+
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [type, shouldPlay, playRootMargin]);
+
+  // Height logic:
+  // - TOP: CSS height calc(100svh - 85px) => no CLS from "null -> measured"
+  useEffect(() => {
+    if (type === 'top') return;
+
     const measure = () => {
       const vv = window.visualViewport;
       const vpH = vv?.height || window.innerHeight;
@@ -146,6 +185,7 @@ const VideoBanner = ({
       ro?.disconnect();
     };
   }, [
+    type,
     headerSelector,
     isLoginPanel,
     mobileLandscapeHeight,
@@ -155,9 +195,8 @@ const VideoBanner = ({
     videoAR,
   ]);
 
-  // sync відео тільки коли воно вже в полі зору і є реальний src
+  // sync video + autoplay only when shouldPlay
   useEffect(() => {
-    if (!isInView) return;
     const el = videoRef.current;
     if (!el) return;
 
@@ -171,7 +210,8 @@ const VideoBanner = ({
       localStorage.setItem(KEY_VOLUME, String(clamp01(volume)));
     } catch {}
 
-    if (el.paused && isMuted && !playLockRef.current) {
+    // autoplay policy: only try autoplay when muted
+    if (shouldPlay && el.paused && isMuted && !playLockRef.current) {
       playLockRef.current = true;
       el.play()
         .catch(() => {})
@@ -179,7 +219,7 @@ const VideoBanner = ({
           playLockRef.current = false;
         });
     }
-  }, [isMuted, volume, KEY_VOLUME, isInView]);
+  }, [isMuted, volume, KEY_VOLUME, shouldPlay]);
 
   const toggleMute = () => {
     const el = videoRef.current;
@@ -200,24 +240,48 @@ const VideoBanner = ({
     }
   };
 
+  // section style:
+  // TOP: stable CSS height (no CLS)
+  // OTHERS: measured height when available
+  const sectionStyle =
+    type === 'top'
+      ? {
+          height: 'calc(100svh - 85px)',
+          minHeight: `${mobileLandscapeHeight}px`,
+        }
+      : sectionH != null
+        ? { height: `${sectionH}px` }
+        : undefined;
+
+  // src attachment:
+  // TOP: immediately
+  // MIDDLE/BOTTOM: attach earlier at shouldPreload, play later at shouldPlay
+  const shouldAttachSrc = type === 'top' ? true : shouldPreload;
+
   return (
     <section
       ref={sectionRef}
       id={id}
       className="w-full overflow-hidden relative"
-      style={sectionH != null ? { height: `${sectionH}px` } : undefined}
+      style={sectionStyle}
     >
       <video
         ref={videoRef}
         className="w-full h-full"
         style={{ objectFit }}
-        // головне місце: src тільки коли видно (або вже близько)
-        src={isInView ? realVideoSrc : undefined}
-        autoPlay={isInView}
+        // attach src earlier (preload stage)
+        src={shouldAttachSrc ? realVideoSrc : undefined}
+        // play only when shouldPlay
+        autoPlay={shouldPlay}
         loop
         muted={isMuted}
         playsInline
-        preload={isInView ? 'metadata' : 'none'}
+        // TOP: load more aggressively; others: preload when we decided to attach
+        preload={
+          type === 'top' ? 'auto' : shouldAttachSrc ? 'metadata' : 'none'
+        }
+        // poster helps avoid flashes before first frame (especially top)
+        poster={posterSrc}
         onLoadedMetadata={e => {
           const v = e.currentTarget;
           if (v.videoWidth && v.videoHeight) {
@@ -225,7 +289,7 @@ const VideoBanner = ({
           }
         }}
         onCanPlay={() => {
-          if (!isInView) return;
+          if (!shouldPlay) return;
           const el = videoRef.current;
           if (el && el.paused && isMuted && !playLockRef.current) {
             playLockRef.current = true;
