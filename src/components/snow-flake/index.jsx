@@ -29,7 +29,7 @@ export default function SnowFlake({
       flake.style.left = Math.random() * 96 + 2 + 'vw';
 
       // розмір
-      inner.style.fontSize = Math.random() * 10 + 12 + 'px'; // 12–22px
+      inner.style.fontSize = Math.random() * 8 + 10 + 'px'; // 10–18px
 
       // тривалості
       const fallDuration = Math.random() * 12 + 14; // 14–26s
