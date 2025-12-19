@@ -1,15 +1,15 @@
 'use client';
+
 import { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { usePathname } from 'next/navigation';
-import { getLoadingAuth } from '@/redux/auth/auth-selectors';
+import { ToastContainer } from 'react-toastify';
+import { getLoadingAuth, getIsLoginPanel } from '@/redux/auth/auth-selectors';
 import { getLoadingTechnical } from '@/redux/technical/technical-selectors';
 import { getLoadingStories } from '../redux/stories/stories-selectors';
 import { getLoadingReadyGoods } from '@/redux/ready-goods/ready-goods-selectors';
 import { getLoadingFabrics } from '../redux/fabrics/fabrics-selectors';
 import { getLoadingModels } from '../redux/models/models-selectors';
-import {getIsLoginPanel} from '@/redux/auth/auth-selectors';
-import { ToastContainer } from 'react-toastify';
 import { setActiveSection } from '@/redux/technical/technical-slice';
 import ActiveSectionObserver from '@/utils/active-section-observer';
 import 'react-toastify/dist/ReactToastify.css';
@@ -21,6 +21,16 @@ import Footer from '../components/footer/footer';
 import ScrollToTopButton from '@/components/scroll-to-top-btn/scroll-to-top-btn';
 import ScrollToHashSection from '@/utils/scroll-to-hash-section';
 import InitialDataLoader from '@/utils/InitialDataLoader';
+import SnowFlake from '@/components/snow-flake';
+
+function isSnowSeason(date = new Date()) {
+  const m = date.getMonth() + 1;
+  const d = date.getDate();
+  const inDec = m === 12 && d >= 7;
+  const inJan = m === 1;
+  const inFeb = m === 2 && d <= 25;
+  return inDec || inJan || inFeb;
+}
 
 const ClientLayout = ({ children }) => {
   const dispatch = useDispatch();
@@ -31,9 +41,10 @@ const ClientLayout = ({ children }) => {
   const loadingReadyGoods = useSelector(getLoadingReadyGoods);
   const loadingFabrics = useSelector(getLoadingFabrics);
   const loadingModels = useSelector(getLoadingModels);
-  const [loading, setLoading] = useState(false);
   const isLoginPanel = useSelector(getIsLoginPanel);
+  const [loading, setLoading] = useState(false);
   const [afterMobileHeader, setAfterMobileHeader] = useState(false);
+  const [snowEnabled, setSnowEnabled] = useState(false);
 
   const shouldLoadInitialData =
     pathname !== '/' && !pathname.startsWith('/admin');
@@ -57,7 +68,6 @@ const ClientLayout = ({ children }) => {
     loadingModels,
   ]);
 
-
   useEffect(() => {
     const checkWidth = () => {
       setAfterMobileHeader(window.innerWidth > 768);
@@ -67,6 +77,29 @@ const ClientLayout = ({ children }) => {
     window.addEventListener('resize', checkWidth);
     return () => window.removeEventListener('resize', checkWidth);
   }, []);
+
+  useEffect(() => {
+    const update = () => setSnowEnabled(isSnowSeason(new Date()));
+    update();
+    const now = new Date();
+    const nextMidnight = new Date(now);
+    nextMidnight.setHours(24, 0, 0, 0);
+    const msToMidnight = nextMidnight.getTime() - now.getTime();
+
+    let dailyIntervalId = null;
+
+    const t = setTimeout(() => {
+      update();
+      dailyIntervalId = setInterval(update, 24 * 60 * 60 * 1000);
+    }, msToMidnight);
+
+    return () => {
+      clearTimeout(t);
+      if (dailyIntervalId) clearInterval(dailyIntervalId);
+    };
+  }, []);
+
+  const snowAllowed = snowEnabled && !pathname.startsWith('/admin');
 
   return (
     <div className="reletive min-h-screen flex flex-col justify-between">
@@ -79,9 +112,12 @@ const ClientLayout = ({ children }) => {
       <ActiveSectionObserver
         setActiveSection={section => dispatch(setActiveSection(section))}
       />
+      <SnowFlake enabled={snowAllowed} />
       <Header />
       <main
-        className={`flex-1 ${isLoginPanel && afterMobileHeader ? 'mt-[148px]' : 'mt-[85px]'}`}
+        className={`flex-1 ${
+          isLoginPanel && afterMobileHeader ? 'mt-[148px]' : 'mt-[85px]'
+        }`}
       >
         {children}
       </main>
@@ -92,4 +128,3 @@ const ClientLayout = ({ children }) => {
 };
 
 export default ClientLayout;
-
