@@ -151,11 +151,11 @@ const AboutMe = () => {
                   lineHeight="normal"
                   className="text-[var(--text-title)] whitespace-pre-line"
                 >
-                  Some things can’t be taught or forced — style is one of them.
-                  It’s not just what you wear; it’s how you feel, how you move,
-                  how you connect with the moment. Style flows with you,
-                  breathes through you, and quietly becomes part of your inner
-                  world.
+                  Style is a silent dialogue between raw emotion and fine
+                  craftsmanship. Inspired by nature, classic British landscapes,
+                  and rich artistic textures, each garment is shaped to flow
+                  naturally with you, capturing a sense of freedom and timeless
+                  femininity.
                 </Text>
                 <Text
                   type="regular"
@@ -164,10 +164,10 @@ const AboutMe = () => {
                   lineHeight="normal"
                   className="text-[var(--text-title)] whitespace-pre-line"
                 >
-                  Inspired by slow mornings, sunlit streets, deep thoughts, and
-                  the quiet confidence of simplicity, our collections are
-                  designed not to impress — but to resonate. To wrap you in
-                  ease. To remind you of who you are when you’re most at peace.
+                  From initial sketches and draping on the mannequin to the
+                  final hand-sewn details, every creation is a tribute to slow
+                  design and individuality. It is fashion created to bring
+                  comfort, radiance, and harmony into your everyday life.
                 </Text>
               </div>
 
@@ -244,10 +244,11 @@ const AboutMe = () => {
                 lineHeight="normal"
                 className="text-[var(--text-title)] whitespace-pre-line"
               >
-                Some things can’t be taught or forced — style is one of them.
-                It’s not just what you wear; it’s how you feel, how you move,
-                how you connect with the moment. Style flows with you, breathes
-                through you, and quietly becomes part of your inner world.
+                Style is a silent dialogue between raw emotion and fine
+                craftsmanship. Inspired by nature, classic British landscapes,
+                and rich artistic textures, each garment is shaped to flow
+                naturally with you, capturing a sense of freedom and timeless
+                femininity.
               </Text>
               <Text
                 type="tiny"
@@ -256,10 +257,10 @@ const AboutMe = () => {
                 lineHeight="normal"
                 className="text-[var(--text-title)] whitespace-pre-line"
               >
-                Inspired by slow mornings, sunlit streets, deep thoughts, and
-                the quiet confidence of simplicity, our collections are designed
-                not to impress — but to resonate. To wrap you in ease. To remind
-                you of who you are when you’re most at peace.
+                From initial sketches and draping on the mannequin to the final
+                hand-sewn details, every creation is a tribute to slow design
+                and individuality. It is fashion created to bring comfort,
+                radiance, and harmony into your everyday life.
               </Text>
             </div>
 

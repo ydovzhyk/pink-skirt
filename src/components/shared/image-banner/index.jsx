@@ -49,8 +49,8 @@ const ImageBanner = () => {
             type="banner"
             as="p"
             fontWeight="light"
-            className="text-[#010101ea] text-center"
-            textShadow="white"
+            className="text-white text-center"
+            textShadow="black"
           >
             Enduring charm, playfully modern
           </Text>
