@@ -151,11 +151,14 @@ const AboutMe = () => {
                   lineHeight="normal"
                   className="text-[var(--text-title)] whitespace-pre-line"
                 >
-                  Style is a silent dialogue between raw emotion and fine
-                  craftsmanship. Inspired by nature, classic British landscapes,
-                  and rich artistic textures, each garment is shaped to flow
-                  naturally with you, capturing a sense of freedom and timeless
-                  femininity.
+                  Bespoke clothing is more than something you wear - it is a way
+                  of expressing who you are. I believe every woman deserves
+                  clothing created especially for her: thoughtfully designed to
+                  complement her figure, reflect her personality and bring her
+                  ideas to life. From the choice of fabric and silhouette to
+                  texture and movement, every detail is considered with
+                  intention, creating something that feels deeply personal and
+                  unmistakably yours.
                 </Text>
                 <Text
                   type="regular"
@@ -164,10 +167,13 @@ const AboutMe = () => {
                   lineHeight="normal"
                   className="text-[var(--text-title)] whitespace-pre-line"
                 >
-                  From initial sketches and draping on the mannequin to the
-                  final hand-sewn details, every creation is a tribute to slow
-                  design and individuality. It is fashion created to bring
-                  comfort, radiance, and harmony into your everyday life.
+                  My work begins with you - your character, your desires and
+                  your imagination. Together, we transform them into a garment
+                  made for your body and your story, from the first idea to the
+                  final stitch. A truly bespoke piece is timeless because it
+                  belongs entirely to you: something that exists nowhere else,
+                  celebrates your individuality and can be cherished for years
+                  to come.
                 </Text>
               </div>
 
@@ -244,11 +250,14 @@ const AboutMe = () => {
                 lineHeight="normal"
                 className="text-[var(--text-title)] whitespace-pre-line"
               >
-                Style is a silent dialogue between raw emotion and fine
-                craftsmanship. Inspired by nature, classic British landscapes,
-                and rich artistic textures, each garment is shaped to flow
-                naturally with you, capturing a sense of freedom and timeless
-                femininity.
+                Bespoke clothing is more than something you wear - it is a way
+                of expressing who you are. I believe every woman deserves
+                clothing created especially for her: thoughtfully designed to
+                complement her figure, reflect her personality and bring her
+                ideas to life. From the choice of fabric and silhouette to
+                texture and movement, every detail is considered with intention,
+                creating something that feels deeply personal and unmistakably
+                yours.
               </Text>
               <Text
                 type="tiny"
@@ -257,10 +266,12 @@ const AboutMe = () => {
                 lineHeight="normal"
                 className="text-[var(--text-title)] whitespace-pre-line"
               >
-                From initial sketches and draping on the mannequin to the final
-                hand-sewn details, every creation is a tribute to slow design
-                and individuality. It is fashion created to bring comfort,
-                radiance, and harmony into your everyday life.
+                My work begins with you - your character, your desires and your
+                imagination. Together, we transform them into a garment made for
+                your body and your story, from the first idea to the final
+                stitch. A truly bespoke piece is timeless because it belongs
+                entirely to you: something that exists nowhere else, celebrates
+                your individuality and can be cherished for years to come.
               </Text>
             </div>
 
