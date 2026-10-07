@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 import Text from '@/components/shared/text/text';
+import { restoreParagraphBreaks as restoreSentenceSpaces } from '@/utils/restore-paragraph-breaks';
 
 function isBoldElement(element) {
   const tag = element.tagName;

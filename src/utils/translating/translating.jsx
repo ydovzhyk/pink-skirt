@@ -99,16 +99,27 @@ export const useTranslate = text => {
   };
 
   useEffect(() => {
-    translateMyText(text, languageIndex)
-      .then(res => {
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (emailRegex.test(res)) {
-          setTranslatedText(res);
-        } else {
-          setTranslatedText(normalizeCase(res));
-        }
+    const source =
+      typeof text === 'string' ? text : Array.isArray(text) ? text.join('') : '';
+    const pieces = source.split(/(\n+)/);
+
+    Promise.all(
+      pieces.map(piece => {
+        if (!piece || /^\n+$/.test(piece)) return Promise.resolve(piece);
+        return translateMyText(piece, languageIndex).catch(err => {
+          console.error(err);
+          return piece;
+        });
       })
-      .catch(err => console.error(err));
+    ).then(chunks => {
+      const res = chunks.join('');
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (emailRegex.test(res)) {
+        setTranslatedText(res);
+      } else {
+        setTranslatedText(normalizeCase(res));
+      }
+    });
   }, [text, languageIndex]);
 
   return translatedText;

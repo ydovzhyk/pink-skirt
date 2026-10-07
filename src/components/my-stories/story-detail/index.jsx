@@ -8,7 +8,10 @@ import { getScreenType } from '@/redux/technical/technical-selectors';
 import { RiArrowGoBackFill } from 'react-icons/ri';
 import Text from '../../shared/text/text';
 import { useTranslate } from '@/utils/translating/translating';
-import { renderFormattedStory } from './format-story-content';
+import {
+  renderFormattedStory,
+  restoreParagraphBreaks,
+} from '../format-story-content';
 
 const StoryDetail = ({
   id,
@@ -22,7 +25,7 @@ const StoryDetail = ({
   const allStories = useSelector(getAllStories);
   const screenType = useSelector(getScreenType);
   const router = useRouter();
-  const translatedContent = useTranslate(content || '');
+  const translatedContent = useTranslate(restoreParagraphBreaks(content || ''));
   const currentIndex = allStories.findIndex(story => story.id === id);
   const hasPrevious = currentIndex > 0;
   const hasNext = currentIndex < allStories.length - 1;

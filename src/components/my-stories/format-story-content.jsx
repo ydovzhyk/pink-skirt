@@ -1,8 +1,12 @@
+import { restoreParagraphBreaks } from '@/utils/restore-paragraph-breaks';
+
 const linkClass =
   'underline underline-offset-2 hover:text-[var(--accent)] transition-colors duration-200';
 
+export { restoreParagraphBreaks };
+
 export function truncateFormatted(text, limit) {
-  const source = String(text || '').replace(/([.!?])(?=[A-Z])/g, '$1 ');
+  const source = restoreParagraphBreaks(text);
   let visible = 0;
   let result = '';
   let inBold = false;
@@ -24,22 +28,37 @@ export function truncateFormatted(text, limit) {
   return result;
 }
 
-function restoreSentenceSpaces(text) {
-  return String(text || '').replace(/([.!?])(?=[A-Z])/g, '$1 ');
-}
-
-export function renderFormattedStory(text) {
-  const parts = restoreSentenceSpaces(text).split(/(\*\*[\s\S]+?\*\*)/g);
+function renderInline(text, keyPrefix) {
+  const parts = String(text || '').split(/(\*\*[\s\S]+?\*\*)/g);
   return parts.map((part, index) => {
     const isBold =
       part.startsWith('**') && part.endsWith('**') && part.length > 4;
     const value = isBold ? part.slice(2, -2) : part;
-    const linked = linkifyStoryContent(value, `${index}-`);
-    if (!isBold) return <span key={index}>{linked}</span>;
+    const linked = linkifyStoryContent(value, `${keyPrefix}${index}-`);
+    if (!isBold) return <span key={`${keyPrefix}${index}`}>{linked}</span>;
     return (
-      <strong key={index} className="font-bold">
+      <strong key={`${keyPrefix}${index}`} className="font-bold">
         {linked}
       </strong>
+    );
+  });
+}
+
+export function renderFormattedStory(text, suffix = '') {
+  const paragraphs = restoreParagraphBreaks(text)
+    .split(/\n+/)
+    .map(paragraph => paragraph.trim())
+    .filter(Boolean);
+
+  if (!paragraphs.length) return null;
+
+  return paragraphs.map((paragraph, index) => {
+    const isLast = index === paragraphs.length - 1;
+    return (
+      <span key={index} className="block mb-4 last:mb-0">
+        {renderInline(paragraph, `${index}-`)}
+        {isLast ? suffix : null}
+      </span>
     );
   });
 }

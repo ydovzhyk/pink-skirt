@@ -10,6 +10,7 @@ import Text from '../../shared/text/text';
 import { useTranslate } from '@/utils/translating/translating';
 import {
   renderFormattedStory,
+  restoreParagraphBreaks,
   truncateFormatted,
 } from '../format-story-content';
 
@@ -29,7 +30,7 @@ const StoryCard = ({ id, title, date, content, mainImageUrl, story }) => {
   };
 
   const limit = charLimits[screenType] || 165;
-  const translatedContent = useTranslate(content || '');
+  const translatedContent = useTranslate(restoreParagraphBreaks(content || ''));
   const preview = truncateFormatted(translatedContent, limit);
 
   const formattedTitle = title
@@ -85,8 +86,7 @@ const StoryCard = ({ id, title, date, content, mainImageUrl, story }) => {
             lineHeight="normal"
             className="text-[var(--text-title)] whitespace-pre-line"
           >
-            {renderFormattedStory(preview)}
-            ...
+            {renderFormattedStory(preview, '...')}
           </Text>
         </div>
 
