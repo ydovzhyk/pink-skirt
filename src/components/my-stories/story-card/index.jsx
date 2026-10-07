@@ -78,7 +78,9 @@ const StoryCard = ({ id, title, date, content, mainImageUrl, story }) => {
             lineHeight="normal"
             className="text-[var(--text-title)] whitespace-pre-line"
           >
-            {String(content.slice(0, limit)) + '...'}
+            {String(content || '')
+              .replace(/\*\*([\s\S]+?)\*\*/g, '$1')
+              .slice(0, limit) + '...'}
           </Text>
         </div>
 

@@ -199,6 +199,7 @@ const EditStory = () => {
             register={register}
             required={{ value: true, message: 'Content is required' }}
             maxLength={3000}
+            keepBold
             value={watch('content')}
             validation={{ maxLength: 3000 }}
           />

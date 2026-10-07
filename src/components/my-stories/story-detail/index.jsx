@@ -12,7 +12,23 @@ import { useTranslate } from '@/utils/translating/translating';
 const linkClass =
   'underline underline-offset-2 hover:text-[var(--accent)] transition-colors duration-200';
 
-function linkifyStoryContent(text) {
+function renderFormattedStory(text) {
+  const parts = String(text || '').split(/(\*\*[\s\S]+?\*\*)/g);
+  return parts.map((part, index) => {
+    const isBold =
+      part.startsWith('**') && part.endsWith('**') && part.length > 4;
+    const value = isBold ? part.slice(2, -2) : part;
+    const linked = linkifyStoryContent(value, `${index}-`);
+    if (!isBold) return <span key={index}>{linked}</span>;
+    return (
+      <strong key={index} className="font-bold">
+        {linked}
+      </strong>
+    );
+  });
+}
+
+function linkifyStoryContent(text, keyPrefix = '') {
   const source = String(text || '');
   const pattern =
     /(?<![A-Za-z0-9._%+-])@[A-Za-z0-9._]+|https?:\/\/[^\s]+/g;
@@ -30,7 +46,7 @@ function linkifyStoryContent(text) {
       const trailing = token.slice(visible.length);
       nodes.push(
         <a
-          key={`${index}-ig`}
+          key={`${keyPrefix}${index}-ig`}
           href={`https://www.instagram.com/${handle}/`}
           target="_blank"
           rel="noopener noreferrer"
@@ -45,7 +61,7 @@ function linkifyStoryContent(text) {
       const trailing = token.slice(url.length);
       nodes.push(
         <a
-          key={`${index}-url`}
+          key={`${keyPrefix}${index}-url`}
           href={url}
           target="_blank"
           rel="noopener noreferrer"
@@ -187,7 +203,7 @@ const StoryDetail = ({
             lineHeight="snug"
             className="text-[var(--text-title)] whitespace-pre-line"
           >
-            {linkifyStoryContent(translatedContent)}
+            {renderFormattedStory(translatedContent)}
           </Text>
         </div>
       </div>

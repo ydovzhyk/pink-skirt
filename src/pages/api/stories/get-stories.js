@@ -1,5 +1,13 @@
 import { db } from '@/utils/firebase/firebase-сonfig';
 
+function storyTime(value) {
+  if (!value) return 0;
+  if (typeof value.toDate === 'function') return value.toDate().getTime();
+  if (typeof value._seconds === 'number') return value._seconds * 1000;
+  const time = new Date(value).getTime();
+  return Number.isNaN(time) ? 0 : time;
+}
+
 export default async function handler(req, res) {
   if (req.method !== 'GET') {
     return res.status(405).json({ error: 'Method not allowed' });
@@ -9,15 +17,17 @@ export default async function handler(req, res) {
   const limit = parseInt(req.query.limit || '2');
 
   try {
-    const storiesRef = db
-      .collection('stories')
-      .orderBy('createdAt', 'desc');
-
-    const snapshot = await storiesRef.get();
-    const allStories = snapshot.docs.map(doc => ({
-      id: doc.id,
-      ...doc.data() || [],
-    }));
+    const snapshot = await db.collection('stories').get();
+    const allStories = snapshot.docs
+      .map(doc => ({
+        id: doc.id,
+        ...(doc.data() || {}),
+      }))
+      .sort((a, b) => {
+        const byDate = storyTime(b.date) - storyTime(a.date);
+        if (byDate !== 0) return byDate;
+        return storyTime(b.createdAt) - storyTime(a.createdAt);
+      });
 
     const total = allStories.length;
     const totalPages = Math.ceil(total / limit);

@@ -28,6 +28,7 @@ const AddStory = () => {
     register,
     handleSubmit,
     reset,
+    watch,
     setValue,
     setError,
     clearErrors,
@@ -181,6 +182,8 @@ const AddStory = () => {
             register={register}
             required={{ value: true, message: 'Content is required' }}
             maxLength={3000}
+            keepBold
+            value={watch('content')}
             validation={{ maxLength: 3000 }}
           />
           {errors.content && (
