@@ -7,6 +7,11 @@ import { getScreenType } from '@/redux/technical/technical-selectors';
 import { usePathname, useRouter } from 'next/navigation';
 import { useDispatch, useSelector } from 'react-redux';
 import Text from '../../shared/text/text';
+import { useTranslate } from '@/utils/translating/translating';
+import {
+  renderFormattedStory,
+  truncateFormatted,
+} from '../format-story-content';
 
 const StoryCard = ({ id, title, date, content, mainImageUrl, story }) => {
   const router = useRouter();
@@ -24,6 +29,8 @@ const StoryCard = ({ id, title, date, content, mainImageUrl, story }) => {
   };
 
   const limit = charLimits[screenType] || 165;
+  const translatedContent = useTranslate(content || '');
+  const preview = truncateFormatted(translatedContent, limit);
 
   const formattedTitle = title
     .trim()
@@ -78,9 +85,8 @@ const StoryCard = ({ id, title, date, content, mainImageUrl, story }) => {
             lineHeight="normal"
             className="text-[var(--text-title)] whitespace-pre-line"
           >
-            {String(content || '')
-              .replace(/\*\*([\s\S]+?)\*\*/g, '$1')
-              .slice(0, limit) + '...'}
+            {renderFormattedStory(preview)}
+            ...
           </Text>
         </div>
 
