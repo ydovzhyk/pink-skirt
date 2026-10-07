@@ -7,6 +7,62 @@ import { getAllStories } from '@/redux/stories/stories-selectors';
 import { getScreenType } from '@/redux/technical/technical-selectors';
 import { RiArrowGoBackFill } from 'react-icons/ri';
 import Text from '../../shared/text/text';
+import { useTranslate } from '@/utils/translating/translating';
+
+const linkClass =
+  'underline underline-offset-2 hover:text-[var(--accent)] transition-colors duration-200';
+
+function linkifyStoryContent(text) {
+  const source = String(text || '');
+  const pattern =
+    /(?<![A-Za-z0-9._%+-])@[A-Za-z0-9._]+|https?:\/\/[^\s]+/g;
+  const nodes = [];
+  let lastIndex = 0;
+
+  for (const match of source.matchAll(pattern)) {
+    const index = match.index ?? 0;
+    if (index > lastIndex) nodes.push(source.slice(lastIndex, index));
+
+    const token = match[0];
+    if (token.startsWith('@')) {
+      const handle = token.replace(/^\@/, '').replace(/\.+$/, '');
+      const visible = `@${handle}`;
+      const trailing = token.slice(visible.length);
+      nodes.push(
+        <a
+          key={`${index}-ig`}
+          href={`https://www.instagram.com/${handle}/`}
+          target="_blank"
+          rel="noopener noreferrer"
+          className={linkClass}
+        >
+          {visible}
+        </a>
+      );
+      if (trailing) nodes.push(trailing);
+    } else {
+      const url = token.replace(/[.,)]+$/, '');
+      const trailing = token.slice(url.length);
+      nodes.push(
+        <a
+          key={`${index}-url`}
+          href={url}
+          target="_blank"
+          rel="noopener noreferrer"
+          className={linkClass}
+        >
+          {url}
+        </a>
+      );
+      if (trailing) nodes.push(trailing);
+    }
+
+    lastIndex = index + token.length;
+  }
+
+  if (lastIndex < source.length) nodes.push(source.slice(lastIndex));
+  return nodes;
+}
 
 const StoryDetail = ({
   id,
@@ -20,6 +76,7 @@ const StoryDetail = ({
   const allStories = useSelector(getAllStories);
   const screenType = useSelector(getScreenType);
   const router = useRouter();
+  const translatedContent = useTranslate(content || '');
   const currentIndex = allStories.findIndex(story => story.id === id);
   const hasPrevious = currentIndex > 0;
   const hasNext = currentIndex < allStories.length - 1;
@@ -130,7 +187,7 @@ const StoryDetail = ({
             lineHeight="snug"
             className="text-[var(--text-title)] whitespace-pre-line"
           >
-            {content}
+            {linkifyStoryContent(translatedContent)}
           </Text>
         </div>
       </div>

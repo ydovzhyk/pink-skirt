@@ -31,6 +31,7 @@ const EditStory = () => {
     register,
     handleSubmit,
     reset,
+    watch,
     setValue,
     setError,
     clearErrors,
@@ -197,7 +198,9 @@ const EditStory = () => {
             name="content"
             register={register}
             required={{ value: true, message: 'Content is required' }}
-            validation={{ maxLength: 1000 }}
+            maxLength={3000}
+            value={watch('content')}
+            validation={{ maxLength: 3000 }}
           />
           {errors.content && (
             <FormErrorMessage message={errors.content.message} />

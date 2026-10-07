@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Text from '@/components/shared/text/text';
 
 const TextareaField = ({
@@ -10,10 +10,18 @@ const TextareaField = ({
   required,
   validation = {},
   maxLength,
+  value = '',
 }) => {
-  const [count, setCount] = useState(0);
+  const ruleMax =
+    typeof validation.maxLength === 'object'
+      ? validation.maxLength.value
+      : validation.maxLength;
+  const finalMaxLength = maxLength ?? ruleMax ?? 1000;
+  const [count, setCount] = useState(String(value || '').length);
 
-  const finalMaxLength = maxLength ?? validation.maxLength ?? 1000;
+  useEffect(() => {
+    setCount(String(value || '').length);
+  }, [value]);
 
   return (
     <div className="flex flex-col gap-2">
