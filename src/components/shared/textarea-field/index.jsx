@@ -36,23 +36,30 @@ function htmlToMarkdown(html) {
       push('\n', false);
       return;
     }
+    const block = /^(P|DIV|LI|H[1-6]|TR|BLOCKQUOTE)$/.test(tag);
+    if (block) {
+      const last = pieces[pieces.length - 1];
+      if (last && !last.text.endsWith('\n')) push('\n', false);
+    }
     const nextBold = bold || isBoldElement(node);
     node.childNodes.forEach(child => walk(child, nextBold));
-    if (/^(P|DIV|LI|H[1-6]|TR|BLOCKQUOTE)$/.test(tag)) push('\n', false);
+    if (block) push('\n', false);
   };
 
   walk(doc.body, false);
 
-  return pieces
-    .map(piece => {
-      if (!piece.bold) return piece.text;
-      const match = piece.text.match(/^(\s*)([\s\S]*?)(\s*)$/);
-      if (!match?.[2]) return piece.text;
-      return `${match[1]}**${match[2]}**${match[3]}`;
-    })
-    .join('')
-    .replace(/\n{3,}/g, '\n\n')
-    .replace(/^\n+|\n+$/g, '');
+  return restoreSentenceSpaces(
+    pieces
+      .map(piece => {
+        if (!piece.bold) return piece.text;
+        const match = piece.text.match(/^(\s*)([\s\S]*?)(\s*)$/);
+        if (!match?.[2]) return piece.text;
+        return `${match[1]}**${match[2]}**${match[3]}`;
+      })
+      .join('')
+      .replace(/\n{3,}/g, '\n\n')
+      .replace(/^\n+|\n+$/g, '')
+  );
 }
 
 function escapeHtml(value) {
@@ -70,14 +77,44 @@ function markdownToHtml(markdown) {
 }
 
 function domToMarkdown(root) {
-  const clone = root.cloneNode(true);
-  clone.querySelectorAll('strong, b').forEach(element => {
-    const text = element.textContent || '';
-    element.replaceWith(
-      document.createTextNode(text.trim() ? `**${text}**` : text)
-    );
-  });
-  return (clone.innerText || '').replace(/\u00a0/g, ' ');
+  const lines = [];
+  let current = '';
+
+  const append = (node, bold) => {
+    if (node.nodeType === Node.TEXT_NODE) {
+      const text = node.textContent.replace(/\u00a0/g, ' ');
+      if (!bold || !text.trim()) {
+        current += text;
+        return;
+      }
+      const match = text.match(/^(\s*)([\s\S]*?)(\s*)$/);
+      current += `${match[1]}**${match[2]}**${match[3]}`;
+      return;
+    }
+    if (node.nodeType !== Node.ELEMENT_NODE) return;
+    const tag = node.tagName;
+    if (tag === 'BR') {
+      lines.push(current);
+      current = '';
+      return;
+    }
+    if (tag === 'DIV' || tag === 'P') {
+      if (current) {
+        lines.push(current);
+        current = '';
+      }
+      node.childNodes.forEach(child => append(child, bold));
+      lines.push(current);
+      current = '';
+      return;
+    }
+    const nextBold = bold || tag === 'STRONG' || tag === 'B';
+    node.childNodes.forEach(child => append(child, nextBold));
+  };
+
+  root.childNodes.forEach(child => append(child, false));
+  if (current) lines.push(current);
+  return restoreSentenceSpaces(lines.join('\n').replace(/\n+$/g, ''));
 }
 
 function htmlHasBold(html) {
@@ -110,11 +147,19 @@ const TextareaField = ({
 
   useEffect(() => {
     if (!keepBold || !editorRef.current) return;
-    const next = String(value || '');
+    const next = restoreSentenceSpaces(String(value || ''));
     if (next === lastEmitted.current) return;
     editorRef.current.innerHTML = markdownToHtml(next);
     lastEmitted.current = next;
-  }, [keepBold, value]);
+    if (next !== String(value || '') && hiddenRef.current) {
+      const setter = Object.getOwnPropertyDescriptor(
+        window.HTMLTextAreaElement.prototype,
+        'value'
+      )?.set;
+      setter?.call(hiddenRef.current, next.slice(0, finalMaxLength));
+      hiddenRef.current.dispatchEvent(new Event('input', { bubbles: true }));
+    }
+  }, [finalMaxLength, keepBold, value]);
 
   const writeValue = markdown => {
     const limited = String(markdown || '').slice(0, finalMaxLength);

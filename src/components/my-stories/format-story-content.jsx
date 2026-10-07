@@ -2,7 +2,7 @@ const linkClass =
   'underline underline-offset-2 hover:text-[var(--accent)] transition-colors duration-200';
 
 export function truncateFormatted(text, limit) {
-  const source = String(text || '');
+  const source = String(text || '').replace(/([.!?])(?=[A-Z])/g, '$1 ');
   let visible = 0;
   let result = '';
   let inBold = false;
@@ -24,8 +24,12 @@ export function truncateFormatted(text, limit) {
   return result;
 }
 
+function restoreSentenceSpaces(text) {
+  return String(text || '').replace(/([.!?])(?=[A-Z])/g, '$1 ');
+}
+
 export function renderFormattedStory(text) {
-  const parts = String(text || '').split(/(\*\*[\s\S]+?\*\*)/g);
+  const parts = restoreSentenceSpaces(text).split(/(\*\*[\s\S]+?\*\*)/g);
   return parts.map((part, index) => {
     const isBold =
       part.startsWith('**') && part.endsWith('**') && part.length > 4;
