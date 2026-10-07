@@ -49,7 +49,7 @@ const ContactSection = () => {
               lineHeight="normal"
               className="text-[var(--text-title)] whitespace-pre-line"
             >
-              Contact me — I’m always excited to turn new design ideas into
+              Contact me - I’m always excited to turn new design ideas into
               reality and craft garments that reflect your personal style and
               story.
             </Text>
