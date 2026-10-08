@@ -18,6 +18,7 @@ import MediaQuery from '@/utils/media-query/media-query';
 import AuthProvider from '@/utils/auth-provider/auth-provider';
 import Header from '../components/header/header';
 import Footer from '../components/footer/footer';
+import AtelierMap from '@/components/atelier-map';
 import ScrollToTopButton from '@/components/scroll-to-top-btn/scroll-to-top-btn';
 import ScrollToHashSection from '@/utils/scroll-to-hash-section';
 import InitialDataLoader from '@/utils/InitialDataLoader';
@@ -163,6 +164,7 @@ const ClientLayout = ({ children }) => {
         {children}
       </main>
       <ScrollToTopButton />
+      {!pathname.startsWith('/admin') && <AtelierMap />}
       <Footer />
     </div>
   );

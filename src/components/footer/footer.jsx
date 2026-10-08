@@ -6,7 +6,7 @@ import Text from '@/components/shared/text/text';
 import Link from 'next/link';
 import { FaTelegramPlane, FaWhatsapp } from 'react-icons/fa';
 import { GoMail } from 'react-icons/go';
-import { HiOutlinePhone } from 'react-icons/hi';
+import { HiOutlineLocationMarker, HiOutlinePhone } from 'react-icons/hi';
 import { IoLogoInstagram } from 'react-icons/io5';
 import PartnersSlider from '../partners-slider';
 import Logo from '../shared/logo/logo';
@@ -35,8 +35,8 @@ const Footer = () => {
       className="bg-[var(--section-first)] flex flex-col gap-10 lg:gap-12 py-12 lg:py-16 border-t border-gray-200 shadow-sm"
     >
       <PartnersSlider />
-      <div className="container w-full lg:w-[80%] flex flex-col md:flex-row gap-10 lg:gap-12 items-center md:items-start md:justify-between">
-        <div className="w-full flex flex-col items-center md:items-start gap-4">
+      <div className="container w-full flex flex-col lg:flex-row lg:justify-between gap-10 lg:gap-0 items-center lg:items-start">
+        <div className="w-full lg:w-[30%] xl:w-[24%] lg:shrink-0 flex flex-col items-center lg:items-start gap-4">
           <Text
             type="regular"
             as="p"
@@ -47,7 +47,7 @@ const Footer = () => {
           </Text>
           <FooterNavigation />
         </div>
-        <div className="w-full flex flex-col items-center md:items-start gap-4">
+        <div className="w-full lg:w-[30%] xl:w-[24%] lg:shrink-0 flex flex-col items-center lg:items-start gap-4">
           <Text
             type="regular"
             as="p"
@@ -57,7 +57,7 @@ const Footer = () => {
             Contact me:
           </Text>
           <ul className="flex flex-col gap-[15px]">
-            <li className="w-full flex flex-col items-center md:items-start">
+            <li className="w-full flex flex-col items-center lg:items-start">
               <a
                 href="https://t.me/pinkskirt_uk"
                 target="_blank"
@@ -76,7 +76,7 @@ const Footer = () => {
                 </Text>
               </a>
             </li>
-            <li className="w-full flex flex-col items-center md:items-start">
+            <li className="w-full flex flex-col items-center lg:items-start">
               <a
                 href="https://wa.me/447748068828"
                 target="_blank"
@@ -95,7 +95,7 @@ const Footer = () => {
                 </Text>
               </a>
             </li>
-            <li className="w-full flex flex-col items-center md:items-start">
+            <li className="w-full flex flex-col items-center lg:items-start">
               <a
                 href="mailto:pinkskirt.atelier@gmail.com"
                 className="flex items-center gap-2 transition-colors text-gray-500 duration-300 hover:text-black"
@@ -112,7 +112,7 @@ const Footer = () => {
                 </Text>
               </a>
             </li>
-            <li className="w-full flex flex-col items-center md:items-start">
+            <li className="w-full flex flex-col items-center lg:items-start">
               <a
                 href="tel:+447748068828"
                 className="flex items-center gap-2 transition-colors text-gray-500 duration-300 hover:text-black"
@@ -129,9 +129,28 @@ const Footer = () => {
                 </Text>
               </a>
             </li>
+            <li className="w-full flex flex-col items-center lg:items-start">
+              <a
+                href="https://maps.app.goo.gl/v3SjQJRuz45qsr957"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-start gap-2 transition-colors text-gray-500 duration-300 hover:text-black"
+              >
+                <HiOutlineLocationMarker className="w-[20px] h-[20px] shrink-0 mt-[1px]" />
+                <Text
+                  type="tiny"
+                  as="span"
+                  fontWeight="light"
+                  className="text-inherit whitespace-pre-line"
+                  noTranslate
+                >
+                  {`Brooklands Ave,\nCambridge CB2 8DG`}
+                </Text>
+              </a>
+            </li>
           </ul>
         </div>
-        <div className="w-full md:w-[30%] flex flex-col items-center md:items-start gap-4">
+        <div className="w-full lg:w-[30%] xl:w-[24%] lg:shrink-0 flex flex-col items-center lg:items-start gap-4">
           <Text
             type="regular"
             as="p"
@@ -160,6 +179,42 @@ const Footer = () => {
               </Link>
             </li>
           </ul>
+          <Text
+            type="regular"
+            as="p"
+            fontWeight="light"
+            className="text-black"
+          >
+            Opening hours:
+          </Text>
+          <Text
+            type="tiny"
+            as="p"
+            fontWeight="light"
+            className="text-gray-500 text-center lg:text-left whitespace-pre-line"
+            noTranslate
+          >
+            {`Sunday to Thursday, 10:00–20:00.
+Closed Friday and Saturday.`}
+          </Text>
+          <Text
+            type="regular"
+            as="p"
+            fontWeight="light"
+            className="text-black"
+          >
+            Prices:
+          </Text>
+          <Text
+            type="tiny"
+            as="p"
+            fontWeight="light"
+            className="text-gray-500 text-center lg:text-left whitespace-pre-line"
+            noTranslate
+          >
+            {`Clothing repairs from £15.
+Bespoke garments from £150.`}
+          </Text>
         </div>
       </div>
       <div className="container w-full flex flex-col items-center justify-center lg:my-[-25px] my-[-10px]">

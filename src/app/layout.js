@@ -5,6 +5,7 @@ import { StoreProvider } from '@/redux/store-provider';
 import { LanguageProvider } from '@/utils/translating/language-context';
 import ClientLayout from './client-layout';
 import GaPageviews from '@/utils/GaPageviews';
+import { localBusinessSchema } from '@/components/shared/local-business-schema';
 import '../app/css/globals.css';
 
 export const metadata = {
@@ -50,7 +51,9 @@ export const metadata = {
     'evening dresses bespoke',
     'wedding guest dresses',
     'luxury womenswear',
-    'atelier London',
+    'atelier Cambridge',
+    'bespoke clothing Cambridge',
+    'ательє з пошиття одягу в Кембриджі',
     'UK clothing atelier',
     'handmade dresses',
     'couture dresses',
@@ -80,6 +83,12 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body className="antialiased">
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(localBusinessSchema),
+          }}
+        />
         <StoreProvider>
           <LanguageProvider>
             {/* gtag.js */}

@@ -1,6 +1,6 @@
 import { db } from '@/utils/firebase/firebase-сonfig';
 
-const CONTENT_UPDATED = '2026-10-07';
+const CONTENT_UPDATED = '2026-10-08';
 
 function toLastMod(value) {
   if (!value) return null;
