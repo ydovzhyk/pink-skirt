@@ -1,51 +1,72 @@
-'use client';
+import DetailReadyGoodsPage from './detail-client';
+import { db } from '@/utils/firebase/firebase-сonfig';
 
-import { Suspense, useEffect } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { useParams, useRouter } from 'next/navigation';
-import LoaderSpinner from '@/components/loader/loader';
-import { getCurrentReadyGood } from '@/redux/ready-goods/ready-goods-selectors';
-import { getReadyGood } from '@/redux/ready-goods/ready-goods-operations';
-import { clearCurrentReadyGood } from '@/redux/ready-goods/ready-goods-slice';
-import ReadyGoodsDetail from '@/components/my-ready-goods/ready-good-detail/index';
+const FALLBACK_TITLE = 'Pink Skirt – Bespoke Women’s Clothing by Inna Kuzmuk';
+const FALLBACK_DESCRIPTION =
+  'Pink Skirt – a unique atelier by Inna Kuzmuk, specializing in bespoke women’s clothing. Elegant, high-quality designs created with passion in the UK.';
 
-function DetailReadyGoodsPage() {
-  const { goodsName, id } = useParams();
-  const dispatch = useDispatch();
-  const router = useRouter();
-  const currentGoods = useSelector(getCurrentReadyGood);
+function plainText(value) {
+  return String(value || '')
+    .replace(/<[^>]+>/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
 
-  useEffect(() => {
-    if (
-      !goodsName ||
-      typeof goodsName !== 'string' ||
-      !id ||
-      typeof id !== 'string'
-    ) {
-      router.replace('/404');
-      return;
-    }
-    dispatch(clearCurrentReadyGood());
-    dispatch(getReadyGood({ id }));
-  }, [dispatch, id, goodsName, router]);
+function clip(text, max = 155) {
+  if (text.length <= max) return text;
+  const cut = text.slice(0, max);
+  const lastSpace = cut.lastIndexOf(' ');
+  const base = lastSpace > 80 ? cut.slice(0, lastSpace) : cut;
+  return `${base}…`;
+}
 
-  useEffect(() => {
-    window.scrollTo({ top: 0, behavior: 'auto' });
-  }, []);
+export async function generateMetadata({ params }) {
+  const { goodsName, id } = await params;
+  const fallback = {
+    title: FALLBACK_TITLE,
+    description: FALLBACK_DESCRIPTION,
+  };
 
-  if (!currentGoods) {
-    return null;
-  } else {
-    return (
-      <div className="w-full">
-        <div className="container border border-transparent">
-          <Suspense fallback={<LoaderSpinner />}>
-            <ReadyGoodsDetail {...currentGoods} />
-          </Suspense>
-        </div>
-      </div>
-    );
+  if (!id || typeof id !== 'string') return fallback;
+
+  try {
+    const doc = await db.collection('ready-goods').doc(id).get();
+    if (!doc.exists) return fallback;
+
+    const data = doc.data() || {};
+    const name = plainText(data.title) || 'Ready-made piece';
+    const description =
+      clip(plainText(data.shortDescription) || plainText(data.description)) ||
+      `${name} by Pink Skirt, a bespoke women’s clothing atelier in Cambridge.`;
+    const title = `${name} – Pink Skirt`;
+    const url = `https://pinkskirt.uk/ready-goods/${goodsName}/${id}`;
+    const image = data.mainImageUrl || 'https://pinkskirt.uk/og-image.png';
+
+    return {
+      title,
+      description,
+      alternates: { canonical: url },
+      openGraph: {
+        title,
+        description,
+        url,
+        siteName: 'Pink Skirt Atelier',
+        images: [{ url: image, alt: name }],
+        type: 'website',
+        locale: 'en_GB',
+      },
+      twitter: {
+        card: 'summary_large_image',
+        title,
+        description,
+        images: [image],
+      },
+    };
+  } catch {
+    return fallback;
   }
 }
 
-export default DetailReadyGoodsPage;
+export default function Page() {
+  return <DetailReadyGoodsPage />;
+}
