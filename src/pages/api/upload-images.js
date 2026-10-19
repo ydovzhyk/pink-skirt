@@ -74,6 +74,12 @@ export default async function handler(req, res) {
     const mainImage = uploaded.find(f => f.name === mainFileName);
     const additionalImages = uploaded
       .filter(f => f.name !== mainFileName)
+      .sort((a, b) =>
+        a.name.localeCompare(b.name, undefined, {
+          numeric: true,
+          sensitivity: 'base',
+        })
+      )
       .map(f => f.url);
 
     return res.status(200).json({

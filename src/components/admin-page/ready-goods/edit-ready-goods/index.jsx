@@ -283,7 +283,8 @@ const EditReadyGood = () => {
             name="description"
             register={register}
             required={{ value: true, message: 'Description is required' }}
-            validation={{ maxLength: 1000 }}
+            maxLength={3000}
+            validation={{ maxLength: 3000 }}
           />
           {errors.description && (
             <FormErrorMessage message={errors.description.message} />
@@ -329,7 +330,7 @@ const EditReadyGood = () => {
             register={register}
             required={{ value: true, message: 'Size is required' }}
             validation={{
-              minLength: { value: 2, message: 'At least 2 characters' },
+              minLength: { value: 1, message: 'At least 1 character' },
             }}
           />
           {errors.size && <FormErrorMessage message={errors.size.message} />}
