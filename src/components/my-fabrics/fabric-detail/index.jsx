@@ -9,6 +9,7 @@ import { getAllFabrics } from '@/redux/fabrics/fabrics-selectors';
 import { getScreenType } from '@/redux/technical/technical-selectors';
 import { RxScissors } from 'react-icons/rx';
 import SelectField from '@/components/shared/select-field/select-field';
+import ActivePhotoMark from '../../shared/active-photo-mark';
 
 const GARMENT_ICONS_BASE = '/images/garments';
 const norm = s =>
@@ -278,15 +279,11 @@ const FabricDetail = ({
                     key={f.id}
                     type="button"
                     onClick={() => goToFabric(f.name, f.shortDescription, f.id)}
-                    className={`w-full flex flex-col text-left rounded-md overflow-hidden border bg-white transition-all duration-200 shadow-lg ${
-                      isActive
-                        ? 'border-[var(--accent)] ring-1 ring-[var(--accent)]'
-                        : 'border-gray-300 hover:border-[var(--accent)]'
-                    }`}
+                    className="relative w-full flex flex-col text-left rounded-md overflow-hidden border border-gray-300 bg-white transition-all duration-200 shadow-lg"
                     aria-label={f.shortDescription}
                     title={f.shortDescription}
                   >
-                    <div className="w-full h-full">
+                    <div className="relative w-full h-full">
                       {thumb ? (
                         <img
                           src={thumb}
@@ -299,6 +296,7 @@ const FabricDetail = ({
                           —
                         </div>
                       )}
+                      {isActive && <ActivePhotoMark />}
                     </div>
                     <div className="px-2 py-2 w-full h-[40px] flex flex-row items-center justify-center">
                       <Text

@@ -12,6 +12,7 @@ import {
   renderFormattedStory,
   restoreParagraphBreaks,
 } from '../format-story-content';
+import ActivePhotoMark from '../../shared/active-photo-mark';
 
 const StoryDetail = ({
   id,
@@ -107,13 +108,11 @@ const StoryDetail = ({
                   <div
                     key={i}
                     onClick={() => setActiveImage(img)}
-                    className={`min-w-[32%] aspect-[27/40] flex-shrink-0 bg-cover bg-center cursor-pointer rounded-md ${
-                      activeImage === img
-                        ? 'border-[var(--accent)] border-2'
-                        : 'border-transparent'
-                    }`}
+                    className="relative min-w-[32%] aspect-[27/40] flex-shrink-0 bg-cover bg-center cursor-pointer rounded-md border border-transparent"
                     style={{ backgroundImage: `url(${img})` }}
-                  />
+                  >
+                    {activeImage === img && <ActivePhotoMark />}
+                  </div>
                 ))}
               </div>
             </div>

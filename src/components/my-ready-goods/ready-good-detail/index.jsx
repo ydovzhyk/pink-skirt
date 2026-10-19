@@ -10,6 +10,7 @@ import ImageModal from '../../shared/image-modal/index';
 import { RiArrowGoBackFill } from 'react-icons/ri';
 import { getScreenType } from '@/redux/technical/technical-selectors';
 import { CiZoomIn } from 'react-icons/ci';
+import ActivePhotoMark from '../../shared/active-photo-mark';
 
 const ReadyGoodsDetail = ({
   id,
@@ -128,16 +129,14 @@ const ReadyGoodsDetail = ({
                 <div
                   key={i}
                   onClick={() => setActiveImage(img)}
-                  className={`flex-none w-full bg-cover bg-center cursor-pointer rounded-md shadow-lg border my-[1px] mx-[1px] ${
-                    activeImage === img
-                      ? 'border-[var(--accent)] ring-1 ring-[var(--accent)]'
-                      : 'border-gray-300 hover:border-[var(--accent)]'
-                  }`}
+                  className="relative flex-none w-full bg-cover bg-center cursor-pointer rounded-md shadow-lg border border-gray-300 my-[1px] mx-[1px]"
                   style={{
                     backgroundImage: `url(${img})`,
                     height: 'calc(50% - 0.65rem)',
                   }}
-                />
+                >
+                  {activeImage === img && <ActivePhotoMark />}
+                </div>
               ))}
             </div>
           )}
