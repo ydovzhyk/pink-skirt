@@ -11,6 +11,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { slugify } from '@/utils/seo/public-url';
+import Photo from '@/components/shared/photo';
 
 const ReadyGoodCard = ({
   id,
@@ -58,19 +59,20 @@ const ReadyGoodCard = ({
       {hoverImage && hoverImage !== mainImageUrl && (
         <img
           src={hoverImage}
-          alt="ready-good-photo"
+          alt=""
           style={{ display: 'none' }}
           loading="eager"
           aria-hidden="true"
         />
       )}
 
-      <div
-        className="w-full aspect-[27/40]  overflow-hidden rounded-t-md border border-gray-300 bg-center bg-cover transition-all duration-300"
-        style={{
-          backgroundImage: `url(${isHovered ? hoverImage : mainImageUrl})`,
-        }}
-      ></div>
+      <div className="relative w-full aspect-[27/40] overflow-hidden rounded-t-md border border-gray-300">
+        <Photo
+          src={isHovered ? hoverImage : mainImageUrl}
+          title={title}
+          index={isHovered && hoverImage !== mainImageUrl ? 1 : 0}
+        />
+      </div>
 
       <div className="min-h-[60px] px-3 py-2 flex flex-row items-center justify-center rounded-b-md">
         <Text

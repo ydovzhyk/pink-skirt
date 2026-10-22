@@ -2,7 +2,8 @@
 
 import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useRouter, usePathname } from 'next/navigation';
+import { usePathname } from 'next/navigation';
+import Link from 'next/link';
 import { getCurrentPageReadyGoods } from '@/redux/ready-goods/ready-goods-selectors';
 import { setEditReadyGood } from '@/redux/ready-goods/ready-goods-slice';
 import {
@@ -11,6 +12,7 @@ import {
 } from '@/redux/ready-goods/ready-goods-operations';
 import Text from '@/components/shared/text/text';
 import { slugify } from '@/utils/seo/public-url';
+import Photo from '@/components/shared/photo';
 
 const NewestReadyGoodCard = ({
   id,
@@ -22,17 +24,12 @@ const NewestReadyGoodCard = ({
 }) => {
   const [isHovered, setIsHovered] = useState(false);
   const hoverImage = additionalImageUrls?.[0] || mainImageUrl;
-  const router = useRouter();
   const dispatch = useDispatch();
   const currentPage = useSelector(getCurrentPageReadyGoods);
   const pathname = usePathname();
   const isAdmin = pathname.startsWith('/admin');
 
   const formattedTitle = slugify(title) || id;
-
-  const handleNavigate = () => {
-    router.push(`/ready-goods/${formattedTitle}/${id}`);
-  };
 
   const handleEdit = () => {
     dispatch(setEditReadyGood(readyGood));
@@ -58,20 +55,21 @@ const NewestReadyGoodCard = ({
       {hoverImage && hoverImage !== mainImageUrl && (
         <img
           src={hoverImage}
-          alt="newest-ready-good-photo"
+          alt=""
           style={{ display: 'none' }}
           loading="eager"
           aria-hidden="true"
         />
       )}
-      <div
-        className="relative w-full h-full overflow-hidden rounded-md border border-gray-300 bg-center bg-cover transition-all duration-300 p-[20px]"
-        style={{
-          backgroundImage: `url(${isHovered ? hoverImage : mainImageUrl})`,
-        }}
-      >
-        <div className="w-full h-full border-[2px] border-white p-[30px] shadow-[0.5px_0.5px_0.5px_rgba(0,0,0,0.3)]">
-          <div className="flex flex-col justify-center items-center w-full h-full gap-[30px]">
+      <div className="relative w-full h-full overflow-hidden rounded-md border border-gray-300">
+        <Photo
+          src={isHovered ? hoverImage : mainImageUrl}
+          title={title}
+          index={isHovered && hoverImage !== mainImageUrl ? 1 : 0}
+        />
+        <div className="relative w-full h-full p-[20px]">
+          <div className="w-full h-full border-[2px] border-white p-[30px] shadow-[0.5px_0.5px_0.5px_rgba(0,0,0,0.3)]">
+            <div className="flex flex-col justify-center items-center w-full h-full gap-[30px]">
             <Text
               type="banner"
               as="h3"
@@ -100,9 +98,11 @@ const NewestReadyGoodCard = ({
             >
               {String(description.slice(0, 150)) + '...'}
             </Text>
-            <button
+            <Link
+              href={`/ready-goods/${formattedTitle}/${id}`}
+              aria-label={`Read more about ${title}`}
+              title={`Read more about ${title}`}
               className="border-b border-[#FAFCFF] hover:border-[var(--accent)] w-fit transition-colors duration-200"
-              onClick={handleNavigate}
             >
               <Text
                 type="small"
@@ -113,8 +113,9 @@ const NewestReadyGoodCard = ({
               >
                 Read more
               </Text>
-            </button>
+            </Link>
           </div>
+        </div>
         </div>
       </div>
 

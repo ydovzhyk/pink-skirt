@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import { getAllReadyGoods } from '@/redux/ready-goods/ready-goods-selectors';
 import Text from '../../shared/text/text';
 import MarqueeQuote from '../../shared/marquee-quote/index';
@@ -12,6 +13,7 @@ import { getScreenType } from '@/redux/technical/technical-selectors';
 import { CiZoomIn } from 'react-icons/ci';
 import ActivePhotoMark from '../../shared/active-photo-mark';
 import { slugify } from '@/utils/seo/public-url';
+import Photo from '@/components/shared/photo';
 
 const ReadyGoodsDetail = ({
   id,
@@ -28,29 +30,17 @@ const ReadyGoodsDetail = ({
   const screenType = useSelector(getScreenType);
   const currentIndex = allReadyGoods.findIndex(item => item.id === id);
   const hasPrevious = currentIndex > 0;
-  const hasNext = currentIndex < allReadyGoods.length - 1;
+  const hasNext =
+    currentIndex >= 0 && currentIndex < allReadyGoods.length - 1;
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalIndex, setModalIndex] = useState(0);
-  const imagesAll = [mainImageUrl, ...(additionalImageUrls || [])];
+  const imagesAll = [mainImageUrl, ...(additionalImageUrls || [])].filter(Boolean);
+  const activeIndex = Math.max(0, imagesAll.indexOf(activeImage));
 
-  const handleNavigate = (title, id) => {
-    const formattedTitle = slugify(title) || id;
-    router.push(`/ready-goods/${formattedTitle}/${id}`);
-  };
-
-  const handlePreviousItem = () => {
-    const previousReadyGood = allReadyGoods[currentIndex - 1];
-    if (previousReadyGood) {
-      handleNavigate(previousReadyGood.title, previousReadyGood.id);
-    }
-  };
-
-  const handleNextItem = () => {
-    const nextReadyGood = allReadyGoods[currentIndex + 1];
-    if (nextReadyGood) {
-      handleNavigate(nextReadyGood.title, nextReadyGood.id);
-    }
-  };
+  const previousReadyGood = hasPrevious ? allReadyGoods[currentIndex - 1] : null;
+  const nextReadyGood = hasNext ? allReadyGoods[currentIndex + 1] : null;
+  const goodsHref = item =>
+    `/ready-goods/${slugify(item.title) || item.id}/${item.id}`;
 
   const openModalAtActive = () => {
     const idx = Math.max(0, imagesAll.indexOf(activeImage));
@@ -100,10 +90,7 @@ const ReadyGoodsDetail = ({
         <div className="w-full aspect-square flex flex-row gap-4">
           {activeImage && (
             <div className="relative w-[65%] h-full rounded-md shadow-lg overflow-hidden">
-              <div
-                className="w-full h-full bg-cover bg-center"
-                style={{ backgroundImage: `url(${activeImage})` }}
-              />
+              <Photo src={activeImage} title={title} index={activeIndex} />
               {screenType === 'isMobile' && (
                 <button
                   type="button"
@@ -121,16 +108,14 @@ const ReadyGoodsDetail = ({
 
           {additionalImageUrls.length > 0 && (
             <div className="w-[35%] h-full overflow-y-auto scroll-smooth thin-scrollbar pr-2 flex flex-col gap-4 overflow-hidden transition-all duration-200">
-              {[mainImageUrl, ...additionalImageUrls].map((img, i) => (
+              {imagesAll.map((img, i) => (
                 <div
                   key={i}
                   onClick={() => setActiveImage(img)}
-                  className="relative flex-none w-full bg-cover bg-center cursor-pointer rounded-md shadow-lg border border-gray-300 my-[1px] mx-[1px]"
-                  style={{
-                    backgroundImage: `url(${img})`,
-                    height: 'calc(50% - 0.65rem)',
-                  }}
+                  className="relative flex-none w-full cursor-pointer overflow-hidden rounded-md shadow-lg border border-gray-300 my-[1px] mx-[1px]"
+                  style={{ height: 'calc(50% - 0.65rem)' }}
                 >
+                  <Photo src={img} title={title} index={i} />
                   {activeImage === img && <ActivePhotoMark />}
                 </div>
               ))}
@@ -285,48 +270,69 @@ const ReadyGoodsDetail = ({
       </div>
 
       <div className="flex justify-between items-center">
-        <button
-          onClick={handlePreviousItem}
-          disabled={!hasPrevious}
-          className={`text-black border-b w-fit transition-colors duration-200 ${
-            hasPrevious
-              ? 'border-gray-400 hover:border-[var(--accent)]'
-              : 'border-gray-300 opacity-50 cursor-not-allowed'
-          }`}
-        >
-          <Text
-            type="extra-small"
-            as="p"
-            fontWeight="light"
-            className="text-black"
+        {previousReadyGood ? (
+          <Link
+            href={goodsHref(previousReadyGood)}
+            aria-label={`Previous item: ${previousReadyGood.title}`}
+            title={`Previous item: ${previousReadyGood.title}`}
+            className="text-black border-b border-gray-400 hover:border-[var(--accent)] w-fit text-left transition-colors duration-200"
           >
-            Previous item
-          </Text>
-        </button>
-        <button
-          onClick={handleNextItem}
-          disabled={!hasNext}
-          className={`text-black border-b w-fit transition-colors duration-200 ${
-            hasNext
-              ? 'border-gray-400 hover:border-[var(--accent)]'
-              : 'border-gray-300 opacity-50 cursor-not-allowed'
-          }`}
-        >
-          <Text
-            type="extra-small"
-            as="p"
-            fontWeight="light"
-            className="text-black"
+            <Text
+              type="extra-small"
+              as="p"
+              fontWeight="light"
+              className="text-black"
+            >
+              Previous item
+            </Text>
+          </Link>
+        ) : (
+          <span className="text-black border-b border-gray-300 max-w-[46%] opacity-50">
+            <Text
+              type="extra-small"
+              as="p"
+              fontWeight="light"
+              className="text-black"
+            >
+              Previous item
+            </Text>
+          </span>
+        )}
+        {nextReadyGood ? (
+          <Link
+            href={goodsHref(nextReadyGood)}
+            aria-label={`Next item: ${nextReadyGood.title}`}
+            title={`Next item: ${nextReadyGood.title}`}
+            className="text-black border-b border-gray-400 hover:border-[var(--accent)] w-fit text-right transition-colors duration-200"
           >
-            Next item
-          </Text>
-        </button>
+            <Text
+              type="extra-small"
+              as="p"
+              fontWeight="light"
+              className="text-black"
+            >
+              Next item
+            </Text>
+          </Link>
+        ) : (
+          <span className="text-black border-b border-gray-300 max-w-[46%] text-right opacity-50">
+            <Text
+              type="extra-small"
+              as="p"
+              fontWeight="light"
+              className="text-black"
+            >
+              Next item
+            </Text>
+          </span>
+        )}
       </div>
 
       {isModalOpen && screenType === 'isMobile' && (
         <ImageModal
           images={imagesAll}
           initialIndex={modalIndex}
+          title={title}
           onClose={() => setIsModalOpen(false)}
         />
       )}

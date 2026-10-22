@@ -1,6 +1,7 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { getAllStories } from '@/redux/stories/stories-selectors';
@@ -14,6 +15,7 @@ import {
 } from '../format-story-content';
 import ActivePhotoMark from '../../shared/active-photo-mark';
 import { slugify } from '@/utils/seo/public-url';
+import Photo from '@/components/shared/photo';
 
 const StoryDetail = ({
   id,
@@ -30,26 +32,17 @@ const StoryDetail = ({
   const translatedContent = useTranslate(restoreParagraphBreaks(content || ''));
   const currentIndex = allStories.findIndex(story => story.id === id);
   const hasPrevious = currentIndex > 0;
-  const hasNext = currentIndex < allStories.length - 1;
+  const hasNext =
+    currentIndex >= 0 && currentIndex < allStories.length - 1;
 
-  const handleNavigate = (title, id) => {
-    const formattedTitle = slugify(title) || id;
-    router.push(`/story/${formattedTitle}/${id}`);
-  };
-
-  const handlePreviousPost = () => {
-    const previousStory = allStories[currentIndex - 1];
-    if (previousStory) {
-      handleNavigate(previousStory.title, previousStory.id);
-    }
-  };
-
-  const handleNextPost = () => {
-    const nextStory = allStories[currentIndex + 1];
-    if (nextStory) {
-      handleNavigate(nextStory.title, nextStory.id);
-    }
-  };
+  const previousStory = hasPrevious ? allStories[currentIndex - 1] : null;
+  const nextStory = hasNext ? allStories[currentIndex + 1] : null;
+  const storyHref = item =>
+    `/story/${slugify(item.title) || item.id}/${item.id}`;
+  const imagesAll = [mainImageUrl, ...(additionalImageUrls || [])].filter(
+    Boolean,
+  );
+  const activeIndex = Math.max(0, imagesAll.indexOf(activeImage));
 
   return (
     <section
@@ -90,23 +83,21 @@ const StoryDetail = ({
       <div className="grid gap-10 lg:grid-cols-2">
         <div className="w-full">
           {activeImage && (
-            <div
-              className="relative w-full aspect-[27/40] bg-cover bg-center rounded-md"
-              style={{ backgroundImage: `url(${activeImage})` }}
-            >
+            <div className="relative w-full aspect-[27/40] overflow-hidden rounded-md">
+              <Photo src={activeImage} title={title} index={activeIndex} />
             </div>
           )}
 
           {additionalImageUrls.length > 0 && (
             <div className="mt-4 overflow-x-auto">
               <div className="flex gap-[2%] justify-start overflow-x-auto scroll-smooth thin-scrollbar pb-2">
-                {[mainImageUrl, ...additionalImageUrls].map((img, i) => (
+                {imagesAll.map((img, i) => (
                   <div
                     key={i}
                     onClick={() => setActiveImage(img)}
-                    className="relative min-w-[32%] aspect-[27/40] flex-shrink-0 bg-cover bg-center cursor-pointer rounded-md border border-transparent"
-                    style={{ backgroundImage: `url(${img})` }}
+                    className="relative min-w-[32%] aspect-[27/40] flex-shrink-0 cursor-pointer overflow-hidden rounded-md border border-transparent"
                   >
+                    <Photo src={img} title={title} index={i} />
                     {activeImage === img && <ActivePhotoMark />}
                   </div>
                 ))}
@@ -137,42 +128,62 @@ const StoryDetail = ({
       </div>
 
       <div className="flex justify-between items-center">
-        <button
-          onClick={handlePreviousPost}
-          disabled={!hasPrevious}
-          className={`text-black border-b w-fit transition-colors duration-200 ${
-            hasPrevious
-              ? 'border-gray-400 hover:border-[var(--accent)]'
-              : 'border-gray-300 opacity-50 cursor-not-allowed'
-          }`}
-        >
-          <Text
-            type="extra-small"
-            as="p"
-            fontWeight="light"
-            className="text-black"
+        {previousStory ? (
+          <Link
+            href={storyHref(previousStory)}
+            aria-label={`Previous post: ${previousStory.title}`}
+            title={`Previous post: ${previousStory.title}`}
+            className="text-black border-b border-gray-400 hover:border-[var(--accent)] w-fit text-left transition-colors duration-200"
           >
-            Previous post
-          </Text>
-        </button>
-        <button
-          onClick={handleNextPost}
-          disabled={!hasNext}
-          className={`text-black border-b w-fit transition-colors duration-200 ${
-            hasNext
-              ? 'border-gray-400 hover:border-[var(--accent)]'
-              : 'border-gray-300 opacity-50 cursor-not-allowed'
-          }`}
-        >
-          <Text
-            type="extra-small"
-            as="p"
-            fontWeight="light"
-            className="text-black"
+            <Text
+              type="extra-small"
+              as="p"
+              fontWeight="light"
+              className="text-black"
+            >
+              Previous post
+            </Text>
+          </Link>
+        ) : (
+          <span className="text-black border-b border-gray-300 max-w-[46%] opacity-50">
+            <Text
+              type="extra-small"
+              as="p"
+              fontWeight="light"
+              className="text-black"
+            >
+              Previous post
+            </Text>
+          </span>
+        )}
+        {nextStory ? (
+          <Link
+            href={storyHref(nextStory)}
+            aria-label={`Next post: ${nextStory.title}`}
+            title={`Next post: ${nextStory.title}`}
+            className="text-black border-b border-gray-400 hover:border-[var(--accent)] w-fit text-right transition-colors duration-200"
           >
-            Next post
-          </Text>
-        </button>
+            <Text
+              type="extra-small"
+              as="p"
+              fontWeight="light"
+              className="text-black"
+            >
+              Next post
+            </Text>
+          </Link>
+        ) : (
+          <span className="text-black border-b border-gray-300 max-w-[46%] text-right opacity-50">
+            <Text
+              type="extra-small"
+              as="p"
+              fontWeight="light"
+              className="text-black"
+            >
+              Next post
+            </Text>
+          </span>
+        )}
       </div>
     </section>
   );

@@ -4,6 +4,7 @@ import Text from '@/components/shared/text/text';
 import { deleteModel, getModels } from '@/redux/models/models-operations';
 import { setEditModel } from '@/redux/models/models-slice';
 import { usePreloadMedia } from '@/utils/usePreloadMedia';
+import Photo, { photoFrameClass } from '@/components/shared/photo';
 import { usePathname } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
 import { useDispatch } from 'react-redux';
@@ -128,10 +129,11 @@ const ModelCard = ({ model }) => {
           onEnded={handleVideoEnd}
         />
       ) : (
-        <img
+        <Photo
           src={currentMedia}
-          alt={title}
-          className={`w-full h-full object-cover motion-safe:transition-opacity motion-safe:duration-700 motion-safe:ease-out ${
+          title={title}
+          index={currentIndex}
+          className={`${photoFrameClass} motion-safe:transition-opacity motion-safe:duration-700 motion-safe:ease-out ${
             revealed ? 'opacity-100' : 'opacity-0'
           }`}
         />

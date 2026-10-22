@@ -4,7 +4,8 @@ import { deleteStory, getStories } from '@/redux/stories/stories-operations';
 import { getCurrentPageStories } from '@/redux/stories/stories-selectors';
 import { setEditStory } from '@/redux/stories/stories-slice';
 import { getScreenType } from '@/redux/technical/technical-selectors';
-import { usePathname, useRouter } from 'next/navigation';
+import { usePathname } from 'next/navigation';
+import Link from 'next/link';
 import { useDispatch, useSelector } from 'react-redux';
 import Text from '../../shared/text/text';
 import { useTranslate } from '@/utils/translating/translating';
@@ -14,9 +15,9 @@ import {
   truncateFormatted,
 } from '../format-story-content';
 import { slugify } from '@/utils/seo/public-url';
+import Photo from '@/components/shared/photo';
 
 const StoryCard = ({ id, title, date, content, mainImageUrl, story }) => {
-  const router = useRouter();
   const dispatch = useDispatch();
   const currentPage = useSelector(getCurrentPageStories);
   const screenType = useSelector(getScreenType);
@@ -36,10 +37,6 @@ const StoryCard = ({ id, title, date, content, mainImageUrl, story }) => {
 
   const formattedTitle = slugify(title) || id;
 
-  const handleNavigate = () => {
-    router.push(`/story/${formattedTitle}/${id}`);
-  };
-
   const handleEdit = () => {
     dispatch(setEditStory(story));
     setTimeout(() => {
@@ -57,10 +54,9 @@ const StoryCard = ({ id, title, date, content, mainImageUrl, story }) => {
 
   return (
     <div className="relative flex flex-col lg:flex-row lg:items-center">
-      <div
-        className="relative w-full lg:w-[60%] aspect-[27/40] rounded-t-md lg:rounded-md bg-cover bg-center"
-        style={{ backgroundImage: `url(${mainImageUrl})` }}
-      ></div>
+      <div className="relative w-full lg:w-[60%] aspect-[27/40] overflow-hidden rounded-t-md lg:rounded-md">
+        <Photo src={mainImageUrl} title={title} />
+      </div>
 
       <div className="w-full lg:w-[55%] min-h-[185px] sm:min-h-[280px] lg:min-h-[385px] px-6 py-4 sm:px-6 sm:py-5 rounded-b-md lg:rounded-md shadow-lg bg-white flex flex-col justify-between lg:absolute lg:top-[40px] lg:left-[45%] lg:h-full lg:aspect-[6/7]">
         <div className="w-full h-full flex flex-col gap-3">
@@ -86,14 +82,16 @@ const StoryCard = ({ id, title, date, content, mainImageUrl, story }) => {
           </Text>
         </div>
 
-        <button
+        <Link
+          href={`/story/${formattedTitle}/${id}`}
+          aria-label={`Read more about ${title}`}
+          title={`Read more about ${title}`}
           className="border-b border-gray-400 hover:border-[var(--accent)] w-fit transition-colors duration-200 mt-3 md:mt-0"
-          onClick={handleNavigate}
         >
           <Text type="small" as="p" fontWeight="light" className="text-black">
             Read more
           </Text>
-        </button>
+        </Link>
 
         {isAdmin && (
           <div className="absolute top-[-15px] md:top-[-55px] left-0 w-full flex flex-row gap-[80px] items-center justify-center mt-4 rounded-md bg-white shadow-lg p-2">

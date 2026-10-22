@@ -2,8 +2,9 @@
 
 import { useState, useEffect } from 'react';
 import { IoIosArrowBack, IoIosArrowForward } from 'react-icons/io';
+import Photo from '@/components/shared/photo';
 
-const ImageModal = ({ images = [], initialIndex = 0, onClose }) => {
+const ImageModal = ({ images = [], initialIndex = 0, onClose, title = '' }) => {
   const [currentIndex, setCurrentIndex] = useState(initialIndex);
 
   useEffect(() => {
@@ -76,9 +77,10 @@ const ImageModal = ({ images = [], initialIndex = 0, onClose }) => {
           </>
         )}
 
-        <img
+        <Photo
           src={images[currentIndex]}
-          alt="Zoomed view"
+          title={title}
+          index={currentIndex}
           className="max-w-[92vw] max-h-[85vh] object-contain"
           draggable={false}
         />
