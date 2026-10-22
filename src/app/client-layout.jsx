@@ -164,7 +164,7 @@ const ClientLayout = ({ children }) => {
         {children}
       </main>
       <ScrollToTopButton />
-      {!pathname.startsWith('/admin') && <AtelierMap />}
+      {pathname === '/' && <AtelierMap />}
       <Footer />
     </div>
   );
