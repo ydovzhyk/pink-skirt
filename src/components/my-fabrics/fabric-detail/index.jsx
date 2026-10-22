@@ -11,6 +11,7 @@ import { RxScissors } from 'react-icons/rx';
 import SelectField from '@/components/shared/select-field/select-field';
 import ActivePhotoMark from '../../shared/active-photo-mark';
 import { slugify } from '@/utils/seo/public-url';
+import Photo, { photoFrameClass } from '@/components/shared/photo';
 
 const GARMENT_ICONS_BASE = '/images/garments';
 const norm = s =>
@@ -211,10 +212,11 @@ const FabricDetail = ({
             onMouseLeave={() => setHoverMain(false)}
           >
             {mainSrc ? (
-              <img
+              <Photo
                 src={mainSrc}
-                alt={shortDescription || 'fabric'}
-                className="absolute inset-0 w-full h-full object-cover transition-opacity duration-200"
+                title={shortDescription || name}
+                index={hoverMain && images[1] ? 1 : 0}
+                className={`${photoFrameClass} transition-opacity duration-200`}
                 loading="lazy"
               />
             ) : (
@@ -281,9 +283,9 @@ const FabricDetail = ({
                   >
                     <div className="relative w-full h-full">
                       {thumb ? (
-                        <img
+                        <Photo
                           src={thumb}
-                          alt={f.shortDescription || 'fabric option'}
+                          title={f.shortDescription || f.name}
                           className="w-full aspect-[3/4] object-cover"
                           loading="lazy"
                         />

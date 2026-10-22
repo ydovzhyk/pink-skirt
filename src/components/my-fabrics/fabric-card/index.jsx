@@ -8,6 +8,7 @@ import { setEditFabric } from '@/redux/fabrics/fabrics-slice';
 import { deleteFabric } from '@/redux/fabrics/fabrics-operations';
 import { getFabrics } from '@/redux/fabrics/fabrics-operations';
 import { slugify } from '@/utils/seo/public-url';
+import Photo from '@/components/shared/photo';
 
 const FabricCard = ({
   id,
@@ -56,19 +57,20 @@ const FabricCard = ({
       {hoverImage && hoverImage !== mainImageUrl && (
         <img
           src={hoverImage}
-          alt={`Fabric ${shortDescription}`}
+          alt=""
           style={{ display: 'none' }}
           loading="eager"
           aria-hidden="true"
         />
       )}
 
-      <div
-        className="w-full aspect-[27/40]  overflow-hidden rounded-t-md bg-center bg-cover transition-all duration-300"
-        style={{
-          backgroundImage: `url(${isHovered ? hoverImage : mainImageUrl})`,
-        }}
-      ></div>
+      <div className="relative w-full aspect-[27/40] overflow-hidden rounded-t-md">
+        <Photo
+          src={isHovered ? hoverImage : mainImageUrl}
+          title={shortDescription || fabricCategory}
+          index={isHovered && hoverImage !== mainImageUrl ? 1 : 0}
+        />
+      </div>
 
       <div className="w-full h-[60px] px-3 py-2 flex items-center justify-center rounded-b-md bg-white">
         <Text
