@@ -7,6 +7,10 @@ import ImageBanner from '../components/shared/image-banner';
 import MyModel from '../components/my-model';
 import MyFabrics from '../components/my-fabrics';
 
+export const metadata = {
+  alternates: { canonical: 'https://pinkskirt.uk/' },
+};
+
 export default function Home() {
   return (
     <div className="font-[family-name:var(--font-geist-sans)]">

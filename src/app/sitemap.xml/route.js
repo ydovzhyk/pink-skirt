@@ -1,4 +1,5 @@
 import { db } from '@/utils/firebase/firebase-сonfig';
+import { SITE_URL, fabricUrl, readyGoodUrl, storyUrl } from '@/utils/seo/public-url';
 
 const CONTENT_UPDATED = '2026-10-08';
 
@@ -15,11 +16,9 @@ function toLastMod(value) {
 }
 
 export async function GET() {
-  const baseUrl = 'https://pinkskirt.uk';
-
   const urls = [
     {
-      loc: `${baseUrl}/`,
+      loc: SITE_URL,
       lastmod: CONTENT_UPDATED,
       changefreq: 'weekly',
       priority: 1.0,
@@ -31,9 +30,8 @@ export async function GET() {
   readyGoodsSnap.forEach(doc => {
     const data = doc.data();
     if (data?.title && data?.id) {
-      const slug = data.title.toLowerCase().replace(/\s+/g, '-');
       urls.push({
-        loc: `${baseUrl}/ready-goods/${slug}/${data.id}`,
+        loc: readyGoodUrl(data.title, data.id),
         lastmod: toLastMod(data.updatedAt) || toLastMod(data.createdAt),
         changefreq: 'monthly',
         priority: 0.8,
@@ -46,9 +44,8 @@ export async function GET() {
   storiesSnap.forEach(doc => {
     const data = doc.data();
     if (data?.title && data?.id) {
-      const slug = data.title.toLowerCase().replace(/\s+/g, '-');
       urls.push({
-        loc: `${baseUrl}/story/${slug}/${data.id}`,
+        loc: storyUrl(data.title, data.id),
         lastmod: toLastMod(data.date) || toLastMod(data.createdAt),
         changefreq: 'monthly',
         priority: 0.7,
@@ -63,17 +60,12 @@ export async function GET() {
     const d = doc.data() || {};
     if (!d.id || !d.name) return;
 
-    const categorySlug = String(d.name).trim().toLowerCase();
-
-    const detailSlug = String(d.shortDescription || d.description || d.name)
-      .trim()
-      .toLowerCase()
-      .replace(/\s+/g, '-')
-      .replace(/[^a-z0-9-]/g, '')
-      .replace(/-+/g, '-');
-
     urls.push({
-      loc: `${baseUrl}/fabrics/${categorySlug}/${detailSlug || d.id}/${d.id}`,
+      loc: fabricUrl(
+        d.name,
+        d.shortDescription || d.description || d.name,
+        d.id
+      ),
       lastmod: toLastMod(d.updatedAt) || toLastMod(d.createdAt),
       changefreq: 'monthly',
       priority: 0.8,

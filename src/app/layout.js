@@ -9,6 +9,7 @@ import { localBusinessSchema } from '@/components/shared/local-business-schema';
 import '../app/css/globals.css';
 
 export const metadata = {
+  metadataBase: new URL('https://pinkskirt.uk'),
   title: 'Pink Skirt – Bespoke Women’s Clothing by Inna Kuzmuk',
   description:
     'Pink Skirt – a unique atelier by Inna Kuzmuk, specializing in bespoke women’s clothing. Elegant, high-quality designs created with passion in the UK.',

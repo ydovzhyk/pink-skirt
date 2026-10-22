@@ -1,5 +1,6 @@
 import DetailReadyGoodsPage from './detail-client';
 import { db } from '@/utils/firebase/firebase-сonfig';
+import { readyGoodUrl } from '@/utils/seo/public-url';
 
 const FALLBACK_TITLE = 'Pink Skirt – Bespoke Women’s Clothing by Inna Kuzmuk';
 const FALLBACK_DESCRIPTION =
@@ -21,7 +22,7 @@ function clip(text, max = 155) {
 }
 
 export async function generateMetadata({ params }) {
-  const { goodsName, id } = await params;
+  const { id } = await params;
   const fallback = {
     title: FALLBACK_TITLE,
     description: FALLBACK_DESCRIPTION,
@@ -39,7 +40,7 @@ export async function generateMetadata({ params }) {
       clip(plainText(data.shortDescription) || plainText(data.description)) ||
       `${name} by Pink Skirt, a bespoke women’s clothing atelier in Cambridge.`;
     const title = `${name} – Pink Skirt`;
-    const url = `https://pinkskirt.uk/ready-goods/${goodsName}/${id}`;
+    const url = readyGoodUrl(data.title, data.id || id);
     const image = data.mainImageUrl || 'https://pinkskirt.uk/og-image.png';
 
     return {
