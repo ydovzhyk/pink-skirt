@@ -11,6 +11,7 @@ import { RiArrowGoBackFill } from 'react-icons/ri';
 import { getScreenType } from '@/redux/technical/technical-selectors';
 import { CiZoomIn } from 'react-icons/ci';
 import ActivePhotoMark from '../../shared/active-photo-mark';
+import { slugify } from '@/utils/seo/public-url';
 
 const ReadyGoodsDetail = ({
   id,
@@ -33,12 +34,7 @@ const ReadyGoodsDetail = ({
   const imagesAll = [mainImageUrl, ...(additionalImageUrls || [])];
 
   const handleNavigate = (title, id) => {
-    const formattedTitle = (title || '')
-      .trim()
-      .toLowerCase()
-      .replace(/\s+/g, '-')
-      .replace(/[^a-z0-9-]/g, '')
-      .replace(/-+/g, '-');
+    const formattedTitle = slugify(title) || id;
     router.push(`/ready-goods/${formattedTitle}/${id}`);
   };
 

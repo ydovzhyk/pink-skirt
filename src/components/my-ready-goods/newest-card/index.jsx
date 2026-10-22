@@ -10,6 +10,7 @@ import {
   getReadyGoods,
 } from '@/redux/ready-goods/ready-goods-operations';
 import Text from '@/components/shared/text/text';
+import { slugify } from '@/utils/seo/public-url';
 
 const NewestReadyGoodCard = ({
   id,
@@ -27,12 +28,7 @@ const NewestReadyGoodCard = ({
   const pathname = usePathname();
   const isAdmin = pathname.startsWith('/admin');
 
-  const formattedTitle = title
-    .trim()
-    .toLowerCase()
-    .replace(/\s+/g, '-')
-    .replace(/[^a-z0-9-]/g, '')
-    .replace(/-+/g, '-');
+  const formattedTitle = slugify(title) || id;
 
   const handleNavigate = () => {
     router.push(`/ready-goods/${formattedTitle}/${id}`);

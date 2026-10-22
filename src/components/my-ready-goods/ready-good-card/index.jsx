@@ -10,6 +10,7 @@ import { setEditReadyGood } from '@/redux/ready-goods/ready-goods-slice';
 import { usePathname, useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { slugify } from '@/utils/seo/public-url';
 
 const ReadyGoodCard = ({
   id,
@@ -26,12 +27,7 @@ const ReadyGoodCard = ({
   const pathname = usePathname();
   const isAdmin = pathname.startsWith('/admin');
 
-  const formattedTitle = title
-    .trim()
-    .toLowerCase()
-    .replace(/\s+/g, '-')
-    .replace(/[^a-z0-9-]/g, '')
-    .replace(/-+/g, '-');
+  const formattedTitle = slugify(title) || id;
 
   const handleNavigate = () => {
     router.push(`/ready-goods/${formattedTitle}/${id}`);

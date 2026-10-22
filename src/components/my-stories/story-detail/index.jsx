@@ -13,6 +13,7 @@ import {
   restoreParagraphBreaks,
 } from '../format-story-content';
 import ActivePhotoMark from '../../shared/active-photo-mark';
+import { slugify } from '@/utils/seo/public-url';
 
 const StoryDetail = ({
   id,
@@ -32,12 +33,7 @@ const StoryDetail = ({
   const hasNext = currentIndex < allStories.length - 1;
 
   const handleNavigate = (title, id) => {
-    const formattedTitle = title
-      .trim()
-      .toLowerCase()
-      .replace(/\s+/g, '-')
-      .replace(/[^a-z0-9-]/g, '')
-      .replace(/-+/g, '-');
+    const formattedTitle = slugify(title) || id;
     router.push(`/story/${formattedTitle}/${id}`);
   };
 

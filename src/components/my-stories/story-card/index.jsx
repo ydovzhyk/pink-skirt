@@ -13,6 +13,7 @@ import {
   restoreParagraphBreaks,
   truncateFormatted,
 } from '../format-story-content';
+import { slugify } from '@/utils/seo/public-url';
 
 const StoryCard = ({ id, title, date, content, mainImageUrl, story }) => {
   const router = useRouter();
@@ -33,12 +34,7 @@ const StoryCard = ({ id, title, date, content, mainImageUrl, story }) => {
   const translatedContent = useTranslate(restoreParagraphBreaks(content || ''));
   const preview = truncateFormatted(translatedContent, limit);
 
-  const formattedTitle = title
-    .trim()
-    .toLowerCase()
-    .replace(/\s+/g, '-')
-    .replace(/[^a-z0-9-]/g, '')
-    .replace(/-+/g, '-');
+  const formattedTitle = slugify(title) || id;
 
   const handleNavigate = () => {
     router.push(`/story/${formattedTitle}/${id}`);

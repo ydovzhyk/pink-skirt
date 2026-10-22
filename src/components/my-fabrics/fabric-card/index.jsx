@@ -7,6 +7,7 @@ import { useDispatch } from 'react-redux';
 import { setEditFabric } from '@/redux/fabrics/fabrics-slice';
 import { deleteFabric } from '@/redux/fabrics/fabrics-operations';
 import { getFabrics } from '@/redux/fabrics/fabrics-operations';
+import { slugify } from '@/utils/seo/public-url';
 
 const FabricCard = ({
   id,
@@ -23,12 +24,7 @@ const FabricCard = ({
   const pathname = usePathname();
   const isAdmin = pathname.startsWith('/admin');
 
-  const formattedTitle = shortDescription
-    .trim()
-    .toLowerCase()
-    .replace(/\s+/g, '-')
-    .replace(/[^a-z0-9-]/g, '')
-    .replace(/-+/g, '-');
+  const formattedTitle = slugify(shortDescription) || id;
 
   const handleNavigate = () => {
     const categorySlug = String(fabricCategory).trim().toLowerCase();

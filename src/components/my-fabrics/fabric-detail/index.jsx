@@ -10,22 +10,13 @@ import { getScreenType } from '@/redux/technical/technical-selectors';
 import { RxScissors } from 'react-icons/rx';
 import SelectField from '@/components/shared/select-field/select-field';
 import ActivePhotoMark from '../../shared/active-photo-mark';
+import { slugify } from '@/utils/seo/public-url';
 
 const GARMENT_ICONS_BASE = '/images/garments';
 const norm = s =>
   String(s || '')
     .trim()
     .toLowerCase();
-const slugify = s =>
-  String(s || '')
-    .normalize('NFKD')
-    .replace(/[\u0300-\u036f]/g, '')
-    .trim()
-    .toLowerCase()
-    .replace(/[^a-z0-9\-_\s]/gi, '')
-    .replace(/\s+/g, '-')
-    .replace(/-+/g, '-');
-
 // Exchange rates (USD base from API)
 const KEY1 = 'c387761eefc91005f40db998';
 const KEY2 = 'ed07810753df7f892d787233';
@@ -72,7 +63,12 @@ const FabricDetail = ({
     activeInGroupIdx >= 0 && activeInGroupIdx < categoryFabrics.length - 1;
 
   const goToFabric = (cat, title, fabricId) => {
-    router.push(`/fabrics/${slugify(cat)}/${slugify(title)}/${fabricId}`);
+    const categorySlug = String(cat || '')
+      .trim()
+      .toLowerCase();
+    router.push(
+      `/fabrics/${categorySlug}/${slugify(title) || fabricId}/${fabricId}`
+    );
   };
 
   const handlePreviousItem = () => {
