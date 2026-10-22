@@ -9,6 +9,29 @@ import ModelCard from './model-card';
 import { IoIosArrowForward, IoIosArrowBack } from 'react-icons/io';
 import { getScreenType } from '@/redux/technical/technical-selectors';
 
+const VIDEO_EXTENSIONS = ['.mp4', '.webm', '.ogg', '.mov', '.m4v'];
+const warmedMedia = new Set();
+const warmedNodes = [];
+
+function preloadModelPhoto(url) {
+  if (!url || warmedMedia.has(url)) return;
+  warmedMedia.add(url);
+  const clean = url.split('?')[0].toLowerCase();
+  const isVideo = VIDEO_EXTENSIONS.some(ext => clean.endsWith(ext));
+  if (isVideo) {
+    const video = document.createElement('video');
+    video.preload = 'auto';
+    video.muted = true;
+    video.src = url;
+    video.load();
+    warmedNodes.push(video);
+    return;
+  }
+  const img = new Image();
+  img.src = url;
+  warmedNodes.push(img);
+}
+
 const MyModel = () => {
   const [startIndex, setStartIndex] = useState(0);
   const [cardsToShow, setCardsToShow] = useState(3);
@@ -60,6 +83,17 @@ const MyModel = () => {
     startAutoplay();
     return () => stopAutoplay();
   }, []);
+
+  useEffect(() => {
+    if (modelItems.length === 0) return;
+    const coming = [
+      (startIndex + cardsToShow) % modelItems.length,
+      (startIndex - 1 + modelItems.length) % modelItems.length,
+    ];
+    coming.forEach(index => {
+      preloadModelPhoto(modelItems[index]?.media?.[0]);
+    });
+  }, [modelItems, startIndex, cardsToShow]);
 
   const visibleItems = [];
   if (modelItems.length > 0) {

@@ -14,6 +14,7 @@ const ModelCard = ({ model }) => {
   const { media, title, description } = model;
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isHovered, setIsHovered] = useState(false);
+  const [revealed, setRevealed] = useState(false);
   const timeoutRef = useRef(null);
 
   const mediaSources = model.media?.map(url => ({ imageUrl: url })) ?? [];
@@ -28,6 +29,51 @@ const ModelCard = ({ model }) => {
   const isVideo = videoExtensions.some(ext =>
     cleanUrl.toLowerCase().endsWith(ext)
   );
+
+  useEffect(() => {
+    if (!currentMedia) return undefined;
+    setRevealed(false);
+    let cancelled = false;
+
+    const reveal = () => {
+      if (cancelled) return;
+      requestAnimationFrame(() => {
+        if (!cancelled) setRevealed(true);
+      });
+    };
+
+    if (isVideo) {
+      const video = document.createElement('video');
+      video.preload = 'auto';
+      video.muted = true;
+      video.src = currentMedia;
+      if (video.readyState >= 2) reveal();
+      else {
+        video.onloadeddata = reveal;
+        video.onerror = reveal;
+      }
+      return () => {
+        cancelled = true;
+        video.onloadeddata = null;
+        video.onerror = null;
+        video.src = '';
+      };
+    }
+
+    const img = new Image();
+    img.src = currentMedia;
+    if (img.complete && img.naturalWidth > 0) reveal();
+    else {
+      img.onload = reveal;
+      img.onerror = reveal;
+    }
+
+    return () => {
+      cancelled = true;
+      img.onload = null;
+      img.onerror = null;
+    };
+  }, [currentMedia, isVideo]);
 
   useEffect(() => {
     if (!isHovered) {
@@ -74,7 +120,9 @@ const ModelCard = ({ model }) => {
         <video
           key={currentMedia}
           src={currentMedia}
-          className="w-full h-full object-cover"
+          className={`w-full h-full object-cover motion-safe:transition-opacity motion-safe:duration-700 motion-safe:ease-out ${
+            revealed ? 'opacity-100' : 'opacity-0'
+          }`}
           autoPlay
           muted
           onEnded={handleVideoEnd}
@@ -83,7 +131,9 @@ const ModelCard = ({ model }) => {
         <img
           src={currentMedia}
           alt={title}
-          className="w-full h-full object-cover transition-opacity duration-500"
+          className={`w-full h-full object-cover motion-safe:transition-opacity motion-safe:duration-700 motion-safe:ease-out ${
+            revealed ? 'opacity-100' : 'opacity-0'
+          }`}
         />
       )}
 
