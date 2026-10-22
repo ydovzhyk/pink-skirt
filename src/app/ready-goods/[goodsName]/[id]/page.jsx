@@ -1,6 +1,7 @@
+import { redirect } from 'next/navigation';
 import DetailReadyGoodsPage from './detail-client';
 import { db } from '@/utils/firebase/firebase-сonfig';
-import { readyGoodUrl } from '@/utils/seo/public-url';
+import { pathSlug, readyGoodUrl, slugify } from '@/utils/seo/public-url';
 
 const FALLBACK_TITLE = 'Pink Skirt – Bespoke Women’s Clothing by Inna Kuzmuk';
 const FALLBACK_DESCRIPTION =
@@ -68,6 +69,27 @@ export async function generateMetadata({ params }) {
   }
 }
 
-export default function Page() {
+export default async function Page({ params }) {
+  const { goodsName, id } = await params;
+
+  if (id && typeof id === 'string') {
+    let canonicalSlug = '';
+    let canonicalId = id;
+    try {
+      const doc = await db.collection('ready-goods').doc(id).get();
+      if (doc.exists) {
+        const data = doc.data() || {};
+        canonicalSlug = slugify(data.title) || id;
+        canonicalId = data.id || id;
+      }
+    } catch {
+      canonicalSlug = '';
+    }
+
+    if (canonicalSlug && pathSlug(goodsName) !== canonicalSlug) {
+      redirect(`/ready-goods/${canonicalSlug}/${canonicalId}`);
+    }
+  }
+
   return <DetailReadyGoodsPage />;
 }

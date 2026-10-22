@@ -1,5 +1,13 @@
 export const SITE_URL = 'https://pinkskirt.uk';
 
+export function pathSlug(value) {
+  try {
+    return decodeURIComponent(String(value || ''));
+  } catch {
+    return String(value || '');
+  }
+}
+
 export function slugify(value) {
   return String(value || '')
     .trim()

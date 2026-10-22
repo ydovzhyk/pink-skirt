@@ -1,6 +1,7 @@
+import { redirect } from 'next/navigation';
 import DetailStoryPage from './detail-client';
 import { db } from '@/utils/firebase/firebase-сonfig';
-import { storyUrl } from '@/utils/seo/public-url';
+import { pathSlug, slugify, storyUrl } from '@/utils/seo/public-url';
 
 const FALLBACK_TITLE = 'Pink Skirt – Bespoke Women’s Clothing by Inna Kuzmuk';
 const FALLBACK_DESCRIPTION =
@@ -69,6 +70,27 @@ export async function generateMetadata({ params }) {
   }
 }
 
-export default function Page() {
+export default async function Page({ params }) {
+  const { storyName, id } = await params;
+
+  if (id && typeof id === 'string') {
+    let canonicalSlug = '';
+    let canonicalId = id;
+    try {
+      const doc = await db.collection('stories').doc(id).get();
+      if (doc.exists) {
+        const data = doc.data() || {};
+        canonicalSlug = slugify(data.title) || id;
+        canonicalId = data.id || id;
+      }
+    } catch {
+      canonicalSlug = '';
+    }
+
+    if (canonicalSlug && pathSlug(storyName) !== canonicalSlug) {
+      redirect(`/story/${canonicalSlug}/${canonicalId}`);
+    }
+  }
+
   return <DetailStoryPage />;
 }
