@@ -28,7 +28,7 @@ const VideoBanner = ({
   playRootMargin = '300px 0px 300px 0px',
 
   // optional posters (recommend setting at least topPoster)
-  topPoster = '/images/banner-top-poster.jpg',
+  topPoster = '/images/banner-top-poster.webp',
   middlePoster = undefined,
   bottomPoster = undefined,
 }) => {
