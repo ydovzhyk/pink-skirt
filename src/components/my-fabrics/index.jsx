@@ -4,6 +4,7 @@ import { useRef, useLayoutEffect, useState, useEffect, useMemo } from 'react';
 import { usePathname } from 'next/navigation';
 import { useSelector, useDispatch } from 'react-redux';
 import { getAllFabrics } from '@/redux/fabrics/fabrics-selectors';
+import { getScreenType } from '@/redux/technical/technical-selectors';
 import { getFabrics } from '@/redux/fabrics/fabrics-operations';
 import Text from '@/components/shared/text/text';
 import FabricCard from './fabric-card';
@@ -16,6 +17,7 @@ const MyFabrics = () => {
 
   const pathname = usePathname();
   const isAdmin = pathname.startsWith('/admin');
+  const isMobile = useSelector(getScreenType) === 'isMobile';
 
   const groups = useMemo(() => {
     const map = new Map();
@@ -77,13 +79,20 @@ const MyFabrics = () => {
   };
 
   const handleScroll = direction => {
-    if (sliderRef.current) {
-      sliderRef.current.scrollBy({
-        left: direction === 'left' ? -scrollByAmount : scrollByAmount,
-        behavior: 'smooth',
-      });
-      setTimeout(updateButtonVisibility, 300);
-    }
+    const slider = sliderRef.current;
+    if (!slider) return;
+
+    const slide = slider.querySelector('[data-fabric-slide]');
+    const gap = parseFloat(getComputedStyle(slider).columnGap) || 0;
+    const amount = slide
+      ? slide.getBoundingClientRect().width + gap
+      : scrollByAmount;
+
+    slider.scrollBy({
+      left: direction === 'left' ? -amount : amount,
+      behavior: 'smooth',
+    });
+    setTimeout(updateButtonVisibility, 300);
   };
 
   useLayoutEffect(() => {
@@ -148,20 +157,45 @@ const MyFabrics = () => {
         <div className="relative w-full overflow-hidden">
           <div
             ref={sliderRef}
-            className="flex gap-6 overflow-x-auto scroll-smooth no-scrollbar"
+            className={`flex overflow-x-auto scroll-smooth no-scrollbar ${
+              isMobile ? 'snap-x snap-mandatory items-start' : 'gap-6'
+            }`}
           >
-            <div className="min-w-[300px] flex-shrink-0 rounded-md overflow-hidden border border-gray-300">
-              <div
-                className="w-full h-full bg-cover bg-center"
-                style={{
-                  backgroundImage: "url('/images/fabrics/landing.webp')",
-                }}
-              />
+            <div
+              {...(isMobile ? { 'data-fabric-slide': '' } : {})}
+              className={
+                isMobile
+                  ? 'w-full min-w-full flex-shrink-0 snap-start'
+                  : 'min-w-[300px] flex-shrink-0 rounded-md overflow-hidden border border-gray-300'
+              }
+            >
+              {isMobile ? (
+                <img
+                  src="/images/fabrics/landing.webp"
+                  alt=""
+                  className="block h-auto w-full rounded-md border border-gray-300"
+                />
+              ) : (
+                <div
+                  className="w-full h-full bg-cover bg-center"
+                  style={{
+                    backgroundImage: "url('/images/fabrics/landing.webp')",
+                  }}
+                />
+              )}
             </div>
 
             {!isAdmin &&
               groups.map(g => (
-                <div key={g.key} className="w-[300px] flex-none">
+                <div
+                  key={g.key}
+                  {...(isMobile ? { 'data-fabric-slide': '' } : {})}
+                  className={
+                    isMobile
+                      ? 'w-full min-w-full flex-shrink-0 snap-start'
+                      : 'w-[300px] flex-none'
+                  }
+                >
                   <FabricCard
                     id={g.representative.id}
                     fabricCategory={g.representative.name}
@@ -173,7 +207,15 @@ const MyFabrics = () => {
 
             {isAdmin &&
               fabricsData.map(g => (
-                <div key={g.id} className="w-[300px] flex-none">
+                <div
+                  key={g.id}
+                  {...(isMobile ? { 'data-fabric-slide': '' } : {})}
+                  className={
+                    isMobile
+                      ? 'w-full min-w-full flex-shrink-0 snap-start'
+                      : 'w-[300px] flex-none'
+                  }
+                >
                   <FabricCard
                     id={g.id}
                     fabricCategory={g.name}

@@ -3,7 +3,8 @@
 import Text from '@/components/shared/text/text';
 import { usePathname, useRouter } from 'next/navigation';
 import { useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { getScreenType } from '@/redux/technical/technical-selectors';
 import { setEditFabric } from '@/redux/fabrics/fabrics-slice';
 import { deleteFabric } from '@/redux/fabrics/fabrics-operations';
 import { getFabrics } from '@/redux/fabrics/fabrics-operations';
@@ -24,6 +25,7 @@ const FabricCard = ({
   const router = useRouter();
   const pathname = usePathname();
   const isAdmin = pathname.startsWith('/admin');
+  const isMobile = useSelector(getScreenType) === 'isMobile';
 
   const formattedTitle = slugify(shortDescription) || id;
 
@@ -64,13 +66,22 @@ const FabricCard = ({
         />
       )}
 
-      <div className="relative w-full aspect-[27/40] overflow-hidden rounded-t-md">
+      {isMobile ? (
         <Photo
           src={isHovered ? hoverImage : mainImageUrl}
           title={shortDescription || fabricCategory}
           index={isHovered && hoverImage !== mainImageUrl ? 1 : 0}
+          className="block h-auto w-full rounded-t-md"
         />
-      </div>
+      ) : (
+        <div className="relative w-full aspect-[27/40] overflow-hidden rounded-t-md">
+          <Photo
+            src={isHovered ? hoverImage : mainImageUrl}
+            title={shortDescription || fabricCategory}
+            index={isHovered && hoverImage !== mainImageUrl ? 1 : 0}
+          />
+        </div>
+      )}
 
       <div className="w-full h-[60px] px-3 py-2 flex items-center justify-center rounded-b-md bg-white">
         <Text

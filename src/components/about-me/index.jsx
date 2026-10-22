@@ -1,6 +1,7 @@
 'use client';
 
 import Text from '@/components/shared/text/text';
+import Photo from '@/components/shared/photo';
 import { getScreenType } from '@/redux/technical/technical-selectors';
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
@@ -36,14 +37,21 @@ const AboutMe = () => {
   };
 
   const handleScroll = direction => {
-    if (sliderRef.current) {
-      sliderRef.current.scrollBy({
-        left: direction === 'left' ? -scrollByAmount : scrollByAmount,
-        behavior: 'smooth',
-      });
+    const slider = sliderRef.current;
+    if (!slider) return;
 
-      setTimeout(updateButtonVisibility, 350);
-    }
+    const slide = slider.querySelector('[data-about-slide]');
+    const gap = parseFloat(getComputedStyle(slider).columnGap) || 0;
+    const amount = slide
+      ? slide.getBoundingClientRect().width + gap
+      : scrollByAmount;
+
+    slider.scrollBy({
+      left: direction === 'left' ? -amount : amount,
+      behavior: 'smooth',
+    });
+
+    setTimeout(updateButtonVisibility, 350);
   };
 
   useLayoutEffect(() => {
@@ -308,15 +316,28 @@ const AboutMe = () => {
 
               <div
                 ref={sliderRef}
-                className="flex gap-6 overflow-x-auto scroll-smooth no-scrollbar"
+                className={`flex items-start overflow-x-auto scroll-smooth no-scrollbar ${
+                  isMobile ? 'snap-x snap-mandatory' : 'gap-6'
+                }`}
               >
-                {images.map((src, index) => (
-                  <div
-                    key={index}
-                    className="min-w-[300px] aspect-[27/40]  flex-shrink-0 rounded-md bg-cover bg-center"
-                    style={{ backgroundImage: `url(${src})` }}
-                  />
-                ))}
+                {images.map((src, index) =>
+                  isMobile ? (
+                    <Photo
+                      key={src}
+                      src={src}
+                      title="Inna Kuzmuk"
+                      index={index}
+                      data-about-slide=""
+                      className="h-auto w-full min-w-full flex-shrink-0 snap-start rounded-md"
+                    />
+                  ) : (
+                    <div
+                      key={index}
+                      className="min-w-[300px] aspect-[27/40] flex-shrink-0 rounded-md bg-cover bg-center"
+                      style={{ backgroundImage: `url(${src})` }}
+                    />
+                  )
+                )}
               </div>
             </div>
           </div>
