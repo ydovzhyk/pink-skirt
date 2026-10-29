@@ -1,4 +1,4 @@
-import { redirect } from 'next/navigation';
+import { notFound, redirect } from 'next/navigation';
 import DetailReadyGoodsPage from './detail-client';
 import { db } from '@/utils/firebase/firebase-сonfig';
 import { pathSlug, readyGoodUrl, slugify } from '@/utils/seo/public-url';
@@ -29,11 +29,15 @@ export async function generateMetadata({ params }) {
     description: FALLBACK_DESCRIPTION,
   };
 
-  if (!id || typeof id !== 'string') return fallback;
+  if (!id || typeof id !== 'string') {
+    return { title: 'Page not found – Pink Skirt', robots: { index: false } };
+  }
 
   try {
     const doc = await db.collection('ready-goods').doc(id).get();
-    if (!doc.exists) return fallback;
+    if (!doc.exists) {
+      return { title: 'Page not found – Pink Skirt', robots: { index: false } };
+    }
 
     const data = doc.data() || {};
     const name = plainText(data.title) || 'Ready-made piece';
@@ -72,23 +76,23 @@ export async function generateMetadata({ params }) {
 export default async function Page({ params }) {
   const { goodsName, id } = await params;
 
-  if (id && typeof id === 'string') {
-    let canonicalSlug = '';
-    let canonicalId = id;
-    try {
-      const doc = await db.collection('ready-goods').doc(id).get();
-      if (doc.exists) {
-        const data = doc.data() || {};
-        canonicalSlug = slugify(data.title) || id;
-        canonicalId = data.id || id;
-      }
-    } catch {
-      canonicalSlug = '';
-    }
+  if (!id || typeof id !== 'string') notFound();
 
-    if (canonicalSlug && pathSlug(goodsName) !== canonicalSlug) {
-      redirect(`/ready-goods/${canonicalSlug}/${canonicalId}`);
-    }
+  let doc;
+  try {
+    doc = await db.collection('ready-goods').doc(id).get();
+  } catch {
+    notFound();
+  }
+
+  if (!doc.exists) notFound();
+
+  const data = doc.data() || {};
+  const canonicalSlug = slugify(data.title) || id;
+  const canonicalId = data.id || id;
+
+  if (pathSlug(goodsName) !== canonicalSlug) {
+    redirect(`/ready-goods/${canonicalSlug}/${canonicalId}`);
   }
 
   return <DetailReadyGoodsPage />;

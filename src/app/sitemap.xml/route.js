@@ -1,7 +1,7 @@
 import { db } from '@/utils/firebase/firebase-сonfig';
 import { SITE_URL, fabricUrl, readyGoodUrl, storyUrl } from '@/utils/seo/public-url';
 
-const CONTENT_UPDATED = '2026-10-08';
+const CONTENT_UPDATED = '2026-10-29';
 
 function toLastMod(value) {
   if (!value) return null;
@@ -46,7 +46,10 @@ export async function GET() {
     if (data?.title && data?.id) {
       urls.push({
         loc: storyUrl(data.title, data.id),
-        lastmod: toLastMod(data.date) || toLastMod(data.createdAt),
+        lastmod:
+          toLastMod(data.updatedAt) ||
+          toLastMod(data.date) ||
+          toLastMod(data.createdAt),
         changefreq: 'monthly',
         priority: 0.7,
       });

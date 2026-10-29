@@ -17,6 +17,7 @@ export default async function handler(req, res) {
       ...fabricData,
       project: 'pink-skirt',
       createdAt: Timestamp.now(),
+      updatedAt: Timestamp.now(),
     };
 
     await db.collection('fabrics').doc(fabricData.id).set(dataToSave);

@@ -1,4 +1,5 @@
 import { db } from '@/utils/firebase/firebase-сonfig';
+import { Timestamp } from 'firebase-admin/firestore';
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
@@ -14,7 +15,10 @@ export default async function handler(req, res) {
 
     const { id, ...fieldsToUpdate } = storyData;
 
-    await db.collection('stories').doc(id).update(fieldsToUpdate);
+    await db.collection('stories').doc(id).update({
+      ...fieldsToUpdate,
+      updatedAt: Timestamp.now(),
+    });
 
     return res.status(200).json({ message: 'Story successfully updated' });
   } catch (error) {

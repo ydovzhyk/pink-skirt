@@ -1,4 +1,4 @@
-import { redirect } from 'next/navigation';
+import { notFound, redirect } from 'next/navigation';
 import DetailFabricsPage from './detail-client';
 import { db } from '@/utils/firebase/firebase-сonfig';
 import { fabricUrl, pathSlug, slugify } from '@/utils/seo/public-url';
@@ -29,11 +29,15 @@ export async function generateMetadata({ params }) {
     description: FALLBACK_DESCRIPTION,
   };
 
-  if (!id || typeof id !== 'string') return fallback;
+  if (!id || typeof id !== 'string') {
+    return { title: 'Page not found – Pink Skirt', robots: { index: false } };
+  }
 
   try {
     const doc = await db.collection('fabrics').doc(id).get();
-    if (!doc.exists) return fallback;
+    if (!doc.exists) {
+      return { title: 'Page not found – Pink Skirt', robots: { index: false } };
+    }
 
     const data = doc.data() || {};
     const name =
@@ -80,32 +84,30 @@ export async function generateMetadata({ params }) {
 export default async function Page({ params }) {
   const { fabricCategory, fabricName, id } = await params;
 
-  if (id && typeof id === 'string') {
-    let canonicalCategory = '';
-    let canonicalName = '';
-    let canonicalId = id;
-    try {
-      const doc = await db.collection('fabrics').doc(id).get();
-      if (doc.exists) {
-        const data = doc.data() || {};
-        canonicalCategory = String(data.name || '')
-          .trim()
-          .toLowerCase();
-        canonicalName =
-          slugify(data.shortDescription || data.description || data.name) || id;
-        canonicalId = data.id || id;
-      }
-    } catch {
-      canonicalCategory = '';
-    }
+  if (!id || typeof id !== 'string') notFound();
 
-    if (
-      canonicalCategory &&
-      (pathSlug(fabricCategory) !== canonicalCategory ||
-        pathSlug(fabricName) !== canonicalName)
-    ) {
-      redirect(`/fabrics/${canonicalCategory}/${canonicalName}/${canonicalId}`);
-    }
+  let doc;
+  try {
+    doc = await db.collection('fabrics').doc(id).get();
+  } catch {
+    notFound();
+  }
+
+  if (!doc.exists) notFound();
+
+  const data = doc.data() || {};
+  const canonicalCategory = String(data.name || '')
+    .trim()
+    .toLowerCase();
+  const canonicalName =
+    slugify(data.shortDescription || data.description || data.name) || id;
+  const canonicalId = data.id || id;
+
+  if (
+    pathSlug(fabricCategory) !== canonicalCategory ||
+    pathSlug(fabricName) !== canonicalName
+  ) {
+    redirect(`/fabrics/${canonicalCategory}/${canonicalName}/${canonicalId}`);
   }
 
   return <DetailFabricsPage />;
